@@ -6,9 +6,11 @@ Piste
 Provides a simple dispatch layer and template wrapper mechanism.
 
 =head1 DEPENDENCIES
-None
+File
+=cut*/
+require_once('File.php');
 
-=head1 Synopsis
+/*=head1 Synopsis
 
  require_once('Piste.php');
  $template = new Piste(array(
@@ -29,22 +31,29 @@ Additionally it gives you customised 404 handling, the ability to add standard w
 
 class Piste {
     private $response_data = null;
+    private $is_initialised = false;
+    private $file_ob;
 
 /*=head1 Constructor
 
  new Piste(<array()>)
 
-The constructor accepts a single optional named list as an argument with the following optional keys
+The constructor looks for config defined in application base class and sets defaults for others. The config can defined the following optional keys
 =over
 =cut*/
-    function __construct($config=null){
-        if ($config && !is_array($config)){ throw new Exception("Config not an array"); }
-        $this->config = array_replace($this->config, $config);
-        # add document root which for some reason won't parse before object construction
-        $this->config['document_root'] = $_SERVER["DOCUMENT_ROOT"];
+    function __construct(){
+        # sort out config
+        if (!$this->config) {$this->config = array();}
+        if ($this->config && !is_array($this->config)){ throw new Exception("Application config not an array"); }
+        $this->config = array_replace($this->base_config, $this->config);
+
+        # add other useful stuff to object config
+        $this->config['application_name'] = get_class($this);
+        $this->file_ob = new File($this->config['application_name'] . '.php');
+        $this->config['application_lib'] = $this->file_ob->find_absolute_path();
     }
 
-    private $config = array(
+    private $base_config = array(
 /*=item DEBUG_SERVER
 Boolean providing a quick and easy way to dump the contents of $_SERVER.
 Default 0
@@ -80,10 +89,21 @@ Default php
 
 /*=head1 Object Methods
 
-=head2 render()
+=head2 init()
+Discovers and registers defined Models, Controllers, Views 
+=cut*/
+    function init(){
+        echo "Initialising application in " . $this->config['application_lib'];
+        #$this->is_initialised = true;
+    }
+
+/*=head2 run()
 Runs dispatch methods and responds with the page output
 =cut*/
-    function render(){
+    function run(){
+        # initialise object if new
+        if (!$this->is_initialised){ $this->init();}
+
         # require page content and store in output buffer
         ob_start();
         require $this->get_page();
@@ -131,7 +151,8 @@ You probably don't need to call this directly,
             $page = $page . $this->config['default_template'];
         }
         $page = $page . $this->config['template_suffix'];
-        if (!is_file($this->config['document_root'] . $this->config['template_base'] . $page)){
+        $this->file_ob->filename($this->config['template_base'] . $page);
+        if (!$this->file_ob->is_file()){
             $page = $this->config['404'];
         }
         return $this->config['template_base'] . $page;
