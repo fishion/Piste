@@ -9,6 +9,7 @@ Provides a simple dispatch layer and template wrapper mechanism.
 File
 =cut*/
 require_once('File.php');
+require_once('Piste/Dispatch.php');
 
 /*=head1 Synopsis
 
@@ -30,9 +31,11 @@ Additionally it gives you customised 404 handling, the ability to add standard w
 =cut*/
 
 class Piste {
+    private $application_name = null;
     private $response_data = null;
     private $is_initialised = false;
     private $file_ob;
+    private $dispatch;
 
 /*=head1 Constructor
 
@@ -48,8 +51,8 @@ The constructor looks for config defined in application base class and sets defa
         $this->config = array_replace($this->base_config, $this->config);
 
         # add other useful stuff to object config
-        $this->config['application_name'] = get_class($this);
-        $this->file_ob = new File($this->config['application_name'] . '.php');
+        $this->application_name = get_class($this);
+        $this->file_ob = new File($this->application_name . '.php');
         $this->config['application_lib'] = $this->file_ob->find_absolute_path();
     }
 
@@ -93,16 +96,28 @@ Default php
 Discovers and registers defined Models, Controllers, Views 
 =cut*/
     function init(){
-        echo "Initialising application in " . $this->config['application_lib'];
-        #$this->is_initialised = true;
+        # Just initialise once.
+        if ($this->is_initialised) {return;}
+        error_log("Initialising application in " . $this->config['application_lib']);
+
+        # require all application packages
+        $this->file_ob->filename($this->config['application_lib']);
+        $required = $this->file_ob->require_once_all_files('php');
+        error_log("Required files ".join(', ', $required));
+
+        # Register all installed application controller class
+        $this->dispatch = new Piste\Dispatch();
+        $this->dispatch->register_all($this->application_name);
+
+        # OK, we're ready to rock!
+        $this->is_initialised = true;
     }
 
 /*=head2 run()
 Runs dispatch methods and responds with the page output
 =cut*/
     function run(){
-        # initialise object if new
-        if (!$this->is_initialised){ $this->init();}
+        $this->init();
 
         # require page content and store in output buffer
         ob_start();
