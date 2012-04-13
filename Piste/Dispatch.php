@@ -54,9 +54,8 @@ Class Dispatch {
                 break;
             }
         }
-        if ($dref['class']){
-            $controller = new $dref['class']();
-            $controller->$dref['method']();
+        if ($dref['class'] && $dref['method']){
+            $dref['class']::$dref['method']();
         }
     }
 
