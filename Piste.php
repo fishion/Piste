@@ -24,7 +24,7 @@ require_once('Piste/Dispatch.php');
 
 Class designed to be used as the dispatch layer in an environment where the web server has used rewrite rules to process all php requests to a single endpoint, which might then use this class as described in the Synopsis example.
 
-It allows for the urls to omit the '.php' suffix (usually considered good practice) and can resolve url directory paths to any arbitrary file within that directory (index.php by default)
+It allows for the urls to omit the '.php' suffix (usually considered good practice) and will resolve url directory paths to index
 
 Additionally it gives you customised 404 handling, the ability to add standard wrappers to your templates (useful for standard page furnature, menus etc) and can capture requested respone formats (though more work is planned in this area).
 
@@ -72,11 +72,6 @@ path to php file (relative to include_path) containing a wrapper. The wrapper sh
 Default value is null.
 =cut*/
         'wrapper'           => null,
-/*=item default_template
-If trying to dispatch a directory path, the name of the file to try to provide within the directory.
-Default index
-=cut*/
-        'default_template'  => 'index',
 /*=item 404
 Path to a 404 template if dispatch file not found
 default '404.php'
@@ -103,7 +98,6 @@ Discovers and registers defined Models, Controllers, Views
         # require all application packages
         $this->file_ob->filename($this->config['application_lib']);
         $required = $this->file_ob->require_once_all_files('php');
-        error_log("Required files ".join(', ', $required));
 
         # Register all installed application controller class
         $this->dispatch = new Piste\Dispatch();
@@ -119,12 +113,17 @@ Runs dispatch methods and responds with the page output
     function run(){
         $this->init();
 
+        $this->dispatch->run_controller();
+
+        #
+        # This is the VIEW bit that needs refactoring
+        #
+
         # require page content and store in output buffer
         ob_start();
         require $this->get_page();
         if ($this->config['DEBUG_SERVER']) {
             echo '<pre>';
-            #Var_Dump($_SERVER);
             print_r($_SERVER);
             echo '</pre>';
         }
@@ -139,6 +138,8 @@ Runs dispatch methods and responds with the page output
         } else {
             echo $MM_content;
         }
+
+
     }
 
 /*=head2 get_response_format()
@@ -159,12 +160,7 @@ The main dispatch method used by render() method.
 You probably don't need to call this directly, 
 =cut*/
     function get_page(){
-        $page = $_SERVER["REQUEST_URI"];
-        $page = preg_replace("/\?.*/", '', $page); # strip off GET params
-        $page = preg_replace("/\.(json|xml|html)$/", '', $page); # strip off response format
-        if ( !$page || preg_match("/\/$/", $page) ){
-            $page = $page . $this->config['default_template'];
-        }
+        $page = $this->dispatch->get_uri_path();
         $page = $page . $this->config['template_suffix'];
         $this->file_ob->filename($this->config['template_base'] . $page);
         if (!$this->file_ob->is_file()){
