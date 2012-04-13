@@ -44,7 +44,7 @@ Class Dispatch {
         }
     }
 
-    function run_controller() {
+    function run_controller($pob) {
         $pathparts = split('/', $this->get_uri_path());
         $dref = &$this->dmap;
         foreach ($pathparts as $pp){
@@ -55,7 +55,7 @@ Class Dispatch {
             }
         }
         if ($dref['class'] && $dref['method']){
-            $dref['class']::$dref['method']();
+            $dref['class']::$dref['method']($pob);
         }
     }
 

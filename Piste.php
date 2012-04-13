@@ -10,6 +10,7 @@ File
 =cut*/
 require_once('File.php');
 require_once('Piste/Dispatch.php');
+require_once('Piste/POB.php');
 
 /*=head1 Synopsis
 
@@ -113,7 +114,12 @@ Runs dispatch methods and responds with the page output
     function run(){
         $this->init();
 
-        $this->dispatch->run_controller();
+        # TODO: Should this be initialised here or something more persistent?
+        $pob = new Piste\POB();
+        $this->dispatch->run_controller($pob);
+
+        # set $data for templates
+        $data = $pob->data();
 
         #
         # This is the VIEW bit that needs refactoring
