@@ -44,6 +44,17 @@ Class Dispatch {
         }
     }
 
+    function get_uri_path() {
+        $path = $_SERVER["REQUEST_URI"];
+        $path = preg_replace("/^\//",'',$path); # no leading slash
+        $path = preg_replace("/\?.*/", '', $path); # strip off GET params
+        $path = preg_replace("/\.(json|xml|html)$/", '', $path); # strip off response format
+        if ( !$path || preg_match("/\/$/", $path) ){
+            $path = $path . 'index';
+        }
+        return $path;
+    }
+
     function run_controller($pob) {
         $pathparts = split('/', $this->get_uri_path());
         $dref = &$this->dmap;
@@ -55,19 +66,9 @@ Class Dispatch {
             }
         }
         if ($dref['class'] && $dref['method']){
-            $dref['class']::$dref['method']($pob);
+            $class = new $dref['class']();
+            $class->$dref['method']($pob);
         }
-    }
-
-    function get_uri_path() {
-        $path = $_SERVER["REQUEST_URI"];
-        $path = preg_replace("/^\//",'',$path); # no leading slash
-        $path = preg_replace("/\?.*/", '', $path); # strip off GET params
-        $path = preg_replace("/\.(json|xml|html)$/", '', $path); # strip off response format
-        if ( !$path || preg_match("/\/$/", $path) ){
-            $path = $path . 'index';
-        }
-        return $path;
     }
 }
 
