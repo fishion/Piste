@@ -6,20 +6,50 @@ Piste\Dispatch
 =head1 DESCRIPTION
 Manages URL mapping and dispatch to controller logic
 
-*/
-Class Dispatch {
-    private $dmap = array();
+=head1 DEPENDENCIES
+File
+=cut*/
+require_once('File.php');
 
-    function register_all($appname){
+Class Dispatch {
+    private $cmap = array();
+    private $vmap = array();
+    private $config = array();
+
+    function __construct($config = array()){
+        if (is_array($config)){$this->config=$config;}
+    }
+
+    public function register_all($applib, $appname){
+        # require all application packages
+        $applib_ob = new \File($applib);
+        $required = $applib_ob->require_once_all_files('php');
+
+        # Register all installed application MVC classes
         $installed = get_declared_classes();
         foreach ($installed as $class){
             if ( preg_match("/$appname\\\\Controller\\\\/", $class) ){
-                $this->register($class);
+                $this->reg_controller($class);
+            } elseif ( preg_match("/$appname\\\\View\\\\/", $class) ){
+                $this->reg_view($class);
             }
         }
     }
 
-    function register($class){
+    public function dispatch($pc){
+        # set view to default view initially
+        # that way it can stil be overridden to nothing
+        if (isset($this->config['default_view'])){
+            $pc->view($this->config['default_view']);
+        }
+        $this->run_controller($pc);
+        $this->run_view($pc);
+    }
+
+
+
+
+    private function reg_controller($class){
         $path = split('/\\/', preg_replace('/^.*?\\\\Controller\\\\/','',$class));
         # Root.pm is special, not part of path.
         if ($path[0] == 'Root') {
@@ -29,7 +59,7 @@ Class Dispatch {
         # lower case what's left
         $path = array_map('mb_strtolower', $path);
 
-        $dref = &$this->dmap;
+        $dref = &$this->cmap;
         foreach ($path as $pathpart){
             $dref[$pathpart] = array();
             $dref = &$dref[$pathpart];
@@ -44,31 +74,36 @@ Class Dispatch {
         }
     }
 
-    function get_uri_path() {
-        $path = $_SERVER["REQUEST_URI"];
-        $path = preg_replace("/^\//",'',$path); # no leading slash
-        $path = preg_replace("/\?.*/", '', $path); # strip off GET params
-        $path = preg_replace("/\.(json|xml|html)$/", '', $path); # strip off response format
-        if ( !$path || preg_match("/\/$/", $path) ){
-            $path = $path . 'index';
-        }
-        return $path;
+    private function reg_view($class){
+        $path = preg_replace('/^.*?\\\\View\\\\/','',$class);
+        #TODO: ensure view class ISA Piste\View
+        $this->vmap[$path] = $this->vmap[$class] = new $class();
     }
 
-    function run_controller($pob) {
-        $pathparts = split('/', $this->get_uri_path());
-        $dref = &$this->dmap;
+    private function run_controller($pc) {
+        $pathparts = split('/', $pc->request()->uri_path());
+        $dref = &$this->cmap;
         foreach ($pathparts as $pp){
             $dref = @$dref[$pp];
             if (!$dref){
-                error_log('no controller path found for ' . $this->get_uri_path());
+                error_log('no controller path found for ' . $pc->request()->uri_path());
                 break;
             }
         }
         if ($dref['class'] && $dref['method']){
             $class = new $dref['class']();
-            $class->$dref['method']($pob);
+            $class->$dref['method']($pc);
         }
+    }
+
+    private function run_view($pc){
+        $view = $pc->view();
+        if ($view && !isset($this->vmap[$view])){
+            throw new \Exception("View '$view' not installed");
+        } elseif ($view){
+            $this->vmap[$view]->render($pc);
+        }
+        $pc->response()->respond();
     }
 }
 

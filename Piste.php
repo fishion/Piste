@@ -10,7 +10,7 @@ File
 =cut*/
 require_once('File.php');
 require_once('Piste/Dispatch.php');
-require_once('Piste/POB.php');
+require_once('Piste/Context.php');
 
 /*=head1 Synopsis
 
@@ -31,118 +31,43 @@ Additionally it gives you customised 404 handling, the ability to add standard w
 
 =cut*/
 
-class Piste {
+abstract class Piste {
     private $application_name = null;
-    private $response_data = null;
-    private $is_initialised = false;
-    private $file_ob;
+    private $application_lib = null;
     private $dispatch;
 
 /*=head1 Constructor
 
- new Piste(<array()>)
+Your application base class should inherit from this class
 
-The constructor looks for config defined in application base class and sets defaults for others. The config can defined the following optional keys
 =over
 =cut*/
     function __construct(){
-        # sort out config
-        if (!$this->config) {$this->config = array();}
-        if ($this->config && !is_array($this->config)){ throw new Exception("Application config not an array"); }
-        $this->config = array_replace($this->base_config, $this->config);
-
-        # add other useful stuff to object config
         $this->application_name = get_class($this);
-        $this->file_ob = new File($this->application_name . '.php');
-        $this->config['application_lib'] = $this->file_ob->find_absolute_path();
-    }
+        $baseclass = new File($this->application_name . '.php');
+        $this->application_lib = $baseclass->find_absolute_path();
 
-    private $base_config = array(
-/*=item DEBUG_SERVER
-Boolean providing a quick and easy way to dump the contents of $_SERVER.
-Default 0
-=cut*/
-        'DEBUG_SERVER'      => 0,
-/*=item template_base
-Directory within the DOCUMENT_ROOT where you expect to find templates.
-Default 'page/'.
-=cut*/
-        'template_base'     => 'page/',
-/*=item wrapper
-path to php file (relative to include_path) containing a wrapper. The wrapper should 'echo $MM_content' at some stage to pull in the main page contents.
-Default value is null.
-=cut*/
-        'wrapper'           => null,
-/*=item 404
-Path to a 404 template if dispatch file not found
-default '404.php'
-=cut*/
-        '404'               => '404.php',
-/*=item template_suffix
-Suffix to add to dispatch path to find filename
-Default php
-=back
-=cut*/
-        'template_suffix'   => '.php'
-    );
+        error_log("Initialising ". $this->application_name ." application in " . $this->application_lib);
 
-/*=head1 Object Methods
-
-=head2 init()
-Discovers and registers defined Models, Controllers, Views 
-=cut*/
-    function init(){
-        # Just initialise once.
-        if ($this->is_initialised) {return;}
-        error_log("Initialising application in " . $this->config['application_lib']);
-
-        # require all application packages
-        $this->file_ob->filename($this->config['application_lib']);
-        $required = $this->file_ob->require_once_all_files('php');
-
-        # Register all installed application controller class
-        $this->dispatch = new Piste\Dispatch();
-        $this->dispatch->register_all($this->application_name);
-
-        # OK, we're ready to rock!
-        $this->is_initialised = true;
+        # Register all installed application MVC classes
+        $this->dispatch = new Piste\Dispatch(isset($this->config) ? $this->config : null);
+        $this->dispatch->register_all($this->application_lib, $this->application_name);
     }
 
 /*=head2 run()
 Runs dispatch methods and responds with the page output
 =cut*/
     function run(){
-        $this->init();
-
         # TODO: Should this be initialised here or something more persistent?
-        $pob = new Piste\POB();
-        $this->dispatch->run_controller($pob);
+        $pc = new Piste\Context();
+        $this->dispatch->dispatch($pc);
 
-        # set $data for templates
-        $data = $pob->data();
-
-        #
-        # This is the VIEW bit that needs refactoring
-        #
-
-        # require page content and store in output buffer
-        ob_start();
-        require $this->get_page();
-        if ($this->config['DEBUG_SERVER']) {
-            echo '<pre>';
-            print_r($_SERVER);
-            echo '</pre>';
-        }
-        # pull output buffer into variable
-        $MM_content = ob_get_clean();
+        return;
 
         if ($this->response_data() && $this->get_response_format() == 'json'){
             header('Content-type: application/json');;
             echo json_encode($this->response_data());
-        } elseif ($this->config['wrapper']){
-            require($this->config['wrapper']);
         } else {
-            echo $MM_content;
         }
 
 
@@ -161,19 +86,6 @@ Used by the render() method return a response format. Callable from templates fo
         return 'html';
     }
 
-/*=head2 get_page()
-The main dispatch method used by render() method.
-You probably don't need to call this directly, 
-=cut*/
-    function get_page(){
-        $page = $this->dispatch->get_uri_path();
-        $page = $page . $this->config['template_suffix'];
-        $this->file_ob->filename($this->config['template_base'] . $page);
-        if (!$this->file_ob->is_file()){
-            $page = $this->config['404'];
-        }
-        return $this->config['template_base'] . $page;
-    }
 /*=head2 response_data($data)
 Public method to Get/Set response data if non-html response is required
 =cut*/
