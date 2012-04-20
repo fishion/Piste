@@ -6,9 +6,7 @@ Piste
 Provides a simple dispatch layer and template wrapper mechanism.
 
 =head1 DEPENDENCIES
-File
 =cut*/
-require_once('File.php');
 require_once('Piste/Dispatch.php');
 require_once('Piste/Context.php');
 
@@ -32,8 +30,7 @@ Additionally it gives you customised 404 handling, the ability to add standard w
 =cut*/
 
 abstract class Piste {
-    private $application_name = null;
-    private $application_lib = null;
+    private $pc;
     private $dispatch;
 
 /*=head1 Constructor
@@ -43,24 +40,19 @@ Your application base class should inherit from this class
 =over
 =cut*/
     function __construct(){
-        $this->application_name = get_class($this);
-        $baseclass = new File($this->application_name . '.php');
-        $this->application_lib = $baseclass->find_absolute_path();
-
-        error_log("Initialising ". $this->application_name ." application in " . $this->application_lib);
+        $this->pc = new Piste\Context(get_class($this));
+        error_log("Initialising " . $this->pc->env()->app_name() . " application in " . $this->pc->env()->app_lib());
 
         # Register all installed application MVC classes
         $this->dispatch = new Piste\Dispatch(isset($this->config) ? $this->config : null);
-        $this->dispatch->register_all($this->application_lib, $this->application_name);
+        $this->dispatch->register_all($this->pc);
     }
 
 /*=head2 run()
 Runs dispatch methods and responds with the page output
 =cut*/
     function run(){
-        # TODO: Should this be initialised here or something more persistent?
-        $pc = new Piste\Context();
-        $this->dispatch->dispatch($pc);
+        $this->dispatch->dispatch($this->pc);
 
         return;
 

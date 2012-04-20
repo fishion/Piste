@@ -20,17 +20,18 @@ Class Dispatch {
         if (is_array($config)){$this->config=$config;}
     }
 
-    public function register_all($applib, $appname){
+    public function register_all($pc){
+        $app_name = $pc->env()->app_name();
         # require all application packages
-        $applib_ob = new \File($applib);
+        $applib_ob = new \File($pc->env()->app_lib());
         $required = $applib_ob->require_once_all_files('php');
 
         # Register all installed application MVC classes
         $installed = get_declared_classes();
         foreach ($installed as $class){
-            if ( preg_match("/$appname\\\\Controller\\\\/", $class) ){
+            if ( preg_match("/$app_name\\\\Controller\\\\/", $class) ){
                 $this->reg_controller($class);
-            } elseif ( preg_match("/$appname\\\\View\\\\/", $class) ){
+            } elseif ( preg_match("/$app_name\\\\View\\\\/", $class) ){
                 $this->reg_view($class);
             }
         }
@@ -40,7 +41,7 @@ Class Dispatch {
         # set view to default view initially
         # that way it can stil be overridden to nothing
         if (isset($this->config['default_view'])){
-            $pc->view($this->config['default_view']);
+            $pc->response()->view($this->config['default_view']);
         }
         $this->run_controller($pc);
         $this->run_view($pc);
@@ -77,7 +78,7 @@ Class Dispatch {
     private function reg_view($class){
         $path = preg_replace('/^.*?\\\\View\\\\/','',$class);
         #TODO: ensure view class ISA Piste\View
-        $this->vmap[$path] = $this->vmap[$class] = new $class();
+        $this->vmap[$path] = $this->vmap[$class] = $class;
     }
 
     private function run_controller($pc) {
@@ -97,11 +98,12 @@ Class Dispatch {
     }
 
     private function run_view($pc){
-        $view = $pc->view();
+        $view = $pc->response()->view();
         if ($view && !isset($this->vmap[$view])){
             throw new \Exception("View '$view' not installed");
         } elseif ($view){
-            $this->vmap[$view]->render($pc);
+            $view = new $this->vmap[$view]($pc);
+            $view->render($pc);
         }
         $pc->response()->respond();
     }
