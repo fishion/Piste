@@ -32,6 +32,9 @@ Class Context {
     public function request(){return $this->request;}
     public function response(){return $this->response;}
 
+    public function stash($v1, $v2){
+        $this->response->stash($v1, $v2);
+    }
 }
 
 ?>
