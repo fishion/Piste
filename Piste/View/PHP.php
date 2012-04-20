@@ -72,15 +72,16 @@ Default php
     );
 
     public function render($pc){
-        # set $data for templates
-        $data = $pc->response()->stash();
-
         # require page content & store in output buffer
         # By rendering the page innards before the 
         # wrapper, you can set variables in the page
         # which will be used in the rendered wrapper.
         # This is useful
         ob_start();
+
+        # set $data for templates
+        $stash = $pc->response()->stash();
+
         try {
             require $this->get_page($pc);
         } catch(\Exception $e){
@@ -101,7 +102,7 @@ Default php
 
 /*=head2 get_page()
 =cut*/
-    function get_page($pc){
+    private function get_page($pc){
         $path = $pc->env()->app_base() . $this->config['template_base'];
         $page = $pc->request()->uri_path() . $this->config['template_suffix'];
         $template = new \File($path . $page);
