@@ -26,6 +26,9 @@ Class Env {
     public function app_lib() {return $this->app_lib;}
     public function app_base() {return $this->app_base;}
 
+    public function add_include_path($path){
+        set_include_path(get_include_path() . PATH_SEPARATOR . $path);
+    }
 }
 
 ?>

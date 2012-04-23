@@ -30,7 +30,7 @@ abstract Class PHP implements \Piste\View {
             $dirpath = $pc->env()->app_base() . $this->config['template_include'];
             $dir = new \File($dirpath);
             if ($dir->is_dir()){
-                set_include_path($dirpath);
+                $pc->env()->add_include_path($dirpath);
             } else {
                 throw new \Exception("Include path '$dirpath' not found");
             }
