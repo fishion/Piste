@@ -7,13 +7,9 @@ Piste\View
 An interface to define what methods a view class must implement
 
 */
-abstract class View {
+interface View {
 
-    abstract public function render($pc);
-
-    protected function get_config(){
-        
-    }
+    public function render($pc);
 
 }
 

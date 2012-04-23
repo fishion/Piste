@@ -11,7 +11,7 @@ File
 =cut*/
 require_once('Piste/View.php');
 
-abstract Class PHP extends \Piste\View {
+abstract Class PHP implements \Piste\View {
 
 /*=head1 Constructor
 

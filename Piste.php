@@ -53,16 +53,6 @@ Runs dispatch methods and responds with the page output
 =cut*/
     function run(){
         $this->dispatch->dispatch($this->pc);
-
-        return;
-
-        if ($this->response_data() && $this->get_response_format() == 'json'){
-            header('Content-type: application/json');;
-            echo json_encode($this->response_data());
-        } else {
-        }
-
-
     }
 
 /*=head2 get_response_format()
@@ -78,22 +68,6 @@ Used by the render() method return a response format. Callable from templates fo
         return 'html';
     }
 
-/*=head2 response_data($data)
-Public method to Get/Set response data if non-html response is required
-=cut*/
-    function response_data($data=null){
-        if ($data){
-            $this->response_data = $data;
-        }
-        return $this->response_data;
-    }
 }
 
-/*=head1 TODO
-
-=over
-=item template_suffix as a list?
-=back
-
-=cut*/
 ?>

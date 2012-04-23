@@ -41,6 +41,12 @@ Class Response {
         echo $this->body;
     }
 
+    public function redirect($url){
+        # untested
+        # should return a REDIRECT 302 to browser
+        header("Location: $url");
+        exit;
+    }
 }
 
 ?>
