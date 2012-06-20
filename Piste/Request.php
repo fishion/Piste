@@ -5,20 +5,25 @@ Piste\Request
 
 =head1 DESCRIPTION
 
-*/
-Class Request {
+=head1 DEPENDENCIES
+=cut*/
+require_once('Piste/Path/URI.php');
 
-    public function uri_path() {
-        $path = $_SERVER["REQUEST_URI"];
-        $path = preg_replace("/^\//",'',$path); # no leading slash
-        $path = preg_replace("/\?.*/", '', $path); # strip off GET params
-        $path = preg_replace("/\.(json|xml|html)$/", '', $path); # strip off response format
-        if ( !$path || preg_match("/\/$/", $path) ){
-            $path = $path . 'index';
-        }
-        return $path;
+Class Request {
+    private $path;
+
+    function __construct(){
+        $this->path = new Path\URI();
     }
 
+    public function path() {
+        return $this->path;
+    }
+
+    public function get_param($param){
+        # won't bitch if param not defined
+        return isset($_GET[$param]) ? $_GET[$param] : null;
+    }
 }
 
 ?>

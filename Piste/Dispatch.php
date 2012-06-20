@@ -10,14 +10,16 @@ Manages URL mapping and dispatch to controller logic
 File
 =cut*/
 require_once('File.php');
+require_once('Piste/ControllerManager.php');
 
 Class Dispatch {
-    private $cmap = array();
-    private $vmap = array();
+    private $controller_manager;
+    private $view_map = array();
     private $config = array();
 
     function __construct($config = array()){
         if (is_array($config)){$this->config=$config;}
+        $this->controller_manager = new ControllerManager();
     }
 
     public function register_all($pc){
@@ -30,7 +32,7 @@ Class Dispatch {
         $installed = get_declared_classes();
         foreach ($installed as $class){
             if ( preg_match("/$app_name\\\\Controller\\\\/", $class) ){
-                $this->reg_controller($class);
+                $this->controller_manager->register($class);
             } elseif ( preg_match("/$app_name\\\\View\\\\/", $class) ){
                 $this->reg_view($class);
             }
@@ -40,70 +42,39 @@ Class Dispatch {
     public function dispatch($pc){
         # set view to default view initially
         # that way it can stil be overridden to nothing
+        error_log('*****************');
+        error_log('* Finding dispatch for ' .$pc->req()->path());
+        error_log('*****************');
         if (isset($this->config['default_view'])){
             $pc->response()->view($this->config['default_view']);
         }
-        $this->run_controller($pc);
+        $this->controller_manager->run($pc);
         $this->run_view($pc);
     }
 
 
 
 
-    private function reg_controller($class){
-        $path = split('/\\/', preg_replace('/^.*?\\\\Controller\\\\/','',$class));
-        # Root.pm is special, not part of path.
-        if ($path[0] == 'Root') {
-            array_shift($path);
-        }
-
-        # lower case what's left
-        $path = array_map('mb_strtolower', $path);
-
-        $dref = &$this->cmap;
-        foreach ($path as $pathpart){
-            $dref[$pathpart] = array();
-            $dref = &$dref[$pathpart];
-        }
-
-        $methods = get_class_methods($class);
-        foreach ($methods as $method){
-            # create object instance.
-            # Sure I'll want to rethink this sometime
-            $dref[$method] = array('class' => $class, 'method' => $method);
-            error_log('Registered path /' . join('/', $path) . (count($path)?'/':'') . $method . ' ');
-        }
-    }
 
     private function reg_view($class){
         $path = preg_replace('/^.*?\\\\View\\\\/','',$class);
         #TODO: ensure view class ISA Piste\View
-        $this->vmap[$path] = $this->vmap[$class] = $class;
-    }
-
-    private function run_controller($pc) {
-        $pathparts = split('/', $pc->request()->uri_path());
-        $dref = &$this->cmap;
-        foreach ($pathparts as $pp){
-            $dref = @$dref[$pp];
-            if (!$dref){
-                error_log('no controller path found for ' . $pc->request()->uri_path());
-                break;
-            }
-        }
-        if ($dref['class'] && $dref['method']){
-            $class = new $dref['class']();
-            $class->$dref['method']($pc);
-        }
+        # Allow people to use fully qualified $class or strip
+        # off <Appname>\View
+        $this->view_map[$path] = $this->view_map[$class] = $class;
     }
 
     private function run_view($pc){
         $view = $pc->response()->view();
-        if ($view && !isset($this->vmap[$view])){
+        if ($view && !isset($this->view_map[$view])){
             throw new \Exception("View '$view' not installed");
         } elseif ($view){
-            $view = new $this->vmap[$view]($pc);
-            $view->render($pc);
+            $view = new $this->view_map[$view]($pc);
+            if ($pc->res()->return_404()){
+                $view->render_404($pc);
+            } else {
+                $view->render($pc);
+            }
         }
         $pc->response()->respond();
     }

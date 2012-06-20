@@ -30,10 +30,12 @@ Class Context {
 
     public function env(){return $this->env;}
     public function request(){return $this->request;}
+    public function req(){return $this->request;}
     public function response(){return $this->response;}
+    public function res(){return $this->response;}
 
-    public function stash($v1, $v2){
-        $this->response->stash($v1, $v2);
+    public function stash($v1 = null, $v2=null){
+        return $this->response->stash($v1, $v2);
     }
 }
 

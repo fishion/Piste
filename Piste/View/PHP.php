@@ -11,20 +11,10 @@ File
 =cut*/
 require_once('Piste/View.php');
 
-abstract Class PHP implements \Piste\View {
+abstract Class PHP extends \Piste\View {
 
-/*=head1 Constructor
-
-=over
-=cut*/
     function __construct($pc){
-        # sort out config
-        if (!isset($this->config)) {$this->config = array();}
-        if ($this->config && !is_array($this->config)){
-            throw new \Exception("Application config should be an associative array");
-        }
-        $this->config = array_replace($this->base_config, $this->config);
-
+        parent::__construct($pc);
         # include the include path
         if ($this->config['template_include']){
             $dirpath = $pc->env()->app_base() . $this->config['template_include'];
@@ -37,7 +27,7 @@ abstract Class PHP implements \Piste\View {
         }
     }
 
-    private $base_config = array(
+    protected $base_config = array(
 /*=item DEBUG_SERVER
 Boolean providing a quick and easy way to dump the contents of $_SERVER.
 Default 0
@@ -60,9 +50,9 @@ Default value is null.
         'wrapper'           => null,
 /*=item 404
 Path to a 404 template if dispatch file not found
-default '404.php'
+default: null
 =cut*/
-        '404'               => '404.php',
+        '404'               => null,
 /*=item template_suffix
 Suffix to add to dispatch path to find filename
 Default php
@@ -79,13 +69,17 @@ Default php
         # This is useful
         ob_start();
 
-        # set $data for templates
-        $stash = $pc->response()->stash();
+        # make stash available as vars in template
+        # TODO this seems like ot might be dangerous. What vulnerabilities
+        # exist? Are we being to trusting of what's in the stash?
+        foreach ($pc->response()->stash() as $key => $val){
+            $GLOBALS[$key] = $val;
+        }
 
         try {
-            require $this->get_page($pc);
+            require $this->get_template($pc);
         } catch(\Exception $e){
-            echo "Piste 404: $e<br>";
+            echo "File Error: $e<br>";
         }
         if ($this->config['DEBUG_SERVER']) {
             echo '<pre>';
@@ -94,26 +88,36 @@ Default php
         }
         if ($this->config['wrapper']){
             $Pcontent = ob_get_clean();
-            $pc->response()->body(require($this->config['wrapper']));
+            ob_start();
+            require($this->config['wrapper']);
+            $pc->res()->body(ob_get_clean());
         } else {
-            $pc->response()->body(ob_get_clean());
+            $pc->res()->body(ob_get_clean());
         }
     }    
 
-/*=head2 get_page()
-=cut*/
-    private function get_page($pc){
-        $path = $pc->env()->app_base() . $this->config['template_base'];
-        $page = $pc->request()->uri_path() . $this->config['template_suffix'];
-        $template = new \File($path . $page);
-        if (!$template->is_file()){
-            $template->filename($path . $this->config['404']);
-            if (!$template->is_file()){
-                throw new \Exception("Can't find file $path$page or 404 page");
-            }
-            $page = $this->config['404'];
+    public function render_404($pc){
+        if (isset($this->config['404'])){
+            $pc->stash('template', $this->config['404']);
+            $this->render($pc);
+        } else {
+            parent::render_404($pc);
         }
-        return $path . $page;
+    }
+
+/*=head2 get_template()
+=cut*/
+    private function get_template($pc){
+        $page = $pc->env()->app_base()
+              . $this->config['template_base']
+              . $pc->stash('template')
+              . $this->config['template_suffix'];
+
+        $template = new \File($page);
+        if ($template->is_file()){
+            return $page;
+        }
+        throw new \Exception("Can't find $page");
     }
 }
 
