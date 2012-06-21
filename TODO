@@ -1,18 +1,20 @@
+* Args
 * Chaining controller methods
-* Before/after methods
 * Models
 * Redirects
 * cookies
 * scripts to create projects
 * scripts for fcgi, modPHP, cgi etc
 * fix all print_r, error_log, die for consistency
+Notice that Catalyst takes "extra slash-separated information" from the
+       URL and passes it as arguments in @_ (as long as the number of
+       arguments is not "fixed" using an attribute like :Args(0)).
 
 * sort all TODO
 * Documentation
 
 Controllers
 -----------
-
 * Private methods are not controller actions
 * "Local" is default and means namespace/method - Default so maybe not needed.
 * "Global" attribute means don't use namespace as root path - Don't think this is needed
@@ -20,42 +22,13 @@ Controllers
 * "Regex" & "LocalRegex" - useful
 * "Chained" needs 'PathPart' (just Path?) 'CaptureArgs'/'Args'
 
-There are five types of "special" built-in :Private actions: begin, end, default (fallback), index, and auto.
-With begin, end, default, index private actions, only the most specific action of each type will be called. For example, if you define a begin action in your controller it will override a begin action in your application/root controller -- only the action in your controller will be called.
-Unlike the other actions where only a single method is called for each request, every auto action along the chain of namespaces will be called. Each auto action will be called from the application/root controller down through the most specific class.
+There are five types of "special" built-in :Private actions: begin (before), end (after), default (fallback), index, and auto.
+http://dev.catalystframework.org/attachment/wiki/WikiStart/catalyst-flow.png
 
+Default template
+----------------
 Default template is always the 'local' name of the last part of the chain. Not sure about when you set 'Path'...
 
-Notice that Catalyst takes "extra slash-separated information" from the
-       URL and passes it as arguments in @_ (as long as the number of
-       arguments is not "fixed" using an attribute like :Args(0)).
-
-Dispatch plan
--------------
-
-Dispatch against something like this for controller actions
-path1/path2/*/*
-path1/path2/*/path4
-path1/path2/path3
-path1/path2/
-
-And something like this for special actions
-could have a data structure
-{
-    path1 => {
-        path2 => {
-            * => {
-                * => {
-                }
-                path4 => {
-                }
-            }
-        }
-        path3 => {
-            
-        }
-    }
-}
 
 Scripts to create projects
 --------------------------
@@ -71,3 +44,4 @@ must create
 might create
 * Default HTML view
 * default wrapper?
+* some kind of tests

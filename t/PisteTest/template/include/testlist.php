@@ -2,7 +2,7 @@
 
 $GLOBALS['testlist'] = array(
 
-    # test root controller methods
+    # test root controller methods and special methods
     array('/',
           array(
                 'Root::before',
@@ -39,17 +39,8 @@ $GLOBALS['testlist'] = array(
           ),
           'relativepath',
           'Test setting a relative path in root'),
-    array('/doesntexist',
-          array(
-                'Root::before',
-                'Root::auto',
-                'Root::fallback',
-                'Root::after',
-          ),
-          'fallback',
-          'No contoller set for this. Should use Root fallback'),
 
-    # test level1 controller methods
+    # test level1 controller methods and special methods
     array('/level1/',
           array(
                 'Level1::before',
@@ -90,7 +81,55 @@ $GLOBALS['testlist'] = array(
           ),
           'level1/relativepath',
           'Test setting a relative path in level1'),
-    array('/level1/doesntexist', # no fallback method so special methods all 'Root' based
+
+    # test level2 controller methods and special methods
+    array('/level1/level2/',
+          array(
+                'Level1\Level2::before',
+                'Root::auto',
+                'Level1::auto',
+                'Level1\Level2::auto',
+                'Level1\Level2::index',
+                'Level1\Level2::after',
+          ),
+          'level1/level2/index',
+          'Test empty directory dispatches to \'index\' method in level2'),
+    array('/level1/level2/index',
+          array(
+                'Level1\Level2::before',
+                'Root::auto',
+                'Level1::auto',
+                'Level1\Level2::auto',
+                'Level1\Level2::index',
+                'Level1\Level2::after',
+          ),
+          'level1/level2/index',
+          'Test index controller method in Level2'),
+    array('/absolute/path/in/level2',
+          array(
+                'Level1\Level2::before',
+                'Root::auto',
+                'Level1::auto',
+                'Level1\Level2::auto',
+                'Level1\Level2::absolutepath',
+                'Level1\Level2::after',
+          ),
+          'level1/level2/absolutepath',
+          'Test setting an absolute path in Level2'),
+    array('/level1/level2/relative/path/in/level2',
+          array(
+                'Level1\Level2::before',
+                'Root::auto',
+                'Level1::auto',
+                'Level1\Level2::auto',
+                'Level1\Level2::relativepath',
+                'Level1\Level2::after',
+          ),
+          'level1/level2/relativepath',
+          'Test setting a relative path in Level2'),
+
+    # test fallback methods
+    array('/doesntexist',
           array(
                 'Root::before',
                 'Root::auto',
@@ -99,10 +138,26 @@ $GLOBALS['testlist'] = array(
           ),
           'fallback',
           'No contoller set for this. Should use Root fallback'),
-
-    # test fallbacks
+    array('/level1/doesntexist',
+          array( # no fallback method so special methods all 'Root' based
+                'Root::before',
+                'Root::auto',
+                'Root::fallback',
+                'Root::after',
+          ),
+          'fallback',
+          'No contoller set for this. Should use Root fallback'),
+    array('/level1/nested/much/further/doesntexist',
+          array( # no fallback method so special methods all 'Root' based
+                'Root::before',
+                'Root::auto',
+                'Root::fallback',
+                'Root::after',
+          ),
+          'fallback',
+          'No contoller set for this. Should use Root fallback'),
     array('/level1withfallback/doesntexist',
-          array(
+          array( # Level1WithFallback has no before/after/auto methods
                 'Root::before',
                 'Root::auto',
                 'Level1WithFallback::fallback',
@@ -111,7 +166,7 @@ $GLOBALS['testlist'] = array(
           'level1withfallback/fallback',
           'No contoller set for this. Should use Level1WithFallback fallback'),
     array('/level1withfallback/nested/much/further/doesntexist',
-          array(
+          array( # Level1WithFallback has no before/after/auto methods
                 'Root::before',
                 'Root::auto',
                 'Level1WithFallback::fallback',
@@ -119,8 +174,17 @@ $GLOBALS['testlist'] = array(
           ),
           'level1withfallback/fallback',
           'No contoller set for this. Should use Level1WithFallback fallback'),
-    array('/level1/nested/much/further/doesntexist',
-          array(
+    array('/level1/level2/doesntexist',
+          array( # no fallback method so special methods all 'Root' based
+                'Root::before',
+                'Root::auto',
+                'Root::fallback',
+                'Root::after',
+          ),
+          'fallback',
+          'No contoller set for this. Should use Root fallback'),
+    array('/level1/level2/nested/much/further/doesntexist',
+          array( # no fallback method so special methods all 'Root' based
                 'Root::before',
                 'Root::auto',
                 'Root::fallback',
