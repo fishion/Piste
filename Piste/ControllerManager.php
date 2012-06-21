@@ -43,24 +43,33 @@ Class ControllerManager {
             $defvar = $action->name . '_def';
 
             # is path explicitally set?
-            $path = isset($object->$defvar) &&
-                    isset($object->{$defvar}['path']) ?
+            $pathre = isset($object->$defvar) &&
+                      isset($object->{$defvar}['path']) ?
                         $object->{$defvar}['path'] :
                         $action->name;
             # is that global or local?
-            if (preg_match('/^\//', $path)){
+            if (preg_match('/^\//', $pathre)){
                 # global. Do nothing
             } else {
                 # local, Make it global
-                $path = $namespace_path . '/' . $path;
+                $pathre = $namespace_path . '/' . $pathre;
             }
+            # escape any non-alphanum chars in path for regexp
+            # TODO use a better list of regex chars to escape rather than all non alphanumeric
+            $pathre = preg_replace('/(\W)/','\\\$1',$pathre);
+            # capture args from end
+            $pathre = '^' . $pathre . '\/?(.+)?$';
+
             array_push(
                 $this->actions,
                 array(
-                    'path'      => $path,
+                    'pathre'    => $pathre,
                     'object'    => $object,
                     'method'    => $action->name,
-                    'namespace' => $namespace_path
+                    'namespace' => $namespace_path,
+                    'args'      => (isset($object->$defvar) &&
+                                    isset($object->{$defvar}['args']) &&
+                                    is_int($object->{$defvar}['args']) ) ? $object->{$defvar}['args'] : false,
                 )
             );
             error_log("Registered path $path to ". get_class($object) ."\\$action->name\()");
@@ -96,15 +105,20 @@ Class ControllerManager {
 
         // Find defined action
         foreach ($this->actions as $act){
-            if ($act['path'] == $uripath){
-                $action = $act;
-                break;
+            if (preg_match('/'.$act['pathre'].'/', $uripath, $matches)){
+                $args = $matches[1] ? split('/',$matches[1]) : array();
+                if ($act['args'] === false || $act['args'] == count($args)){
+                    $pc->stash('args', $args);
+                    $action = $act;
+                    break;
+                }
             }
         } 
 
         // look for fallback action
         if (!$action){
-            $action = $uripath->find_most_specific( &$this->special_actions, 'fallback' );
+            list ($action, $remainder) = $uripath->find_most_specific( &$this->special_actions, 'fallback' );
+            $pc->stash('args', $remainder);
         }
         if ($action){
             # run 'before'-method

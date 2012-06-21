@@ -1,8 +1,14 @@
 <?php
 
+$GLOBALS['timeout_pass'] = 100;
+$GLOBALS['timeout_fail'] = 100;
 $GLOBALS['testlist'] = array(
 
-    # test root controller methods and special methods
+    #################################################
+    # Basic COntroller and Special method behaviour #
+    #################################################
+
+    # test root controller
     array('/',
           array(
                 'Root::before',
@@ -10,6 +16,7 @@ $GLOBALS['testlist'] = array(
                 'Root::index',
                 'Root::after',
           ),
+          array(),
           'index',
           'Test empty directory dispatches to \'index\' method'),
     array('/index',
@@ -19,6 +26,7 @@ $GLOBALS['testlist'] = array(
                 'Root::index',
                 'Root::after',
           ),
+          array(),
           'index',
           'Test index controller method in Root'),
     array('/absolute/path/in/root',
@@ -28,6 +36,7 @@ $GLOBALS['testlist'] = array(
                 'Root::absolutepath',
                 'Root::after',
           ),
+          array(),
           'absolutepath',
           'Test setting an absolute path in root'),
     array('/relative/path/in/root',
@@ -37,10 +46,11 @@ $GLOBALS['testlist'] = array(
                 'Root::relativepath',
                 'Root::after',
           ),
+          array(),
           'relativepath',
           'Test setting a relative path in root'),
 
-    # test level1 controller methods and special methods
+    # test level1 controller
     array('/level1/',
           array(
                 'Level1::before',
@@ -49,6 +59,7 @@ $GLOBALS['testlist'] = array(
                 'Level1::index',
                 'Level1::after',
           ),
+          array(),
           'level1/index',
           'Test empty directory dispatches to \'index\' method in level1'),
     array('/level1/index',
@@ -59,6 +70,7 @@ $GLOBALS['testlist'] = array(
                 'Level1::index',
                 'Level1::after',
           ),
+          array(),
           'level1/index',
           'Test index controller method in Level1'),
     array('/absolute/path/in/level1',
@@ -69,6 +81,7 @@ $GLOBALS['testlist'] = array(
                 'Level1::absolutepath',
                 'Level1::after',
           ),
+          array(),
           'level1/absolutepath',
           'Test setting an absolute path in level1'),
     array('/level1/relative/path/in/level1',
@@ -79,10 +92,11 @@ $GLOBALS['testlist'] = array(
                 'Level1::relativepath',
                 'Level1::after',
           ),
+          array(),
           'level1/relativepath',
           'Test setting a relative path in level1'),
 
-    # test level2 controller methods and special methods
+    # test level2 controller
     array('/level1/level2/',
           array(
                 'Level1\Level2::before',
@@ -92,6 +106,7 @@ $GLOBALS['testlist'] = array(
                 'Level1\Level2::index',
                 'Level1\Level2::after',
           ),
+          array(),
           'level1/level2/index',
           'Test empty directory dispatches to \'index\' method in level2'),
     array('/level1/level2/index',
@@ -103,6 +118,7 @@ $GLOBALS['testlist'] = array(
                 'Level1\Level2::index',
                 'Level1\Level2::after',
           ),
+          array(),
           'level1/level2/index',
           'Test index controller method in Level2'),
     array('/absolute/path/in/level2',
@@ -114,6 +130,7 @@ $GLOBALS['testlist'] = array(
                 'Level1\Level2::absolutepath',
                 'Level1\Level2::after',
           ),
+          array(),
           'level1/level2/absolutepath',
           'Test setting an absolute path in Level2'),
     array('/level1/level2/relative/path/in/level2',
@@ -125,6 +142,7 @@ $GLOBALS['testlist'] = array(
                 'Level1\Level2::relativepath',
                 'Level1\Level2::after',
           ),
+          array(),
           'level1/level2/relativepath',
           'Test setting a relative path in Level2'),
 
@@ -136,86 +154,173 @@ $GLOBALS['testlist'] = array(
                 'Root::fallback',
                 'Root::after',
           ),
+          array('doesntexist'),
           'fallback',
           'No contoller set for this. Should use Root fallback'),
     array('/level1/doesntexist',
-          array( # no fallback method so special methods all 'Root' based
+          array(
                 'Root::before',
                 'Root::auto',
                 'Root::fallback',
                 'Root::after',
           ),
+          array('level1','doesntexist'),
           'fallback',
-          'No contoller set for this. Should use Root fallback'),
-    array('/level1/nested/much/further/doesntexist',
-          array( # no fallback method so special methods all 'Root' based
+          'no fallback method so special methods all \'Root\' based'),
+    array('/level1/nested/much/deeper/doesntexist',
+          array(
                 'Root::before',
                 'Root::auto',
                 'Root::fallback',
                 'Root::after',
           ),
+          array('level1','nested','much','deeper','doesntexist'),
           'fallback',
-          'No contoller set for this. Should use Root fallback'),
+          'no fallback method so special methods all \'Root\' based'),
     array('/level1withfallback/doesntexist',
-          array( # Level1WithFallback has no before/after/auto methods
+          array(
                 'Root::before',
                 'Root::auto',
                 'Level1WithFallback::fallback',
                 'Root::after',
           ),
+          array('doesntexist'),
           'level1withfallback/fallback',
-          'No contoller set for this. Should use Level1WithFallback fallback'),
-    array('/level1withfallback/nested/much/further/doesntexist',
-          array( # Level1WithFallback has no before/after/auto methods
+          'No contoller set for this. Level1WithFallback has no before/after/auto methods'),
+    array('/level1withfallback/nested/much/deeper/doesntexist',
+          array(
                 'Root::before',
                 'Root::auto',
                 'Level1WithFallback::fallback',
                 'Root::after',
           ),
+          array('nested','much','deeper','doesntexist'),
           'level1withfallback/fallback',
-          'No contoller set for this. Should use Level1WithFallback fallback'),
+          'No contoller set for this. Level1WithFallback has no before/after/auto methods'),
     array('/level1/level2/doesntexist',
-          array( # no fallback method so special methods all 'Root' based
+          array(
                 'Root::before',
                 'Root::auto',
                 'Root::fallback',
                 'Root::after',
           ),
+          array('level1','level2','doesntexist'),
           'fallback',
-          'No contoller set for this. Should use Root fallback'),
-    array('/level1/level2/nested/much/further/doesntexist',
-          array( # no fallback method so special methods all 'Root' based
+          'no fallback method so special methods all \'Root\' based'),
+    array('/level1/level2/nested/much/deeper/doesntexist',
+          array( 
                 'Root::before',
                 'Root::auto',
                 'Root::fallback',
                 'Root::after',
           ),
+          array('level1','level2','nested','much','deeper','doesntexist'),
           'fallback',
-          'No contoller set for this. Should use Root fallback'),
+          'no fallback method so special methods all \'Root\' based'),
+
+
+    ############################################
+    # Test Passing of agruments to controllers #
+    ############################################
+
+    array('/nofixedargs/param1/param2',
+          array( 
+                'Root::before',
+                'Root::auto',
+                'Root::nofixedargs',
+                'Root::after',
+          ),
+          array('param1', 'param2'),
+          'index',
+          '2 Params passed to nofixedargs method. Resolves fine'),
+    array('/fixedargs0',
+          array( 
+                'Root::before',
+                'Root::auto',
+                'Root::fixedargs0',
+                'Root::after',
+          ),
+          null,
+          'index',
+          'No Params passed to Args(0) method.'),
+    array('/fixedargs0/param1',
+          array( 
+                'Root::before',
+                'Root::auto',
+                'Root::fallback',
+                'Root::after',
+          ),
+          array('fixedargs0','param1'),
+          'fallback',
+          '1 Params passed to Args(0) method. Doesn\'t resolve - fallback used'),
+    array('/fixedargs1',
+          array( 
+                'Root::before',
+                'Root::auto',
+                'Root::fallback',
+                'Root::after',
+          ),
+          array('fixedargs1'),
+          'fallback',
+          '0 Params passed to Args(1) method. Doesn\'t resolve - fallback used'),
+    array('/fixedargs1/param1',
+          array( 
+                'Root::before',
+                'Root::auto',
+                'Root::fixedargs1',
+                'Root::after',
+          ),
+          array('param1'),
+          'index',
+          '1 Param passed to Args(1) method. All happy'),
+    array('/fixedargs1/param1/param2',
+          array( 
+                'Root::before',
+                'Root::auto',
+                'Root::fallback',
+                'Root::after',
+          ),
+          array('fixedargs1','param1','param2'),
+          'fallback',
+          '2 Params passed to Args(1) method. Doesn\'t resolve - fallback used'),
+
 );
 
 function test(){
-    global $testlist, $execution_stack, $template;
+    global $testlist, $execution_stack, $template, $args;
     $state = getstate();
     $tn = $state['testno'];
 
     if ($tn > count($testlist)){
+    testoutput($tn, &$state, $pass, $failstr);
         die("Trying to test beyond number of tests. Something's gone a bit wrong");
     }
     
-    # test that we have the output we're expecting
-    $pass = ($execution_stack === $testlist[$tn][1]);
-    $failstr = $pass ? '' : 'EXECUTION STACK ' . join(', ',$execution_stack) . ' != ' . join(', ',$testlist[$tn][1]);
-    $pass = ($pass && $template == $testlist[$tn][2]);
-    $failstr .= ($failstr == '' ? '' : ', ') . ($pass ? '' : "TEMPLATE '$template' != '" . $testlist[$tn][2] . "'");
+    # test execution stack
+    $pass1 = ($execution_stack === $testlist[$tn][1]);
+    $failstr = $pass1 ? '' :
+        '<br> - Expected execution stack : ' . join(', ',$testlist[$tn][1]) .
+        '<br> - Actual execution stack ..: ' . join(', ',$execution_stack);
+    # test args
+    $pass2 = ($args == $testlist[$tn][2]);
+    $failstr .= $pass2 ? '' :
+        "<br> - Expected Args : " . '('.join(',',array_map(function($n){return "'$n'";},$testlist[$tn][2])) .')'.
+        "<br> - Actual Args ..: " . '('.join(',',array_map(function($n){return "'$n'";},$args)).')';
+    # test template
+    $pass3 = ($template == $testlist[$tn][3]);
+    $failstr .= $pass3 ? '' :
+        "<br> - Expected Template : " . $testlist[$tn][3] .
+        "<br> - Actual template ..: $template";
+    $pass = ($pass1 && $pass2 && $pass3);
     if ($pass){
         $state['pass']++;
     }
-    
+
+ 
     testoutput($tn, &$state, $pass, $failstr);
     $state['testno']++;
     storestate($state);
-    redirect($tn+1, $state);
+    redirect($tn+1, $pass);
 }
 
 function testoutput($tn, $state, $pass, $failstr){
@@ -223,14 +328,15 @@ function testoutput($tn, $state, $pass, $failstr){
     $pagetitle = "Test $tn";
     $passclass = $pass ? 'pass' : 'fail';
     $state['results'] .= "<li class=\"$passclass\">" . strtoupper($passclass) . ' : ';
-    $state['results'] .= $testlist[$tn][0] . "', " . $testlist[$tn][3] . ". $failstr</li>";
+    $state['results'] .= $testlist[$tn][0] . "', " . $testlist[$tn][4] . ". $failstr</li>";
     echo '<ol>' . $state['results'] . '</ol>';
 }
 
-function redirect($tn){
-    global $testlist;
+function redirect($tn,$pass){
+    global $testlist, $timeout_pass, $timeout_fail;
     $redirect = (isset($testlist[$tn])) ? $testlist[$tn][0] : '/results';
-    echo "<script>setTimeout(function(){location.href = '$redirect'}, 250)</script>";
+    $timeout = $pass ? $timeout_pass : $timeout_fail;
+    echo "<script>setTimeout(function(){location.href = '$redirect'}, $timeout)</script>";
 }
 
 function results(){

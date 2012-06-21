@@ -43,26 +43,32 @@ Class Path {
             return false;
         }
     }
+    public function remaining_parts($offset = 0){
+        $index = $this->pp_index ? $this->pp_index : 0;
+        return array_slice($this->pathparts, $index + $offset);
+    }
 
     public function find_most_specific($ref,$actionname){
         $this->reset();
         if (isset($ref['-action'][$actionname])){
             $return = $ref['-action'][$actionname];
+            $remainder = $this->remaining_parts();
         }
-        // look for progressively more specific action
+        # look for progressively more specific action
         while ($part = $this->walkup()){
             if (!isset($ref[$part])){
-                break;// not going to find any more
+                break; # not going to find any more
             }
             $ref = &$ref[$part];
             if (isset($ref['-action'][$actionname])){
                 $return = $ref['-action'][$actionname];
+                $remainder = $this->remaining_parts(1);
             }
         }
-        return $return;
+        return array($return, $remainder);
     }
     public function run_most_specific($ref,$actionname,$pc){
-        $action = $this->find_most_specific($ref, $actionname);
+        list ($action) = $this->find_most_specific($ref, $actionname);
         if ($action){
             $action['object']->call_action($actionname,$pc);
         }

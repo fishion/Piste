@@ -7,7 +7,7 @@ PisteTest\Controller\Root
 */
 Class Root extends \PisteTest\Controller {
 
-    # test special methods.
+    # special methods.
     protected function fallback($pc){
         $this->track_execution_stack($pc, __METHOD__);
     }
@@ -21,7 +21,7 @@ Class Root extends \PisteTest\Controller {
         $this->track_execution_stack($pc, __METHOD__);
     }
 
-    # test that '/' redirects as expected to index
+    # test index
     public function index($pc) {
         $this->track_execution_stack($pc, __METHOD__);
     }
@@ -43,11 +43,32 @@ Class Root extends \PisteTest\Controller {
         $this->track_execution_stack($pc, __METHOD__);
     }
 
+
+    # url param testing
+    public function nofixedargs($pc){
+        $pc->stash('template', 'index');
+        $this->track_execution_stack($pc, __METHOD__);
+    }
+    public $fixedargs0_def = array(
+        'args' => 0,
+    );
+    public function fixedargs0($pc){
+        $pc->stash('template', 'index');
+        $this->track_execution_stack($pc, __METHOD__);
+    }
+    public $fixedargs1_def = array(
+        'args' => 1,
+    );
+    public function fixedargs1($pc){
+        $pc->stash('template', 'index');
+        $this->track_execution_stack($pc, __METHOD__);
+    }
+
+
+
     # show results
     public function results($pc){
     }
-
-    
 }
 
 ?>
