@@ -1,6 +1,6 @@
 <?php
 
-$GLOBALS['timeout_pass'] = 100;
+$GLOBALS['timeout_pass'] = 50;
 $GLOBALS['timeout_fail'] = 100;
 $GLOBALS['testlist'] = array(
 
@@ -284,6 +284,50 @@ $GLOBALS['testlist'] = array(
           'fallback',
           '2 Params passed to Args(1) method. Doesn\'t resolve - fallback used'),
 
+    # do some level1 tests too
+    array('/level1/nofixedargs/param1/param2',
+          array( 
+                'Level1::before',
+                'Root::auto',
+                'Level1::auto',
+                'Level1::nofixedargs',
+                'Level1::after',
+          ),
+          array('param1', 'param2'),
+          'index',
+          '2 Params passed to level1/nofixedargs method. Resolves fine'),
+    array('/level1/fixedargs0',
+          array( 
+                'Level1::before',
+                'Root::auto',
+                'Level1::auto',
+                'Level1::fixedargs0',
+                'Level1::after',
+          ),
+          null,
+          'index',
+          'No Params passed to Args(0) method. Resolves OK'),
+    array('/level1/fixedargs0/param1',
+          array( 
+                'Root::before',
+                'Root::auto',
+                'Root::fallback',
+                'Root::after',
+          ),
+          array('level1','fixedargs0','param1'),
+          'fallback',
+          '1 Params passed to Args(0) method. Doesn\'t resolve - fallback used'),
+    array('/level1/fixedargs1/param1',
+          array( 
+                'Level1::before',
+                'Root::auto',
+                'Level1::auto',
+                'Level1::fixedargs1',
+                'Level1::after',
+          ),
+          array('param1'),
+          'index',
+          '1 Param passed to Args(1) method. All happy'),
 );
 
 function test(){
@@ -326,9 +370,11 @@ function test(){
 function testoutput($tn, $state, $pass, $failstr){
     global $testlist, $pagetitle;
     $pagetitle = "Test $tn";
-    $passclass = $pass ? 'pass' : 'fail';
-    $state['results'] .= "<li class=\"$passclass\">" . strtoupper($passclass) . ' : ';
-    $state['results'] .= $testlist[$tn][0] . "', " . $testlist[$tn][4] . ". $failstr</li>";
+    if (!$pass){
+        $passclass = $pass ? 'pass' : 'fail';
+        $state['results'] .= "<li class=\"$passclass\">" . strtoupper($passclass) . ' : ';
+        $state['results'] .= $testlist[$tn][0] . "', " . $testlist[$tn][4] . ". $failstr</li>";
+    }
     echo '<ol>' . $state['results'] . '</ol>';
 }
 

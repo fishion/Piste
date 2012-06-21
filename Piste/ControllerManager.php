@@ -106,7 +106,7 @@ Class ControllerManager {
         // Find defined action
         foreach ($this->actions as $act){
             if (preg_match('/'.$act['pathre'].'/', $uripath, $matches)){
-                $args = $matches[1] ? split('/',$matches[1]) : array();
+                $args = isset($matches[1]) ? split('/',$matches[1]) : array();
                 if ($act['args'] === false || $act['args'] == count($args)){
                     $pc->stash('args', $args);
                     $action = $act;

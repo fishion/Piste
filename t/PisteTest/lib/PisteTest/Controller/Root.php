@@ -46,22 +46,19 @@ Class Root extends \PisteTest\Controller {
 
     # url param testing
     public function nofixedargs($pc){
-        $pc->stash('template', 'index');
-        $this->track_execution_stack($pc, __METHOD__);
+        $this->track_execution_stack($pc, __METHOD__, 'index');
     }
     public $fixedargs0_def = array(
         'args' => 0,
     );
     public function fixedargs0($pc){
-        $pc->stash('template', 'index');
-        $this->track_execution_stack($pc, __METHOD__);
+        $this->track_execution_stack($pc, __METHOD__, 'index');
     }
     public $fixedargs1_def = array(
         'args' => 1,
     );
     public function fixedargs1($pc){
-        $pc->stash('template', 'index');
-        $this->track_execution_stack($pc, __METHOD__);
+        $this->track_execution_stack($pc, __METHOD__, 'index');
     }
 
 

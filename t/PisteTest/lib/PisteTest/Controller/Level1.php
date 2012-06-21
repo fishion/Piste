@@ -39,6 +39,22 @@ Class Level1 extends \PisteTest\Controller {
         $this->track_execution_stack($pc, __METHOD__);
     }
     
+    # url param testing
+    public function nofixedargs($pc){
+        $this->track_execution_stack($pc, __METHOD__, 'index');
+    }
+    public $fixedargs0_def = array(
+        'args' => 0,
+    );
+    public function fixedargs0($pc){
+        $this->track_execution_stack($pc, __METHOD__, 'index');
+    }
+    public $fixedargs1_def = array(
+        'args' => 1,
+    );
+    public function fixedargs1($pc){
+        $this->track_execution_stack($pc, __METHOD__, 'index');
+    }
 }
 
 ?>
