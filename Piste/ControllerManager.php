@@ -72,7 +72,7 @@ Class ControllerManager {
                                     is_int($object->{$defvar}['args']) ) ? $object->{$defvar}['args'] : false,
                 )
             );
-            error_log("Registered path $path to ". get_class($object) ."\\$action->name\()");
+            error_log("Registered path $pathre to ". get_class($object) ."\\$action->name\()");
         }
 
         # deal with special methods
@@ -101,32 +101,37 @@ Class ControllerManager {
 
     public function run($pc) {
         $uripath = $pc->req()->path();
-        $action = null;
+        $actions = array();
 
         // Find defined action
         foreach ($this->actions as $act){
             if (preg_match('/'.$act['pathre'].'/', $uripath, $matches)){
                 $args = isset($matches[1]) ? split('/',$matches[1]) : array();
                 if ($act['args'] === false || $act['args'] == count($args)){
-                    $pc->stash('args', $args);
-                    $action = $act;
+                    array_push($actions, array($act, $args));
                     break;
                 }
             }
         } 
 
         // look for fallback action
-        if (!$action){
+        if (!count($actions)){
             list ($action, $remainder) = $uripath->find_most_specific( &$this->special_actions, 'fallback' );
-            $pc->stash('args', $remainder);
+            array_push($actions, array($action, $remainder));
         }
-        if ($action){
+        if (count($actions)){
+            # what's the most specific action
+            $action = $actions[count($actions) - 1][0];
             # run 'before'-method
             $action['namespace']->run_most_specific( &$this->special_actions, 'before', $pc );
             # run 'auto' methods
             $action['namespace']->run_all_matching( &$this->special_actions, 'auto', $pc );
-            # run main controller
-            $action['object']->call_action($action['method'],$pc);
+            # run main controllers
+            foreach ($actions as $act){
+                $pc->args($act[1]); # set args for this method
+                $act[0]['object']->call_action($act[0]['method'],$pc);
+                $pc->args(array()); # unset any args
+            }
             # run 'after'-method
             $action['namespace']->run_most_specific( &$this->special_actions, 'after', $pc );
             # set default template TODO - Controller probably isn't the right place to do this

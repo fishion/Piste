@@ -7,6 +7,7 @@ Class Controller extends \Piste\Controller {
         # populate execution stack list
         $es = $pc->stash('execution_stack') ? $pc->stash('execution_stack') : array();
         array_push($es, preg_replace('/^.*\\\Controller\\\/','',$method));
+        array_push($es, $pc->args());
         $pc->stash('execution_stack', $es);
 
         # set template if required

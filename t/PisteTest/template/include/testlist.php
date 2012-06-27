@@ -1,7 +1,7 @@
 <?php
 
 $GLOBALS['timeout_pass'] = 50;
-$GLOBALS['timeout_fail'] = 100;
+$GLOBALS['timeout_fail'] = 1000;
 $GLOBALS['testlist'] = array(
 
     #################################################
@@ -11,210 +11,191 @@ $GLOBALS['testlist'] = array(
     # test root controller
     array('/',
           array(
-                'Root::before',
-                'Root::auto',
-                'Root::index',
-                'Root::after',
+                'Root::before', array(),
+                'Root::auto',   array(),
+                'Root::index',  array(),
+                'Root::after',  array(),
           ),
-          array(),
           'index',
           'Test empty directory dispatches to \'index\' method'),
     array('/index',
           array(
-                'Root::before',
-                'Root::auto',
-                'Root::index',
-                'Root::after',
+                'Root::before', array(),
+                'Root::auto',   array(),
+                'Root::index',  array(),
+                'Root::after',  array(),
           ),
-          array(),
           'index',
           'Test index controller method in Root'),
     array('/absolute/path/in/root',
           array(
-                'Root::before',
-                'Root::auto',
-                'Root::absolutepath',
-                'Root::after',
+                'Root::before',         array(),
+                'Root::auto',           array(),
+                'Root::absolutepath',   array(),
+                'Root::after',          array(),
           ),
-          array(),
           'absolutepath',
           'Test setting an absolute path in root'),
     array('/relative/path/in/root',
           array(
-                'Root::before',
-                'Root::auto',
-                'Root::relativepath',
-                'Root::after',
+                'Root::before',         array(),
+                'Root::auto',           array(),
+                'Root::relativepath',   array(),
+                'Root::after',          array(),
           ),
-          array(),
           'relativepath',
           'Test setting a relative path in root'),
 
     # test level1 controller
     array('/level1/',
           array(
-                'Level1::before',
-                'Root::auto',
-                'Level1::auto',
-                'Level1::index',
-                'Level1::after',
+                'Level1::before',   array(),
+                'Root::auto',       array(),
+                'Level1::auto',     array(),
+                'Level1::index',    array(),
+                'Level1::after',    array(),
           ),
-          array(),
           'level1/index',
           'Test empty directory dispatches to \'index\' method in level1'),
     array('/level1/index',
           array(
-                'Level1::before',
-                'Root::auto',
-                'Level1::auto',
-                'Level1::index',
-                'Level1::after',
+                'Level1::before',   array(),
+                'Root::auto',       array(),
+                'Level1::auto',     array(),
+                'Level1::index',    array(),
+                'Level1::after',    array(),
           ),
-          array(),
           'level1/index',
           'Test index controller method in Level1'),
     array('/absolute/path/in/level1',
           array(
-                'Level1::before',
-                'Root::auto',
-                'Level1::auto',
-                'Level1::absolutepath',
-                'Level1::after',
+                'Level1::before',       array(),
+                'Root::auto',           array(),
+                'Level1::auto',         array(),
+                'Level1::absolutepath', array(),
+                'Level1::after',        array(),
           ),
-          array(),
           'level1/absolutepath',
           'Test setting an absolute path in level1'),
     array('/level1/relative/path/in/level1',
           array(
-                'Level1::before',
-                'Root::auto',
-                'Level1::auto',
-                'Level1::relativepath',
-                'Level1::after',
+                'Level1::before',       array(),
+                'Root::auto',           array(),
+                'Level1::auto',         array(),
+                'Level1::relativepath', array(),
+                'Level1::after',        array(),
           ),
-          array(),
           'level1/relativepath',
           'Test setting a relative path in level1'),
 
     # test level2 controller
     array('/level1/level2/',
           array(
-                'Level1\Level2::before',
-                'Root::auto',
-                'Level1::auto',
-                'Level1\Level2::auto',
-                'Level1\Level2::index',
-                'Level1\Level2::after',
+                'Level1\Level2::before', array(),
+                'Root::auto',           array(),
+                'Level1::auto',         array(),
+                'Level1\Level2::auto',  array(),
+                'Level1\Level2::index', array(),
+                'Level1\Level2::after', array(),
           ),
-          array(),
           'level1/level2/index',
           'Test empty directory dispatches to \'index\' method in level2'),
     array('/level1/level2/index',
           array(
-                'Level1\Level2::before',
-                'Root::auto',
-                'Level1::auto',
-                'Level1\Level2::auto',
-                'Level1\Level2::index',
-                'Level1\Level2::after',
+                'Level1\Level2::before', array(),
+                'Root::auto',           array(),
+                'Level1::auto',         array(),
+                'Level1\Level2::auto',  array(),
+                'Level1\Level2::index', array(),
+                'Level1\Level2::after', array(),
           ),
-          array(),
           'level1/level2/index',
           'Test index controller method in Level2'),
     array('/absolute/path/in/level2',
           array(
-                'Level1\Level2::before',
-                'Root::auto',
-                'Level1::auto',
-                'Level1\Level2::auto',
-                'Level1\Level2::absolutepath',
-                'Level1\Level2::after',
+                'Level1\Level2::before',        array(),
+                'Root::auto',                   array(),
+                'Level1::auto',                 array(),
+                'Level1\Level2::auto',          array(),
+                'Level1\Level2::absolutepath',  array(),
+                'Level1\Level2::after',         array(),
           ),
-          array(),
           'level1/level2/absolutepath',
           'Test setting an absolute path in Level2'),
     array('/level1/level2/relative/path/in/level2',
           array(
-                'Level1\Level2::before',
-                'Root::auto',
-                'Level1::auto',
-                'Level1\Level2::auto',
-                'Level1\Level2::relativepath',
-                'Level1\Level2::after',
+                'Level1\Level2::before',        array(),
+                'Root::auto',                   array(),
+                'Level1::auto',                 array(),
+                'Level1\Level2::auto',          array(),
+                'Level1\Level2::relativepath',  array(),
+                'Level1\Level2::after',         array(),
           ),
-          array(),
           'level1/level2/relativepath',
           'Test setting a relative path in Level2'),
 
     # test fallback methods
     array('/doesntexist',
           array(
-                'Root::before',
-                'Root::auto',
-                'Root::fallback',
-                'Root::after',
+                'Root::before',     array(),
+                'Root::auto',       array(),
+                'Root::fallback',   array('doesntexist'),
+                'Root::after',      array(),
           ),
-          array('doesntexist'),
           'fallback',
           'No contoller set for this. Should use Root fallback'),
     array('/level1/doesntexist',
           array(
-                'Root::before',
-                'Root::auto',
-                'Root::fallback',
-                'Root::after',
+                'Root::before',     array(),
+                'Root::auto',       array(),
+                'Root::fallback',   array('level1','doesntexist'),
+                'Root::after',      array(),
           ),
-          array('level1','doesntexist'),
           'fallback',
           'no fallback method so special methods all \'Root\' based'),
     array('/level1/nested/much/deeper/doesntexist',
           array(
-                'Root::before',
-                'Root::auto',
-                'Root::fallback',
-                'Root::after',
+                'Root::before',     array(),
+                'Root::auto',       array(),
+                'Root::fallback',   array('level1','nested','much','deeper','doesntexist'),
+                'Root::after',      array(),
           ),
-          array('level1','nested','much','deeper','doesntexist'),
           'fallback',
           'no fallback method so special methods all \'Root\' based'),
     array('/level1withfallback/doesntexist',
           array(
-                'Root::before',
-                'Root::auto',
-                'Level1WithFallback::fallback',
-                'Root::after',
+                'Root::before',                 array(),
+                'Root::auto',                   array(),
+                'Level1WithFallback::fallback', array('doesntexist'),
+                'Root::after',                  array(),
           ),
-          array('doesntexist'),
           'level1withfallback/fallback',
           'No contoller set for this. Level1WithFallback has no before/after/auto methods'),
     array('/level1withfallback/nested/much/deeper/doesntexist',
           array(
-                'Root::before',
-                'Root::auto',
-                'Level1WithFallback::fallback',
-                'Root::after',
+                'Root::before',                 array(),
+                'Root::auto',                   array(),
+                'Level1WithFallback::fallback', array('nested','much','deeper','doesntexist'),
+                'Root::after',                  array(),
           ),
-          array('nested','much','deeper','doesntexist'),
           'level1withfallback/fallback',
           'No contoller set for this. Level1WithFallback has no before/after/auto methods'),
     array('/level1/level2/doesntexist',
           array(
-                'Root::before',
-                'Root::auto',
-                'Root::fallback',
-                'Root::after',
+                'Root::before',     array(),
+                'Root::auto',       array(),
+                'Root::fallback',   array('level1','level2','doesntexist'),
+                'Root::after',      array(), 
           ),
-          array('level1','level2','doesntexist'),
           'fallback',
           'no fallback method so special methods all \'Root\' based'),
     array('/level1/level2/nested/much/deeper/doesntexist',
           array( 
-                'Root::before',
-                'Root::auto',
-                'Root::fallback',
-                'Root::after',
+                'Root::before',     array(),
+                'Root::auto',       array(),
+                'Root::fallback',   array('level1','level2','nested','much','deeper','doesntexist'),
+                'Root::after',      array(),
           ),
-          array('level1','level2','nested','much','deeper','doesntexist'),
           'fallback',
           'no fallback method so special methods all \'Root\' based'),
 
@@ -225,109 +206,119 @@ $GLOBALS['testlist'] = array(
 
     array('/nofixedargs/param1/param2',
           array( 
-                'Root::before',
-                'Root::auto',
-                'Root::nofixedargs',
-                'Root::after',
+                'Root::before',     array(),
+                'Root::auto',       array(),
+                'Root::nofixedargs',array('param1', 'param2'),
+                'Root::after',      array(),
           ),
-          array('param1', 'param2'),
           'index',
           '2 Params passed to nofixedargs method. Resolves fine'),
     array('/fixedargs0',
           array( 
-                'Root::before',
-                'Root::auto',
-                'Root::fixedargs0',
-                'Root::after',
+                'Root::before',     array(),
+                'Root::auto',       array(),
+                'Root::fixedargs0', array(),
+                'Root::after',      array(),
           ),
-          null,
           'index',
           'No Params passed to Args(0) method.'),
     array('/fixedargs0/param1',
           array( 
-                'Root::before',
-                'Root::auto',
-                'Root::fallback',
-                'Root::after',
+                'Root::before',     array(),
+                'Root::auto',       array(),
+                'Root::fallback',   array('fixedargs0','param1'),
+                'Root::after',      array(),
           ),
-          array('fixedargs0','param1'),
           'fallback',
           '1 Params passed to Args(0) method. Doesn\'t resolve - fallback used'),
     array('/fixedargs1',
           array( 
-                'Root::before',
-                'Root::auto',
-                'Root::fallback',
-                'Root::after',
+                'Root::before',     array(),
+                'Root::auto',       array(),
+                'Root::fallback',   array('fixedargs1'),
+                'Root::after',      array(),
           ),
-          array('fixedargs1'),
           'fallback',
           '0 Params passed to Args(1) method. Doesn\'t resolve - fallback used'),
     array('/fixedargs1/param1',
           array( 
-                'Root::before',
-                'Root::auto',
-                'Root::fixedargs1',
-                'Root::after',
+                'Root::before',     array(),
+                'Root::auto',       array(),
+                'Root::fixedargs1', array('param1'),
+                'Root::after',      array(),
           ),
-          array('param1'),
           'index',
           '1 Param passed to Args(1) method. All happy'),
     array('/fixedargs1/param1/param2',
           array( 
-                'Root::before',
-                'Root::auto',
-                'Root::fallback',
-                'Root::after',
+                'Root::before',     array(),
+                'Root::auto',       array(),
+                'Root::fallback',   array('fixedargs1','param1','param2'),
+                'Root::after',      array(),
           ),
-          array('fixedargs1','param1','param2'),
           'fallback',
           '2 Params passed to Args(1) method. Doesn\'t resolve - fallback used'),
 
     # do some level1 tests too
     array('/level1/nofixedargs/param1/param2',
           array( 
-                'Level1::before',
-                'Root::auto',
-                'Level1::auto',
-                'Level1::nofixedargs',
-                'Level1::after',
+                'Level1::before',       array(),
+                'Root::auto',           array(),
+                'Level1::auto',         array(),
+                'Level1::nofixedargs',  array('param1', 'param2'),
+                'Level1::after',        array(),
           ),
-          array('param1', 'param2'),
           'index',
           '2 Params passed to level1/nofixedargs method. Resolves fine'),
     array('/level1/fixedargs0',
           array( 
-                'Level1::before',
-                'Root::auto',
-                'Level1::auto',
-                'Level1::fixedargs0',
-                'Level1::after',
+                'Level1::before',       array(),
+                'Root::auto',           array(),
+                'Level1::auto',         array(),
+                'Level1::fixedargs0',   array(),
+                'Level1::after',        array(),
           ),
-          null,
           'index',
           'No Params passed to Args(0) method. Resolves OK'),
     array('/level1/fixedargs0/param1',
           array( 
-                'Root::before',
-                'Root::auto',
-                'Root::fallback',
-                'Root::after',
+                'Root::before',     array(),
+                'Root::auto',       array(),
+                'Root::fallback',   array('level1','fixedargs0','param1'),
+                'Root::after',      array(),
           ),
-          array('level1','fixedargs0','param1'),
           'fallback',
           '1 Params passed to Args(0) method. Doesn\'t resolve - fallback used'),
     array('/level1/fixedargs1/param1',
           array( 
-                'Level1::before',
-                'Root::auto',
-                'Level1::auto',
-                'Level1::fixedargs1',
-                'Level1::after',
+                'Level1::before',       array(),
+                'Root::auto',           array(),
+                'Level1::auto',         array(),
+                'Level1::fixedargs1',   array('param1'),
+                'Level1::after',        array(),
           ),
-          array('param1'),
           'index',
           '1 Param passed to Args(1) method. All happy'),
+
+    ################################################
+    # Chaining controllers
+    ################################################
+
+    
+    array('/level1/chained1/param1/chained2/param2/param3',
+          array( 
+                'Level1::before',   array(),
+                'Root::auto',       array(),
+                'Level1::auto',     array(),
+                'Level1::chained1', array('param1'),
+                'Level1::chained2', array('param2', 'param3'),
+                'Level1::after',    array(),
+          ),
+          
+          'index',
+          '1 Param passed to Args(1) method. All happy'),
+
+
 );
 
 function test(){
@@ -339,21 +330,24 @@ function test(){
     testoutput($tn, &$state, $pass, $failstr);
         die("Trying to test beyond number of tests. Something's gone a bit wrong");
     }
+
+    list ($expected_controllers, $expected_args) = array_untangle($testlist[$tn][1]);
+    list ($received_controllers, $received_args) = array_untangle($execution_stack);
     
     # test execution stack
-    $pass1 = ($execution_stack === $testlist[$tn][1]);
+    $pass1 = ($expected_controllers == $received_controllers);
     $failstr = $pass1 ? '' :
-        '<br> - Expected execution stack : ' . join(', ',$testlist[$tn][1]) .
-        '<br> - Actual execution stack ..: ' . join(', ',$execution_stack);
+        '<br> - Expected execution stack : ' . join(', ',$expected_controllers) .
+        '<br> - Actual execution stack ..: ' . join(', ',$received_controllers);
     # test args
-    $pass2 = ($args == $testlist[$tn][2]);
+    $pass2 = ($expected_args == $received_args);
     $failstr .= $pass2 ? '' :
-        "<br> - Expected Args : " . '('.join(',',array_map(function($n){return "'$n'";},$testlist[$tn][2])) .')'.
-        "<br> - Actual Args ..: " . '('.join(',',array_map(function($n){return "'$n'";},$args)).')';
+        "<br> - Expected Args : " . '('.join(',',array_map(function($n){return "'$n'";},$expected_args )) .')'.
+        "<br> - Actual Args ..: " . '('.join(',',array_map(function($n){return "'$n'";},$received_args )). ')';
     # test template
-    $pass3 = ($template == $testlist[$tn][3]);
+    $pass3 = ($template == $testlist[$tn][2]);
     $failstr .= $pass3 ? '' :
-        "<br> - Expected Template : " . $testlist[$tn][3] .
+        "<br> - Expected Template : " . $testlist[$tn][2] .
         "<br> - Actual template ..: $template";
     $pass = ($pass1 && $pass2 && $pass3);
     if ($pass){
@@ -373,7 +367,7 @@ function testoutput($tn, $state, $pass, $failstr){
     if (!$pass){
         $passclass = $pass ? 'pass' : 'fail';
         $state['results'] .= "<li class=\"$passclass\">" . strtoupper($passclass) . ' : ';
-        $state['results'] .= $testlist[$tn][0] . "', " . $testlist[$tn][4] . ". $failstr</li>";
+        $state['results'] .= $testlist[$tn][0] . "', " . $testlist[$tn][3] . ". $failstr</li>";
     }
     echo '<ol>' . $state['results'] . '</ol>';
 }
@@ -415,6 +409,18 @@ function getstate(){
         'pass' => 0,
         'results' => '',
     );
+}
+
+function array_untangle($array){
+    $return = array();
+    foreach ($array as $index => $val){
+        if ($index & 1){
+            array_push($array[0], $val);
+        } else {
+            array_push($array[1], $val);
+        }
+    }
+    return $return;
 }
 
 ?>

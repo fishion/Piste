@@ -9,6 +9,7 @@ Piste\Response
 Class Response {
     private $view;
     private $stash = array();
+    private $args = array();
     private $body = 'No content set';
     private $return_404 = false;
 
@@ -18,10 +19,10 @@ Class Response {
     }
 
     public function stash($params = null, $value = null){
-        if ($value & !is_string($params)){
+        if ($value !== null & !is_string($params)){
             throw new Exception("Bad parameters to Piste\\Response::stash() method. Using 2 parameter form, the first value must be a string key");
         }
-        if ($value){
+        if ($value !== null){
             # setting in 2 param form
             $this->stash[$params] = $value;
         } elseif (is_string($params)) {
@@ -36,6 +37,13 @@ Class Response {
 
     public function clear_stash(){
         $this->stash = array();
+    }
+
+    public function args($args = null){
+        if ($args !== null){
+            $this->args = $args;
+        }
+        return $this->args;
     }
 
     public function body($body = null){
