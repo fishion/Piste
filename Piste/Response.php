@@ -39,13 +39,6 @@ Class Response {
         $this->stash = array();
     }
 
-    public function args($args = null){
-        if ($args !== null){
-            $this->args = $args;
-        }
-        return $this->args;
-    }
-
     public function body($body = null){
         if ($body){ $this->body = $body; }
         return $this->body;

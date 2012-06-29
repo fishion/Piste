@@ -10,16 +10,16 @@ Manages URL mapping and dispatch to controller logic
 File
 =cut*/
 require_once('File.php');
-require_once('Piste/ControllerManager.php');
+require_once('Piste/Dispatch/Controllers.php');
 
 Class Dispatch {
-    private $controller_manager;
+    private $controllers;
     private $view_map = array();
     private $config = array();
 
     function __construct($config = array()){
         if (is_array($config)){$this->config=$config;}
-        $this->controller_manager = new ControllerManager();
+        $this->controllers = new Dispatch\Controllers();
     }
 
     public function register_all($pc){
@@ -31,8 +31,9 @@ Class Dispatch {
         # Register all installed application MVC classes
         $installed = get_declared_classes();
         foreach ($installed as $class){
+            # TODO use ISA instead of string matching
             if ( preg_match("/$app_name\\\\Controller\\\\/", $class) ){
-                $this->controller_manager->register($class);
+                $this->controllers->register($class);
             } elseif ( preg_match("/$app_name\\\\View\\\\/", $class) ){
                 $this->reg_view($class);
             }
@@ -48,7 +49,7 @@ Class Dispatch {
         if (isset($this->config['default_view'])){
             $pc->response()->view($this->config['default_view']);
         }
-        $this->controller_manager->run($pc);
+        $this->controllers->run($pc);
         $this->run_view($pc);
     }
 

@@ -15,7 +15,7 @@ function test(){
 
     list ($expected_controllers, $expected_args) = array_untangle($testlist[$tn][1]);
     list ($received_controllers, $received_args) = array_untangle($execution_stack);
-    
+
     # test execution stack
     $pass1 = ($expected_controllers == $received_controllers);
     $failstr = $pass1 ? '' :
@@ -24,8 +24,8 @@ function test(){
     # test args
     $pass2 = ($expected_args == $received_args);
     $failstr .= $pass2 ? '' :
-        "<br> - Expected Args : " . '('.join(',',array_map(function($n){return "'$n'";},$expected_args )) .')'.
-        "<br> - Actual Args ..: " . '('.join(',',array_map(function($n){return "'$n'";},$received_args )). ')';
+        "<br> - Expected Args : " . '('.join(',',array_map(function($n){return '(' . join(',',$n) . ')';},$expected_args )) .')'.
+        "<br> - Actual Args ..: " . '('.join(',',array_map(function($n){return '(' . join(',',$n) . ')';},$received_args )). ')';
     # test template
     $pass3 = ($template == $testlist[$tn][2]);
     $failstr .= $pass3 ? '' :
@@ -94,12 +94,12 @@ function getstate(){
 }
 
 function array_untangle($array){
-    $return = array();
+    $return = array(array(), array());
     foreach ($array as $index => $val){
         if ($index & 1){
-            array_push($array[0], $val);
+            array_push($return[1], $val);
         } else {
-            array_push($array[1], $val);
+            array_push($return[0], $val);
         }
     }
     return $return;

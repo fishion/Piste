@@ -37,8 +37,11 @@ Class Context {
     public function stash($v1 = null, $v2=null){
         return $this->response->stash($v1, $v2);
     }
-    public function args($args = null){
-        return $this->response->args($args);
+    public function set_args($args = null){
+        return $this->request->set_args($args);
+    }
+    public function args(){
+        return $this->request->args();
     }
 }
 

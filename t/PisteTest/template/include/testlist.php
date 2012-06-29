@@ -300,6 +300,21 @@ $GLOBALS['testlist'] = array(
           '1 Param passed to Args(1) method. All happy'),
 
     ################################################
+    # Test specifity is respected
+    ################################################
+    array('/level1/specifity/morespecifity/param1',
+          array( 
+                'Level1::before',       array(),
+                'Root::auto',           array(),
+                'Level1::auto',         array(),
+                'Level1::morespecifity',array('param1'),
+                'Level1::after',        array(),
+          ),
+          'index',
+          'Check that most specific controller is used'),
+
+
+    ################################################
     # Chaining controllers
     ################################################
 
@@ -313,9 +328,8 @@ $GLOBALS['testlist'] = array(
                 'Level1::chained2', array('param2', 'param3'),
                 'Level1::after',    array(),
           ),
-          
-          'index',
-          '1 Param passed to Args(1) method. All happy'),
+          'level1/chained2',
+          'chained 2 controllers together with args'),
 );
 
 

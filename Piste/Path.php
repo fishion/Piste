@@ -43,16 +43,12 @@ Class Path {
             return false;
         }
     }
-    public function remaining_parts($offset = 0){
-        $index = $this->pp_index ? $this->pp_index : 0;
-        return array_slice($this->pathparts, $index + $offset);
-    }
 
     public function find_most_specific($ref,$actionname){
         $this->reset();
+        $return = null;
         if (isset($ref['-action'][$actionname])){
             $return = $ref['-action'][$actionname];
-            $remainder = $this->remaining_parts();
         }
         # look for progressively more specific action
         while ($part = $this->walkup()){
@@ -62,21 +58,20 @@ Class Path {
             $ref = &$ref[$part];
             if (isset($ref['-action'][$actionname])){
                 $return = $ref['-action'][$actionname];
-                $remainder = $this->remaining_parts(1);
             }
         }
-        return array($return, $remainder);
+        return $return;
     }
     public function run_most_specific($ref,$actionname,$pc){
-        list ($action) = $this->find_most_specific($ref, $actionname);
+        $action = $this->find_most_specific($ref, $actionname);
         if ($action){
-            $action['object']->call_action($actionname,$pc);
+            $action['object']->call_action($action,$pc);
         }
     }
     public function run_all_matching( $ref, $actionname, $pc ){
         $this->reset();
         if (isset($ref['-action'][$actionname])){
-            $ref['-action'][$actionname]['object']->call_action($actionname,$pc);
+            $ref['-action'][$actionname]['object']->call_action($ref['-action'][$actionname],$pc);
         }
         // look for progressively more specific actions
         while ($part = $this->walkup()){
@@ -85,7 +80,7 @@ Class Path {
             }
             $ref = &$ref[$part];
             if (isset($ref['-action'][$actionname])){
-                $ref['-action'][$actionname]['object']->call_action($actionname,$pc);
+                $ref['-action'][$actionname]['object']->call_action($ref['-action'][$actionname],$pc);
             }
         }
     }

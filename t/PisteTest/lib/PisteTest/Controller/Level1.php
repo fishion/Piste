@@ -55,6 +55,35 @@ Class Level1 extends \PisteTest\Controller {
     public function fixedargs1($pc){
         $this->track_execution_stack($pc, __METHOD__, 'index');
     }
+
+    # Test specifity
+    public function specifity($pc){
+        $this->track_execution_stack($pc, __METHOD__, 'index');
+    }
+    public $morespecifity_def = array(
+        'path' => 'specifity/morespecifity',
+        'args' => 1,
+    );
+    public function morespecifity($pc){
+        $this->track_execution_stack($pc, __METHOD__, 'index');
+    }
+
+    # chained methods
+    public $chained1_def = array(
+        'chained'   => '/',
+        'args'      => 1,
+    );
+    public function chained1($pc){
+        $this->track_execution_stack($pc, __METHOD__, 'index');
+    }
+    public $chained2_def = array(
+        'chained'   => 'chained1',
+        'args'      => 2,
+    );
+    public function chained2($pc){
+        $this->track_execution_stack($pc, __METHOD__);
+    }
+
 }
 
 ?>

@@ -24,6 +24,15 @@ Class Request {
         # won't bitch if param not defined
         return isset($_GET[$param]) ? $_GET[$param] : null;
     }
+
+    public function set_args($args = null){
+        $this->args = $args;
+        return $this->args;
+    }
+    public function args(){
+        return $this->args;
+    }
+
 }
 
 ?>
