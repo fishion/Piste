@@ -11,15 +11,17 @@ File
 =cut*/
 require_once('File.php');
 require_once('Piste/Dispatch/Controllers.php');
+require_once('Piste/Dispatch/Views.php');
 
 Class Dispatch {
     private $controllers;
-    private $view_map = array();
+    private $views;
     private $config = array();
 
     function __construct($config = array()){
         if (is_array($config)){$this->config=$config;}
         $this->controllers = new Dispatch\Controllers();
+        $this->views = new Dispatch\Views();
     }
 
     public function register_all($pc){
@@ -35,7 +37,7 @@ Class Dispatch {
             if ( preg_match("/$app_name\\\\Controller\\\\/", $class) ){
                 $this->controllers->register($class);
             } elseif ( preg_match("/$app_name\\\\View\\\\/", $class) ){
-                $this->reg_view($class);
+                $this->views->register($class);
             }
         }
     }
@@ -50,35 +52,9 @@ Class Dispatch {
             $pc->response()->view($this->config['default_view']);
         }
         $this->controllers->run($pc);
-        $this->run_view($pc);
+        $this->views->run($pc);
     }
 
-
-
-
-
-    private function reg_view($class){
-        $path = preg_replace('/^.*?\\\\View\\\\/','',$class);
-        #TODO: ensure view class ISA Piste\View
-        # Allow people to use fully qualified $class or strip
-        # off <Appname>\View
-        $this->view_map[$path] = $this->view_map[$class] = $class;
-    }
-
-    private function run_view($pc){
-        $view = $pc->response()->view();
-        if ($view && !isset($this->view_map[$view])){
-            throw new \Exception("View '$view' not installed");
-        } elseif ($view){
-            $view = new $this->view_map[$view]($pc);
-            if ($pc->res()->return_404()){
-                $view->render_404($pc);
-            } else {
-                $view->render($pc);
-            }
-        }
-        $pc->response()->respond();
-    }
 }
 
 ?>

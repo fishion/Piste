@@ -1,7 +1,7 @@
 <?php
 
 $GLOBALS['timeout_pass'] = 50;
-$GLOBALS['timeout_fail'] = 1000;
+$GLOBALS['timeout_fail'] = 500;
 
 function test(){
     global $testlist, $execution_stack, $template, $args;
