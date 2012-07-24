@@ -9,10 +9,10 @@ Acts as a base class for all Piste Controllers.
 */
 Class Controller {
 
-    public final function call_action($action, $pc){
+    public final function call_action($method, $args, $pc){
         try {
-            $pc->set_args($action['set_args']);
-            $this->$action['method']($pc);
+            $pc->set_args($args);
+            $this->$method($pc);
             $pc->set_args();
         } catch(\Exception $e){
             die("Couldn't find action method. That's weird as it must have been regsitered: <br>\n$e");

@@ -40,6 +40,9 @@ function test(){
     testoutput($tn, &$state, $pass, $failstr);
     $state['testno']++;
     storestate($state);
+    if (isset($_GET['singletest'])){
+        return;
+    }
     redirect($tn+1, $pass);
 }
 

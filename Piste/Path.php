@@ -43,47 +43,6 @@ Class Path {
             return false;
         }
     }
-
-    public function find_most_specific($ref,$actionname){
-        $this->reset();
-        $return = null;
-        if (isset($ref['-action'][$actionname])){
-            $return = $ref['-action'][$actionname];
-        }
-        # look for progressively more specific action
-        while ($part = $this->walkup()){
-            if (!isset($ref[$part])){
-                break; # not going to find any more
-            }
-            $ref = &$ref[$part];
-            if (isset($ref['-action'][$actionname])){
-                $return = $ref['-action'][$actionname];
-            }
-        }
-        return $return;
-    }
-    public function run_most_specific($ref,$actionname,$pc){
-        $action = $this->find_most_specific($ref, $actionname);
-        if ($action){
-            $action['object']->call_action($action,$pc);
-        }
-    }
-    public function run_all_matching( $ref, $actionname, $pc ){
-        $this->reset();
-        if (isset($ref['-action'][$actionname])){
-            $ref['-action'][$actionname]['object']->call_action($ref['-action'][$actionname],$pc);
-        }
-        // look for progressively more specific actions
-        while ($part = $this->walkup()){
-            if (!isset($ref[$part])){
-                break;// not going to find any more
-            }
-            $ref = &$ref[$part];
-            if (isset($ref['-action'][$actionname])){
-                $ref['-action'][$actionname]['object']->call_action($ref['-action'][$actionname],$pc);
-            }
-        }
-    }
 }
 
 ?>
