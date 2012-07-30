@@ -15,36 +15,47 @@ Class ActionCollection {
     private $actions = array();
     private $special_actions = array();
 
-    public function register($object, $namespace_path, $action, $special = false){
+    public function register($ob, $np, $act){
+        if ($act->isPublic()){
+            $this->register_action($ob, $np, $act);
+        }
+        elseif ($act->isProtected() && $act->name == 'fallback'){
+            $this->register_action($ob, $np, $act, true);
+        }
+        elseif ($act->isProtected() && array_search($act->name, array('fallback', 'before', 'after', 'auto')) !== false ){
+            $this->register_special($ob, $np, $act);
+        }
+        elseif ($act->isProtected()){
+            die("Protected method '$act->name' not allowed in contoller class. So there.");
+        }
+        else {
+            # private method probably. Do nothing
+        }
+    }
+
+    private function register_action($object, $namespace_path, $action, $special = false){
         array_push(
             $this->actions,
             new Controller\Action($object, $namespace_path, $action, $special)
         );
     }
 
-    public function register_special($object, $namespace_path, $action){
-        if (array_search($action->name, array('fallback', 'before', 'after', 'auto')) === false){
-            die("Protected method '$action->name' not allowed in contoller class. So there.");
-        } elseif ($action->name == 'fallback'){
-            # Will behave as lower specifity main action
-            $this->register($object, $namespace_path, $action, true);
-        } else {
-            $namespace_path->reset();
-            # Find place in special actions data structure
-            $saref = &$this->special_actions;
-            while ($part = $namespace_path->walkup()){
-                if (!isset($saref[$part])){
-                    $saref[$part] = array();
-                }
-                $saref = &$saref[$part];
+    private function register_special($object, $namespace_path, $action){
+        $namespace_path->reset();
+        # Find place in special actions data structure
+        $saref = &$this->special_actions;
+        while ($part = $namespace_path->walkup()){
+            if (!isset($saref[$part])){
+                $saref[$part] = array();
             }
-
-            $saref['-action'][$action->name] = array(
-                'object'    => $object,
-                'namespace_path' => $namespace_path
-            );
-            error_log("Registered special action '$action->name' in path '$namespace_path' to ". get_class($object) ."\\$action->name\()");
+            $saref = &$saref[$part];
         }
+
+        $saref['-action'][$action->name] = array(
+            'object'    => $object,
+            'namespace_path' => $namespace_path
+        );
+        error_log("Registered special action '$action->name' in path '$namespace_path' to ". get_class($object) ."\\$action->name\()");
     }
 
     public function best_match($uripath){

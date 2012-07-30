@@ -32,19 +32,11 @@ Class Controllers {
         # Know our namespace
         $namespace_path = new \Piste\Path(mb_strtolower(preg_replace('/^.*?\\\\Controller\\\\(Root)?/i','',$class)));
 
-        # get all the methods
-        $reflection     = new \Piste\ReflectionClass($class);
-        $public         = $reflection->getNonInheritedMethods(\ReflectionMethod::IS_PUBLIC);
-        $protected      = $reflection->getNonInheritedMethods(\ReflectionMethod::IS_PROTECTED);
-
-        # register main actions
-        foreach ($public as $action){
-            $this->actions->register($object, $namespace_path, $action);
-        }
-
-        # register special actions
-        foreach ($protected as $action){
-            $this->actions->register_special($object, $namespace_path, $action);
+        # register all the methods
+        $reflection = new \Piste\ReflectionClass($class);
+        $methods    = $reflection->getNonInheritedMethods();
+        foreach ($methods as $method){
+            $this->actions->register($object, $namespace_path, $method);
         }
     }
 
