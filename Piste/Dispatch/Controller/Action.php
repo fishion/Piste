@@ -82,7 +82,7 @@ Class Action implements \Piste\Dispatch\Controller {
     }
 
     public function call($pc){
-        $this->object->call_action($this->method, $this->args, $pc);
+        $this->object->P_call_action($this->method, $this->args, $pc);
     }
 }
 

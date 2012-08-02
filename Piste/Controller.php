@@ -6,10 +6,25 @@ Piste\Controller
 =head1 DESCRIPTION
 Acts as a base class for all Piste Controllers.
 
-*/
+=head1 DEPENDENCIES
+
+=cut*/
+require_once('Piste/ReflectionClass.php');
+require_once('Piste/Dispatch/ActionCollection.php');
+
 Class Controller {
 
-    public final function call_action($method, $args, $pc){
+    public final function P_register(){
+        $namespace_path = new \Piste\Path(mb_strtolower(preg_replace('/^.*?\\\\Controller\\\\(Root)?/i','',get_class($this))));
+        $reflection     = new \Piste\ReflectionClass($this);
+        $methods        = $reflection->getNonInheritedMethods();
+        $controllers    = \Piste\Dispatch\ActionCollection::singleton();
+        foreach ($methods as $method){
+            $controllers->register($this, $namespace_path, $method);
+        }
+    }
+
+    public final function P_call_action($method, $args, $pc){
         try {
             $pc->set_args($args);
             $this->$method($pc);

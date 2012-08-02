@@ -12,6 +12,19 @@ require_once('Piste/Dispatch/Controller/Action.php');
 
 Class ActionCollection {
 
+    private static $singleton;
+    private function __construct(){
+        # private onstructor on singleton
+    }
+    # use this method to get singleton object instance
+    public static function singleton(){
+        if (!isset(self::$singleton)){
+            $c = __CLASS__;
+            self::$singleton = new $c;
+        }
+        return self::$singleton;
+    }
+
     private $actions = array();
     private $special_actions = array();
 
@@ -84,7 +97,7 @@ Class ActionCollection {
             }
         }
         if ($action){
-            $action['object']->call_action($actionname,null,$pc);
+            $action['object']->P_call_action($actionname,null,$pc);
         }
  
     }
@@ -92,7 +105,7 @@ Class ActionCollection {
         $path->reset();
         $saref = &$this->special_actions;
         if (isset($saref['-action'][$actionname])){
-            $saref['-action'][$actionname]['object']->call_action($actionname,null,$pc);
+            $saref['-action'][$actionname]['object']->P_call_action($actionname,null,$pc);
         }
         // look for progressively more specific actions
         while ($part = $path->walkup()){
@@ -101,7 +114,7 @@ Class ActionCollection {
             }
             $saref = &$saref[$part];
             if (isset($saref['-action'][$actionname])){
-                $saref['-action'][$actionname]['object']->call_action($actionname,null,$pc);
+                $saref['-action'][$actionname]['object']->P_call_action($actionname,null,$pc);
             }
         }
     }
