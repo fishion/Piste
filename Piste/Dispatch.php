@@ -20,7 +20,7 @@ Class Dispatch {
 
     function __construct($config = array()){
         if (is_array($config)){$this->config=$config;}
-        $this->controllers = new Dispatch\Controllers();
+        $this->controllers = Dispatch\Controllers::singleton();
         $this->views = new Dispatch\Views();
     }
 

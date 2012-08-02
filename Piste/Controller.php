@@ -10,7 +10,7 @@ Acts as a base class for all Piste Controllers.
 
 =cut*/
 require_once('Piste/ReflectionClass.php');
-require_once('Piste/Dispatch/ActionCollection.php');
+require_once('Piste/Dispatch/Controllers.php');
 
 Class Controller {
 
@@ -18,7 +18,7 @@ Class Controller {
         $namespace_path = new \Piste\Path(mb_strtolower(preg_replace('/^.*?\\\\Controller\\\\(Root)?/i','',get_class($this))));
         $reflection     = new \Piste\ReflectionClass($this);
         $methods        = $reflection->getNonInheritedMethods();
-        $controllers    = \Piste\Dispatch\ActionCollection::singleton();
+        $controllers    = \Piste\Dispatch\Controllers::singleton();
         foreach ($methods as $method){
             $controllers->register($this, $namespace_path, $method);
         }
