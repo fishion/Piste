@@ -53,7 +53,7 @@ Class Action implements \Piste\Dispatch\Controller {
         # the number of '/' chars in the path so far is a measure of it's specifity
         $this->specifity = (1 / count(explode('/', $controller_path))) + $fallback_specifity_offset;
 
-        error_log("Registered path $controller_path to ". get_class($object) ."\\$action->name\()");
+        \Logger::debug("Registered path $controller_path to ". get_class($object) ."\\$action->name\()");
     }
 
     # accessors

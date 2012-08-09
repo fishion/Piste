@@ -101,7 +101,7 @@ Class Controllers {
             'object'    => $object,
             'namespace_path' => $namespace_path
         );
-        error_log("Registered special action '$action->name' in path '$namespace_path' to ". get_class($object) ."\\$action->name\()");
+        \Logger::debug("Registered special action '$action->name' in path '$namespace_path' to ". get_class($object) ."\\$action->name\()");
     }
 
     private function best_match($uripath){

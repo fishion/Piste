@@ -7,6 +7,8 @@ Provides a simple dispatch layer and template wrapper mechanism.
 
 =head1 DEPENDENCIES
 =cut*/
+require_once('File.php');
+require_once('Logger.php');
 require_once('Piste/Dispatch.php');
 require_once('Piste/Context.php');
 
@@ -40,8 +42,10 @@ Your application base class should inherit from this class
 =over
 =cut*/
     function __construct(){
+        # TODO get log file from config
+        \Logger::init('/var/log/php/logger.log');
         $this->pc = new Piste\Context(get_class($this));
-        error_log("Initialising " . $this->pc->env()->app_name() . " application in " . $this->pc->env()->app_lib());
+        \Logger::debug("Initialising " . $this->pc->env()->app_name() . " application in " . $this->pc->env()->app_lib());
 
         # Register all installed application MVC classes
         $this->dispatch = new Piste\Dispatch(isset($this->config) ? $this->config : null);

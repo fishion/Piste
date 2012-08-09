@@ -9,7 +9,6 @@ Manages URL mapping and dispatch to controller logic
 =head1 DEPENDENCIES
 File
 =cut*/
-require_once('File.php');
 require_once('Piste/Dispatch/Controllers.php');
 require_once('Piste/Dispatch/Views.php');
 
@@ -33,12 +32,12 @@ Class Dispatch {
         # Require all application MVC classes in MVC directories
         foreach (array('Controller', 'View', 'C', 'V') as $dir){
             $dirpath = $pc->env()->app_lib() . DIRECTORY_SEPARATOR . $app_name . DIRECTORY_SEPARATOR . $dir;
-            error_log("Registering Piste Packages from $dirpath");
+            \Logger::debug("Registering Piste Packages from $dirpath");
             $applib_ob = new \File($dirpath);
             if ($applib_ob->is_dir()){
                 $reg_files = $applib_ob->require_once_all_files('php');
                 foreach ($reg_files as $file){
-                    error_log(" * Found $file");
+                    \Logger::debug(" * Found $file");
                 }
             }
         }
@@ -60,9 +59,9 @@ Class Dispatch {
     public function dispatch($pc){
         # set view to default view initially
         # that way it can stil be overridden to nothing
-        error_log('*****************');
-        error_log('* Finding dispatch for ' .$pc->req()->path());
-        error_log('*****************');
+        \Logger::debug('*****************');
+        \Logger::debug('* Finding dispatch for ' .$pc->req()->path());
+        \Logger::debug('*****************');
         if (isset($this->config['default_view'])){
             $pc->response()->view($this->config['default_view']);
         }
