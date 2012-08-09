@@ -20,40 +20,13 @@ Class Dispatch {
     function __construct($config = array()){
         if (is_array($config)){$this->config=$config;}
         $this->controllers = Dispatch\Controllers::singleton();
-        $this->views = new Dispatch\Views();
+        $this->views = Dispatch\Views::singleton();
     }
 
     public function register_all($pc){
-        $app_name = $pc->env()->app_name();
-
-        # get list of currently declared classes
         $installed = get_declared_classes();
-
-        # Require all application MVC classes in MVC directories
-        foreach (array('Controller', 'View', 'C', 'V') as $dir){
-            $dirpath = $pc->env()->app_lib() . DIRECTORY_SEPARATOR . $app_name . DIRECTORY_SEPARATOR . $dir;
-            \Logger::debug("Registering Piste Packages from $dirpath");
-            $applib_ob = new \File($dirpath);
-            if ($applib_ob->is_dir()){
-                $reg_files = $applib_ob->require_once_all_files('php');
-                foreach ($reg_files as $file){
-                    \Logger::debug(" * Found $file");
-                }
-            }
-        }
-
-        # Register all installed application MVC classes
-        $new_packages = array_diff(get_declared_classes(), $installed);
-        foreach ($new_packages as $class){
-            if (is_subclass_of($class, 'Piste\Controller') &&
-                preg_match("/^$app_name\\\\Controller\\\\/", $class)){
-                $object = new $class();
-                $object->P_register();
-            } elseif (is_subclass_of($class, 'Piste\View') &&
-                      preg_match("/^$app_name\\\\View\\\\/", $class)){
-                $this->views->register($class);
-            }
-        }
+        $this->require_packages($pc);
+        $this->register_packages($pc, array_diff(get_declared_classes(), $installed));
     }
 
     public function dispatch($pc){
@@ -69,6 +42,33 @@ Class Dispatch {
         $this->views->run($pc);
     }
 
+
+
+    private function require_packages($pc){
+        foreach (array('Controller', 'C', 'View', 'V') as $dir){
+            $dirpath = $pc->env()->app_lib() . DIRECTORY_SEPARATOR . $pc->env()->app_name() . DIRECTORY_SEPARATOR . $dir;
+            \Logger::debug("Requiring Piste Packages from $dirpath");
+            $applib_ob = new \File($dirpath);
+            if ($applib_ob->is_dir()){
+                $reg_files = $applib_ob->require_once_all_files('php');
+                foreach ($reg_files as $file){
+                    \Logger::debug(" * Found $file");
+                }
+            }
+        }
+    }
+    private function register_packages($pc, $packages){
+        $app_name = $pc->env()->app_name();
+        foreach ($packages as $class){
+            if ( (is_subclass_of($class, 'Piste\Controller') &&
+                  preg_match("/^$app_name\\\\Controller\\\\/", $class)) ||
+                 (is_subclass_of($class, 'Piste\View') &&
+                  preg_match("/^$app_name\\\\View\\\\/", $class)) ){
+                $object = new $class($pc);
+                $object->P_register();
+            }
+        }
+    }
 }
 
 ?>

@@ -1,16 +1,16 @@
+* scripts for fcgi, modPHP, cgi etc
 * Chaining controller methods
 * Models
 * Redirects
 * cookies
 * scripts to create projects
-* scripts for fcgi, modPHP, cgi etc
 * fix all print_r, error_log, die for consistency
 Notice that Catalyst takes "extra slash-separated information" from the
        URL and passes it as arguments in @_ (as long as the number of
        arguments is not "fixed" using an attribute like :Args(0)).
 
 * grep all TODO (across all php_packages)
-* Documentation
+* Documentation (across all php_packages)
 
 Controllers
 -----------
@@ -39,6 +39,8 @@ must create
 * lib/AppName/Controller
 * lib/AppName/Model
 * lib/AppName/View
+* scripts for use with modPHP, FastCGI etc.
+* scripts to start/stop application?
 
 might create
 * Default HTML view

@@ -28,13 +28,21 @@ abstract class View {
 
     }
 
+    public final function P_register(){
+        $views = \Piste\Dispatch\Views::singleton();
+        $views->register(get_class($this));
+    }
+
+
+    # Public, overridable, methods
+
     abstract public function render($pc);
 
     public function render_404($pc){
         $pc->res()->body($this->html_404());
     }
 
-    final public function html_404(){
+    public function html_404(){
         # TODO make better default 404
         return <<<________EOHTML
             <html>

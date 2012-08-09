@@ -4,14 +4,28 @@ namespace Piste\Dispatch;
 Piste\Dispatch\Views
 
 =head1 DESCRIPTION
-Coordinates Views
+Singleton Object Coordinates Views
 
 =head1 DEPENDENCIES
 =cut*/
 
 Class Views {
-    private $views = array();
+    # This is a singleton object
+    private static $singleton;
+    private function __construct(){
+        # private onstructor on singleton
+    }
+    # use this method to get singleton object instance
+    public static function singleton(){
+        if (!isset(self::$singleton)){
+            $c = __CLASS__;
+            self::$singleton = new $c;
+        }
+        return self::$singleton;
+    }
 
+
+    private $views = array();
 
     public function register($class){
         $path = preg_replace('/^.*?\\\\View\\\\/','',$class);

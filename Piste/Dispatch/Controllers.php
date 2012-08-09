@@ -1,7 +1,7 @@
 <?php
 namespace Piste\Dispatch;
 /*=head1 Name
-Piste\ControllerManager
+Piste\Dispatch\Controllers
 
 =head1 DESCRIPTION
 Singleton object coordinating Contoller Actions

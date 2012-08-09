@@ -12,7 +12,7 @@ Acts as a base class for all Piste Controllers.
 require_once('Piste/ReflectionClass.php');
 require_once('Piste/Dispatch/Controllers.php');
 
-Class Controller {
+abstract Class Controller {
 
     public final function P_register(){
         $namespace_path = new \Piste\Path(mb_strtolower(preg_replace('/^.*?\\\\Controller\\\\(Root)?/i','',get_class($this))));
