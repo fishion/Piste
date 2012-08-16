@@ -1,16 +1,17 @@
 <?php
-namespace Piste\Dispatch\Controller;
+namespace Piste\Dispatch;
 /*=head1 Name
-Piste\Dispatch\Controller\Action
+Piste\Dispatch\Action
 
 =head1 DESCRIPTION
-A regular Controller action
+Acts as a base class for all Dispatch Controller Actions
 
-=head1 DEPENDENCIES
 =cut*/
-require_once('Piste/Dispatch/Controller.php');
+abstract class Action {
 
-Class Action implements \Piste\Dispatch\Controller {
+    abstract public function action_path($object, $action, $defvar);
+    abstract public function specifity_offset();
+
     private $pathre;
     private $object;
     private $method;
@@ -19,31 +20,22 @@ Class Action implements \Piste\Dispatch\Controller {
     private $args;
     private $specifity;
 
-    function __construct($object, $namespace_path, $action, $is_fallback = false){
+    function __construct($object, $namespace_path, $action){
         $defvar = $action->name . '_def';
-        # is path explicitally set?
-        $controller_path = $is_fallback
-                            ? ''
-                            : (isset($object->$defvar) &&
-                               isset($object->{$defvar}['path'])
-                                 ? $object->{$defvar}['path']
-                                 : $action->name);
-
+        $action_path = $this->action_path($object, $action, $defvar);
+        
         # is that global or local?
-        if (!preg_match('/^\//', $controller_path)){
+        if (!preg_match('/^\//', $action_path)){
             # local, Make it global
-            $controller_path = $namespace_path . '/' . $controller_path;
+            $action_path = $namespace_path . '/' . $action_path;
         }
-
-        $fallback_specifity_offset = $is_fallback ? 1 : 0;
 
         # escape any non-alphanum chars in path for regexp
         # TODO use a better list of regex chars to escape rather than all non alphanumeric
         # capture args from end
-        $this->pathre    = '^' . preg_replace('/(\W)/','\\\$1',$controller_path) . '\/?(.+)?$';
-
-        $this->object           = $object;
-        $this->method           = $action->name;
+        $this->pathre    = '^' . preg_replace('/(\W)/','\\\$1',$action_path) . '\/?(.+)?$';
+        $this->object    = $object;
+        $this->method    = $action->name;
         $this->namespace_path   = $namespace_path;
         $this->arg_def   = (isset($object->$defvar) &&
                             isset($object->{$defvar}['args']) &&
@@ -51,10 +43,11 @@ Class Action implements \Piste\Dispatch\Controller {
                                 ? $object->{$defvar}['args']
                                 : false;
         # the number of '/' chars in the path so far is a measure of it's specifity
-        $this->specifity = (1 / count(explode('/', $controller_path))) + $fallback_specifity_offset;
+        $this->specifity = (1 / count(explode('/', $action_path))) + $this->specifity_offset();
 
-        \Logger::debug("Registered path $controller_path to ". get_class($object) ."\\$action->name\()");
+        \Logger::debug("Registered path $action_path to ". get_class($object) ."\\$action->name\()");
     }
+
 
     # accessors
     public function specifity(){ return $this->specifity; }
@@ -84,6 +77,7 @@ Class Action implements \Piste\Dispatch\Controller {
     public function call($pc){
         $this->object->P_call_action($this->method, $this->args, $pc);
     }
+
 }
 
 ?>

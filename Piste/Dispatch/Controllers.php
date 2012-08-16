@@ -10,7 +10,8 @@ Singleton object coordinating Contoller Actions
 =cut*/
 require_once('Piste/Path.php');
 require_once('Piste/Controller.php');
-require_once('Piste/Dispatch/Controller/Action.php');
+require_once('Piste/Dispatch/Action/Simple.php');
+require_once('Piste/Dispatch/Action/Special.php');
 
 Class Controllers {
 
@@ -34,10 +35,12 @@ Class Controllers {
 
     public function register($ob, $np, $act){
         if ($act->isPublic()){
-            $this->register_action($ob, $np, $act);
+            array_push( $this->actions,
+                        new Action\Simple($ob, $np, $act) );
         }
         elseif ($act->isProtected() && $act->name == 'fallback'){
-            $this->register_action($ob, $np, $act, true);
+            array_push( $this->actions,
+                        new Action\Special($ob, $np, $act) );
         }
         elseif ($act->isProtected() && array_search($act->name, array('fallback', 'before', 'after', 'auto')) !== false ){
             $this->register_special($ob, $np, $act);
@@ -78,13 +81,6 @@ Class Controllers {
     }
 
 
-
-    private function register_action($object, $namespace_path, $action, $special = false){
-        array_push(
-            $this->actions,
-            new Controller\Action($object, $namespace_path, $action, $special)
-        );
-    }
 
     private function register_special($object, $namespace_path, $action){
         $namespace_path->reset();
