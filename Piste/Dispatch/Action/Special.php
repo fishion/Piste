@@ -1,7 +1,7 @@
 <?php
 namespace Piste\Dispatch\Action;
 /*=head1 Name
-Piste\Dispatch\Action\Main
+Piste\Dispatch\Action\Special
 
 =head1 DESCRIPTION
 A regular Controller action
@@ -12,12 +12,15 @@ require_once('Piste/Dispatch/Action.php');
 
 Class Special extends \Piste\Dispatch\Action {
 
-    public function action_path($object, $action, $defvar){
-        return '';
+    protected $specifity_offset = 1;
+    protected $capture_args = false;
+
+    public function action_path($object, $action, $namespace_path, $defvar){
+        return $namespace_path;
     }
 
-    public function specifity_offset(){
-        return 1;
+    public function arg_def($object, $defvar){
+        return false;
     }
 
 }

@@ -15,7 +15,7 @@ require_once('Piste/Dispatch/Controllers.php');
 abstract Class Controller {
 
     public final function P_register(){
-        $namespace_path = new \Piste\Path(mb_strtolower(preg_replace('/^.*?\\\\Controller\\\\(Root)?/i','',get_class($this))));
+        $namespace_path = new \Piste\Path(mb_strtolower(preg_replace('/^.*?\\\\Controller\\\\(Root)?/i','',get_class($this) . '/')));
         $reflection     = new \Piste\ReflectionClass($this);
         $methods        = $reflection->getNonInheritedMethods();
         $controllers    = \Piste\Dispatch\Controllers::singleton();

@@ -10,8 +10,10 @@ Singleton object coordinating Contoller Actions
 =cut*/
 require_once('Piste/Path.php');
 require_once('Piste/Controller.php');
+require_once('Piste/Dispatch/ActionSet.php');
 require_once('Piste/Dispatch/Action/Simple.php');
 require_once('Piste/Dispatch/Action/Special.php');
+require_once('Piste/Dispatch/Action/Fallback.php');
 
 Class Controllers {
 
@@ -40,10 +42,11 @@ Class Controllers {
         }
         elseif ($act->isProtected() && $act->name == 'fallback'){
             array_push( $this->actions,
-                        new Action\Special($ob, $np, $act) );
+                        new Action\Fallback($ob, $np, $act) );
         }
         elseif ($act->isProtected() && array_search($act->name, array('fallback', 'before', 'after', 'auto')) !== false ){
-            $this->register_special($ob, $np, $act);
+            array_push( $this->special_actions,
+                        new Action\Special($ob, $np, $act) );
         }
         elseif ($act->isProtected()){
             die("Protected method '$act->name' not allowed in contoller class. So there.");
@@ -59,20 +62,23 @@ Class Controllers {
         $action = null;
 
         // Find defined action (low specifity is good)
-        $action = $this->best_match($uripath);
+        $action = $this->best_match($this->actions, $uripath)->first();
 
         if ($action){
             # run 'before'-method
-            $this->run_most_specific($action->namespace_path(), 'before', $pc);
+            $this->best_match($this->special_actions, $action->namespace_path(), 'before')
+                 ->call($pc);
             # run 'auto' methods
-            $this->run_all_matching($action->namespace_path(), 'auto', $pc);
+            $this->all_matching($this->special_actions, $action->namespace_path(), 'auto')
+                 ->call($pc);
             # run main controllers
             $action->call($pc);
             # run 'after'-method
-            $this->run_most_specific($action->namespace_path(), 'after', $pc);
+            $this->best_match($this->special_actions, $action->namespace_path(), 'after')
+                 ->call($pc);
             # set default template TODO - Controller probably isn't the right place to do this
             if (!$pc->stash('template')){
-                $template = $action->namespace_path() . DIRECTORY_SEPARATOR . $action->method();
+                $template = $action->namespace_path() . $action->method();
                 $pc->stash('template', preg_replace('/^\//', '', $template));
             }
         } else {
@@ -81,71 +87,25 @@ Class Controllers {
     }
 
 
-
-    private function register_special($object, $namespace_path, $action){
-        $namespace_path->reset();
-        # Find place in special actions data structure
-        $saref = &$this->special_actions;
-        while ($part = $namespace_path->walkup()){
-            if (!isset($saref[$part])){
-                $saref[$part] = array();
-            }
-            $saref = &$saref[$part];
-        }
-
-        $saref['-action'][$action->name] = array(
-            'object'    => $object,
-            'namespace_path' => $namespace_path
-        );
-        \Logger::debug("Registered special action '$action->name' in path '$namespace_path' to ". get_class($object) ."\\$action->name\()");
-    }
-
-    private function best_match($uripath){
+    private function best_match($actions, $uripath, $name = null){
         $action = null;
-        foreach ($this->actions as $act){
-            $action = $act->better_match($uripath, $action);
+        foreach ($actions as $act){
+            if (!$name || $act->method() == $name){
+                $action = $act->better_match($uripath, $action);
+            }
         }
-        return $action;
+        return new ActionSet($action);
     }
 
-    private function run_most_specific($path, $actionname, $pc){
-        $path->reset();
-        $saref = &$this->special_actions;
-        $action = null;
-        if (isset($saref['-action'][$actionname])){
-            $action = $saref['-action'][$actionname];
-        }
-        # look for progressively more specific action
-        while ($part = $path->walkup()){
-            if (!isset($saref[$part])){
-                break; # not going to find any more
-            }
-            $saref = &$saref[$part];
-            if (isset($saref['-action'][$actionname])){
-                $action = $saref['-action'][$actionname];
+    private function all_matching($actions, $uripath, $name = null){
+        $set = new ActionSet();
+        foreach ($actions as $act){
+            if ((!$name || $act->method() == $name) &&
+                 $act->match($uripath)){
+                $set->add($act);
             }
         }
-        if ($action){
-            $action['object']->P_call_action($actionname,null,$pc);
-        }
- 
-    }
-    private function run_all_matching($path, $actionname, $pc){
-        $path->reset();
-        $saref = &$this->special_actions;
-        if (isset($saref['-action'][$actionname])){
-            $saref['-action'][$actionname]['object']->P_call_action($actionname,null,$pc);
-        }
-        // look for progressively more specific actions
-        while ($part = $path->walkup()){
-            if (!isset($saref[$part])){
-                break;// not going to find any more
-            }
-            $saref = &$saref[$part];
-            if (isset($saref['-action'][$actionname])){
-                $saref['-action'][$actionname]['object']->P_call_action($actionname,null,$pc);
-            }
-        }
+        return $set;
     }
 
 

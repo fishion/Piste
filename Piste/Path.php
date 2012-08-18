@@ -9,9 +9,13 @@ Provides methods you might want to perform on a path string
 */
 Class Path {
     private $pathparts = array();
-    private $pp_index = false;
+    private $dir = '';
 
     function __construct($path){
+        if (preg_match('/\/$/', $path)){
+            $path = preg_replace('/\/$/', '', $path);
+            $this->dir = '/';
+        }
         if (!$path || $path == ''){
             return;
         }
@@ -20,28 +24,9 @@ Class Path {
 
     public function __toString(){
         if (count($this->pathparts)>0){
-            return '/' . join('/', $this->pathparts);
+            return '/' . join('/', $this->pathparts) . $this->dir;
         }
-        return '';
-    }
-
-    public function reset(){
-        $this->pp_index = false;
-        return $this;
-    }
-
-    public function walkup(){
-        if ($this->pathparts &&
-            $this->pp_index === false){
-            $this->pp_index = 0;
-            return $this->pathparts[$this->pp_index];
-        } elseif (
-            $this->pathparts &&
-            $this->pp_index +1 < count($this->pathparts)) {
-            return $this->pathparts[++$this->pp_index];
-        } else {
-            return false;
-        }
+        return $this->dir;
     }
 }
 

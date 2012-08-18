@@ -9,8 +9,10 @@ Acts as a base class for all Dispatch Controller Actions
 =cut*/
 abstract class Action {
 
-    abstract public function action_path($object, $action, $defvar);
-    abstract public function specifity_offset();
+    abstract public function action_path($object, $action, $namespace_path, $defvar);
+    abstract public function arg_def($object, $defvar);
+    protected $specifity_offset = 0;
+    protected $capture_args = true;
 
     private $pathre;
     private $object;
@@ -21,38 +23,31 @@ abstract class Action {
     private $specifity;
 
     function __construct($object, $namespace_path, $action){
-        $defvar = $action->name . '_def';
-        $action_path = $this->action_path($object, $action, $defvar);
-        
-        # is that global or local?
-        if (!preg_match('/^\//', $action_path)){
-            # local, Make it global
-            $action_path = $namespace_path . '/' . $action_path;
-        }
+        $defvar      = $action->name . '_def';
+        $action_path = $this->action_path($object, $action, $namespace_path, $defvar);
+
+        $this->object         = $object;
+        $this->method         = $action->name;
+        $this->namespace_path = $namespace_path;
+        $this->arg_def        = $this->arg_def($object, $defvar);
+        $this->specifity      = (1 / count(explode('/', $action_path))) + $this->specifity_offset;
 
         # escape any non-alphanum chars in path for regexp
         # TODO use a better list of regex chars to escape rather than all non alphanumeric
-        # capture args from end
-        $this->pathre    = '^' . preg_replace('/(\W)/','\\\$1',$action_path) . '\/?(.+)?$';
-        $this->object    = $object;
-        $this->method    = $action->name;
-        $this->namespace_path   = $namespace_path;
-        $this->arg_def   = (isset($object->$defvar) &&
-                            isset($object->{$defvar}['args']) &&
-                            is_int($object->{$defvar}['args']) )
-                                ? $object->{$defvar}['args']
-                                : false;
-        # the number of '/' chars in the path so far is a measure of it's specifity
-        $this->specifity = (1 / count(explode('/', $action_path))) + $this->specifity_offset();
+        $this->pathre =
+            '^' .
+            preg_replace('/(\W)/','\\\$1',$action_path) .
+            ($this->capture_args ? '\/?(.+)?$' : '')
+        ;
 
         \Logger::debug("Registered path $action_path to ". get_class($object) ."\\$action->name\()");
     }
 
 
     # accessors
-    public function specifity(){ return $this->specifity; }
-    public function namespace_path(){ return $this->namespace_path; }
-    public function method(){ return $this->method; }
+    public function specifity(){return $this->specifity;}
+    public function namespace_path(){return $this->namespace_path;}
+    public function method(){ return $this->method;}
 
     # methods
     public function better_match($uripath, $that){
