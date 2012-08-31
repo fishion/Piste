@@ -8,8 +8,6 @@ Singleton object coordinating Contoller Actions
 
 =head1 DEPENDENCIES
 =cut*/
-require_once('Piste/Path.php');
-require_once('Piste/Controller.php');
 require_once('Piste/Dispatch/ActionSet.php');
 require_once('Piste/Dispatch/Action/Simple.php');
 require_once('Piste/Dispatch/Action/Special.php');

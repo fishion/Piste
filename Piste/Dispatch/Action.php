@@ -5,8 +5,11 @@ Piste\Dispatch\Action
 
 =head1 DESCRIPTION
 Acts as a base class for all Dispatch Controller Actions
+=head1 DEPENDENCIES
 
 =cut*/
+require_once('Logger.php');
+
 abstract class Action {
 
     abstract public function action_path($object, $action, $namespace_path, $defvar);

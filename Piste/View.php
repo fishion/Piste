@@ -7,9 +7,12 @@ Piste\View
 An abstract class define what methods a view class must implement
 and providing fallback functions
 
-*/
-abstract class View {
+=head1 DEPENDENCIES
+File
+=cut*/
+require_once('Piste/Dispatch/Views.php');
 
+abstract class View {
 /*=head1 Constructor
     Sorts out config for you. You can add $base_config into view class which this constructor will overwrite parameterd from a user defined inherited class
 =over

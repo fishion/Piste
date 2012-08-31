@@ -61,6 +61,7 @@ Runs dispatch methods and responds with the page output
 
 /*=head2 get_response_format()
 Used by the render() method return a response format. Callable from templates for alternative behaviour if alternatove response formats are allowed.
+# TODO this should definitely not be in here.
 =cut*/
     function get_response_format(){
         if ( $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest' ) {

@@ -5,8 +5,10 @@ Piste\Path\URI
 
 =head1 DESCRIPTION
 Provides some extra cleansing to Path object
+=head1 DEPENDENCIES
+=cut*/
+require_once('Piste/Path.php');
 
-*/
 Class URI extends \Piste\Path {
     function __construct($path = null){
         if ($path === null){

@@ -9,6 +9,8 @@ Manages URL mapping and dispatch to controller logic
 =head1 DEPENDENCIES
 File
 =cut*/
+require_once('File.php');
+require_once('Logger.php');
 require_once('Piste/Dispatch/Controllers.php');
 require_once('Piste/Dispatch/Views.php');
 

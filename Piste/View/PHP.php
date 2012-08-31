@@ -9,6 +9,7 @@ PHP view is the basic view for php html output
 =head1 DEPENDENCIES
 File
 =cut*/
+require_once('File.php');
 require_once('Piste/View.php');
 
 abstract Class PHP extends \Piste\View {

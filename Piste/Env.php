@@ -8,6 +8,7 @@ Encapsulates the running environment
 
 =head1 DEPENDENCIES
 =cut*/
+require_once('File.php');
 
 Class Env {
     private $app_name;

@@ -9,6 +9,7 @@ Acts as a base class for all Piste Controllers.
 =head1 DEPENDENCIES
 
 =cut*/
+require_once('Piste/Path.php');
 require_once('Piste/ReflectionClass.php');
 require_once('Piste/Dispatch/Controllers.php');
 
