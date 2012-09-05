@@ -15,11 +15,11 @@ Class Special extends \Piste\Dispatch\Action {
     protected $specifity_offset = 1;
     protected $capture_args = false;
 
-    public function action_path($object, $action, $namespace_path, $defvar){
+    public function action_path($object, $namespace_path, $method, $def){
         return $namespace_path;
     }
 
-    public function arg_def($object, $defvar){
+    public function arg_def($object, $def){
         return false;
     }
 

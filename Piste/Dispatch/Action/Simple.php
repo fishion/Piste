@@ -12,12 +12,11 @@ require_once('Piste/Dispatch/Action.php');
 
 Class Simple extends \Piste\Dispatch\Action {
 
-    public function action_path($object, $action, $namespace_path, $defvar){
+    public function action_path($object, $namespace_path, $method, $def){
         # is path explicitally set?
-        $ap = isset($object->$defvar) &&
-              isset($object->{$defvar}['path'])
-                ? $object->{$defvar}['path']
-                : $action->name;
+        $ap = isset($def['path'])
+                ? $def['path']
+                : $method->name;
         # is that global or local?
         if (!preg_match('/^\//', $ap)){
             # local, Make it global
@@ -25,11 +24,10 @@ Class Simple extends \Piste\Dispatch\Action {
         }
         return $ap;
     }
-    public function arg_def($object, $defvar){
-        return isset($object->$defvar) &&
-               isset($object->{$defvar}['args']) &&
-               is_int($object->{$defvar}['args'])
-                  ? $object->{$defvar}['args']
+    public function arg_def($object, $def){
+        return isset($def['args']) &&
+               is_int($def['args'])
+                  ? $def['args']
                   : false;
     }
 

@@ -9,9 +9,13 @@ Acts as a base class for all Piste Controllers.
 =head1 DEPENDENCIES
 
 =cut*/
+require_once('Logger.php');
 require_once('Piste/Path.php');
 require_once('Piste/ReflectionClass.php');
 require_once('Piste/Dispatch/Controllers.php');
+require_once('Piste/Dispatch/Action/Simple.php');
+require_once('Piste/Dispatch/Action/Special.php');
+require_once('Piste/Dispatch/Action/Fallback.php');
 
 abstract Class Controller {
 
@@ -21,7 +25,33 @@ abstract Class Controller {
         $methods        = $reflection->getNonInheritedMethods();
         $controllers    = \Piste\Dispatch\Controllers::singleton();
         foreach ($methods as $method){
-            $controllers->register($this, $namespace_path, $method);
+            $defvar = $method->name . '_def';
+            $def    = isset($this->$defvar)
+                      ? $this->$defvar
+                      : array();
+            if ($method->isPublic()){
+                $action_class = 'Piste\Dispatch\Action\Simple';
+            }
+            elseif ($method->isProtected() && $method->name == 'fallback'){
+                $action_class = 'Piste\Dispatch\Action\Fallback';
+            }
+            elseif ($method->isProtected() && array_search($method->name, array('before', 'after', 'auto')) !== false ){
+                $action_class = 'Piste\Dispatch\Action\Special';
+            }
+            elseif ($method->isProtected()){
+                \Logger::fatal("Protected method '$method->name' not allowed in contoller class. So there.");
+                continue; # just in case fatal doesn't do what we expect
+            }
+            else {
+                # private method. Do nothing
+                continue;
+            }
+            $controllers->register(new $action_class(
+                                            $this,    
+                                            $namespace_path,
+                                            $method,
+                                            $def
+                                        ) );
         }
     }
 

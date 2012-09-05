@@ -12,8 +12,8 @@ require_once('Logger.php');
 
 abstract class Action {
 
-    abstract public function action_path($object, $action, $namespace_path, $defvar);
-    abstract public function arg_def($object, $defvar);
+    abstract public function action_path($object, $namespace_path, $method, $def);
+    abstract public function arg_def($object, $def);
     protected $specifity_offset = 0;
     protected $capture_args = true;
 
@@ -25,14 +25,13 @@ abstract class Action {
     private $args;
     private $specifity;
 
-    function __construct($object, $namespace_path, $action){
-        $defvar      = $action->name . '_def';
-        $action_path = $this->action_path($object, $action, $namespace_path, $defvar);
+    function __construct($object, $namespace_path, $method, $def){
+        $action_path = $this->action_path($object, $namespace_path, $method, $def);
 
         $this->object         = $object;
-        $this->method         = $action->name;
+        $this->method         = $method->name;
         $this->namespace_path = $namespace_path;
-        $this->arg_def        = $this->arg_def($object, $defvar);
+        $this->arg_def        = $this->arg_def($object, $def);
         $this->specifity      = (1 / count(explode('/', $action_path))) + $this->specifity_offset;
 
         # escape any non-alphanum chars in path for regexp
@@ -43,7 +42,7 @@ abstract class Action {
             ($this->capture_args ? '\/?(.+)?$' : '')
         ;
 
-        \Logger::debug("Registered path $action_path to ". get_class($object) ."\\$action->name\()");
+        \Logger::debug("Registered path $action_path to ". get_class($object) ."\\$method->name\()");
     }
 
 

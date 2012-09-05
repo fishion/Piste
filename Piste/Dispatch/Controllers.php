@@ -9,9 +9,6 @@ Singleton object coordinating Contoller Actions
 =head1 DEPENDENCIES
 =cut*/
 require_once('Piste/Dispatch/ActionSet.php');
-require_once('Piste/Dispatch/Action/Simple.php');
-require_once('Piste/Dispatch/Action/Special.php');
-require_once('Piste/Dispatch/Action/Fallback.php');
 
 Class Controllers {
 
@@ -33,24 +30,16 @@ Class Controllers {
     private $actions = array();
     private $special_actions = array();
 
-    public function register($ob, $np, $act){
-        if ($act->isPublic()){
-            array_push( $this->actions,
-                        new Action\Simple($ob, $np, $act) );
+    public function register($act){
+        if (get_class($act) == 'Piste\Dispatch\Action\Simple' ||
+            get_class($act) == 'Piste\Dispatch\Action\Fallback') {
+            array_push( $this->actions, $act );
         }
-        elseif ($act->isProtected() && $act->name == 'fallback'){
-            array_push( $this->actions,
-                        new Action\Fallback($ob, $np, $act) );
-        }
-        elseif ($act->isProtected() && array_search($act->name, array('fallback', 'before', 'after', 'auto')) !== false ){
-            array_push( $this->special_actions,
-                        new Action\Special($ob, $np, $act) );
-        }
-        elseif ($act->isProtected()){
-            die("Protected method '$act->name' not allowed in contoller class. So there.");
+        elseif (get_class($act) == 'Piste\Dispatch\Action\Special'){
+            array_push( $this->special_actions, $act );
         }
         else {
-            # private method probably. Do nothing
+            \Logger::fatal("unrecognised action subclass " . get_class($act) . ". Failed to register it");
         }
     }
 
