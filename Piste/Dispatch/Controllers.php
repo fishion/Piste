@@ -81,9 +81,10 @@ Class Controllers {
             $this->best_match($this->special_actions, $action->namespace_path(), 'after')
                  ->call($pc);
             # set default template TODO - Controller probably isn't the right place to do this
+            # could store the action of the execution stack in $pc and then figure out the
+            # default template in the view.
             if (!$pc->stash('template')){
-                $template = $action->namespace_path() . $action->method_name();
-                $pc->stash('template', preg_replace('/^\//', '', $template));
+                $pc->stash('template', $action->default_template());
             }
         } else {
             $pc->res()->return_404(true);

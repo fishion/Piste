@@ -302,6 +302,7 @@ $GLOBALS['testlist'] = array(
     ################################################
     # Test specifity is respected
     ################################################
+
     array('/level1/specifity/morespecifity/param1',
           array( 
                 'Level1::before',       array(),
@@ -318,18 +319,18 @@ $GLOBALS['testlist'] = array(
     # Chaining controllers
     ################################################
 
-    
-    array('/level1/chained1/param1/chained2/param2/param3',
+    array('/level1/chained1/param1/chained2/param2/param3/chained3/param4/param5',
           array( 
                 'Level1::before',   array(),
                 'Root::auto',       array(),
                 'Level1::auto',     array(),
                 'Level1::chained1', array('param1'),
                 'Level1::chained2', array('param2', 'param3'),
+                'Level1::chained3', array('param4', 'param5'),
                 'Level1::after',    array(),
           ),
-          'level1/chained2',
-          'chained 2 controllers together with args'),
+          'level1/chained3',
+          'chained 3 controllers together with args'),
 );
 
 

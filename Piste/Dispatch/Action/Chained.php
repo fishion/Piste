@@ -20,6 +20,10 @@ Class Chained extends \Piste\Dispatch\Action {
         \Logger::collect("Registered path " . $this->action_path() . " to chained actions");
     }
 
+    public function namespace_path(){
+        return end($this->chain)->namespace_path();
+    }
+
     public function action_path(){
         if (!isset($this->action_path)){
             $ap_parts = array();
@@ -46,15 +50,30 @@ Class Chained extends \Piste\Dispatch\Action {
         return $this->pathre;
     }
 
+    public function default_template(){
+        return end($this->chain)->default_template();
+    }
 
     # override call method to match
     # to capture params properly
-    #public function match(){
-    #    return true;        
-    #}
+    public function match($uripath){
+        $match = preg_match('/'.$this->pathre().'/', $uripath, $remain);
+        array_shift($remain); # don't want first index
+        foreach ($this->chain as $link){
+            $match = $match && $link->args_match(array_shift($remain));
+        }
+        if ($match){
+            \Logger::debug('MATCHED!!!');
+            return true;
+        }
+        return false;
+    }
 
     # override call method to call all actions in set
-    public function call(){
+    public function call($pc){
+        foreach ($this->chain as $link){
+            $link->call($pc);
+        }
     }
 
 }

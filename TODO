@@ -1,4 +1,6 @@
-* ChainLink should not inherit from Action class - remove unnecessary methods and properties
+* Action_path and specifity for chained actions is probably not right.
+    * Should be able to view all action paths with or without /* args, and these should not count towards specifity.
+    * could calculate specifity as (explode(thing) - $number_of_/*_bits)
 
 
 * scripts for fcgi, modPHP, cgi etc

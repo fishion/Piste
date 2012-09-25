@@ -100,6 +100,12 @@ class Action {
         return $this->specifity;
     }
 
+    public function default_template(){
+        return preg_replace(
+                '/^\//', '',
+                $this->namespace_path() . $this->method_name()
+               );
+    }
 
     # methods
     public function better_match($uripath, $that){
@@ -111,6 +117,8 @@ class Action {
 
     public function match($uripath){
         $match = preg_match('/'.$this->pathre().'/', $uripath, $remain);
+        # remain[1] is not always set as we don't capture extra params
+        # for special methods (before, after, auto)
         $this->args = isset($remain[1]) ? split('/',$remain[1]) : array();
         if ($match &&
             ( $this->arg_def() === false

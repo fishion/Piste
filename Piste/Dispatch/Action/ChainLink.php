@@ -43,6 +43,14 @@ Class ChainLink extends \Piste\Dispatch\Action {
         return $this->pathre;
     }
 
+    public function args_match($args){
+        $this->args = split('/',$args);
+        return ($this->arg_def() === false ||
+                $this->arg_def() == count($this->args) );
+    }
+
+    # We need specifity of chainline to determine the best
+    # next link to chain off when joining chains
     public function specifity(){
         if (!isset($this->specifity)){
             # the specifity of the chained action is determined
@@ -52,6 +60,7 @@ Class ChainLink extends \Piste\Dispatch\Action {
         return $this->specifity;
     }
 
+    # gets the 'chained' attribute as set in the method definition
     public function chained(){
         return $this->def['chained'];
     }
