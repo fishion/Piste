@@ -1,3 +1,6 @@
+* ChainLink should not inherit from Action class - remove unnecessary methods and properties
+
+
 * scripts for fcgi, modPHP, cgi etc
 * Chaining controller methods
 * Models

@@ -13,9 +13,10 @@ require_once('Logger.php');
 require_once('Piste/Path.php');
 require_once('Piste/ReflectionClass.php');
 require_once('Piste/Dispatch/Controllers.php');
-require_once('Piste/Dispatch/Action/Simple.php');
-require_once('Piste/Dispatch/Action/Special.php');
+require_once('Piste/Dispatch/Action.php');
+require_once('Piste/Dispatch/Action/ChainLink.php');
 require_once('Piste/Dispatch/Action/Fallback.php');
+require_once('Piste/Dispatch/Action/Special.php');
 
 abstract Class Controller {
 
@@ -29,8 +30,11 @@ abstract Class Controller {
             $def    = isset($this->$defvar)
                       ? $this->$defvar
                       : array();
-            if ($method->isPublic()){
-                $action_class = 'Piste\Dispatch\Action\Simple';
+            if ($method->isPublic() && isset($def['chained'])){
+                $action_class = 'Piste\Dispatch\Action\Chainlink';
+            }
+            elseif ($method->isPublic()) {
+                $action_class = 'Piste\Dispatch\Action';
             }
             elseif ($method->isProtected() && $method->name == 'fallback'){
                 $action_class = 'Piste\Dispatch\Action\Fallback';

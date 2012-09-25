@@ -10,46 +10,96 @@ Acts as a base class for all Dispatch Controller Actions
 =cut*/
 require_once('Logger.php');
 
-abstract class Action {
+class Action {
 
-    abstract public function action_path($object, $namespace_path, $method, $def);
-    abstract public function arg_def($object, $def);
-    protected $specifity_offset = 0;
-    protected $capture_args = true;
+    protected $object;
+    protected $namespace_path;
+    protected $method;
+    protected $method_name;
+    protected $def;
+    protected $action_path;
+    protected $arg_def;
+    protected $specifity;
+    protected $pathre;
+    protected $args;
 
-    private $pathre;
-    private $object;
-    private $method;
-    private $namespace_path;
-    private $arg_def;
-    private $args;
-    private $specifity;
-
-    function __construct($object, $namespace_path, $method, $def){
-        $action_path = $this->action_path($object, $namespace_path, $method, $def);
-
+    public function __construct($object, $namespace_path, $method, $def){
         $this->object         = $object;
-        $this->method         = $method->name;
         $this->namespace_path = $namespace_path;
-        $this->arg_def        = $this->arg_def($object, $def);
-        $this->specifity      = (1 / count(explode('/', $action_path))) + $this->specifity_offset;
-
-        # escape any non-alphanum chars in path for regexp
-        # TODO use a better list of regex chars to escape rather than all non alphanumeric
-        $this->pathre =
-            '^' .
-            preg_replace('/(\W)/','\\\$1',$action_path) .
-            ($this->capture_args ? '\/?(.+)?$' : '')
-        ;
-
-        \Logger::debug("Registered path $action_path to ". get_class($object) ."\\$method->name\()");
+        $this->method         = $method;
+        $this->method_name    = $method->name;
+        $this->def            = $def;
     }
 
-
     # accessors
-    public function specifity(){return $this->specifity;}
-    public function namespace_path(){return $this->namespace_path;}
-    public function method(){ return $this->method;}
+    public function namespace_path(){
+        return $this->namespace_path;
+    }
+    public function object_class(){
+        return get_class($this->object);
+    }
+    public function method_name(){
+        return $this->method_name;
+    }
+    public function action_path(){
+        if (!isset($this->action_path)){
+            # is path explicitally set?
+            $ap = isset($this->def['path'])
+                    ? $this->def['path']
+                    : $this->method_name;
+            # is that global or local?
+            if (!preg_match('/^\//', $ap)){
+                # local, Make it global
+                $ap = $this->namespace_path . $ap;
+            }
+            $this->action_path = $ap;
+        }
+        return $this->action_path;
+    }
+    public final function pathre_base(){
+        $this->pathre = preg_quote($this->action_path(), '/');
+        return $this;
+    }
+    public final function pathre_params(){
+        $this->pathre .= '\/?(.+)?';
+        return $this;
+    }
+    public final function pathre_start(){
+        $this->pathre = '^' . $this->pathre;
+        return $this;
+    }
+    public final function pathre_end(){
+        $this->pathre .= '$';
+        return $this;
+    }
+    
+    public function pathre(){
+        if (!isset($this->pathre)){
+            $this->pathre_base()
+                 ->pathre_params()
+                 ->pathre_start()
+                 ->pathre_end();
+        }
+        return $this->pathre;
+    }
+
+    public function arg_def(){
+        if (!isset($this->arg_def)){
+            $this->arg_def = isset($this->def['args']) &&
+                             is_int($this->def['args'])
+                                ? $this->def['args']
+                                : false;
+        }
+        return $this->arg_def;
+    }
+
+    public function specifity(){
+        if (!isset($this->specifity)){
+            $this->specifity = (1 / count(explode('/', $this->action_path())));
+        }
+        return $this->specifity;
+    }
+
 
     # methods
     public function better_match($uripath, $that){
@@ -60,19 +110,20 @@ abstract class Action {
     }
 
     public function match($uripath){
-        $match = preg_match('/'.$this->pathre.'/', $uripath, $remain);
+        $match = preg_match('/'.$this->pathre().'/', $uripath, $remain);
         $this->args = isset($remain[1]) ? split('/',$remain[1]) : array();
         if ($match &&
-            ( $this->arg_def === false
-              || $this->arg_def == count($this->args) )
+            ( $this->arg_def() === false
+              || $this->arg_def() == count($this->args) )
            ){
+            \Logger::debug('MATCHED!!!');
             return true;
         }
         return false;
     }
 
     public function call($pc){
-        $this->object->P_call_action($this->method, $this->args, $pc);
+        $this->object->P_call_action($this->method_name, $this->args, $pc);
     }
 
 }

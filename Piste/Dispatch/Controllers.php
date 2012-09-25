@@ -27,22 +27,39 @@ Class Controllers {
     }
 
 
-    private $actions = array();
+    private $actions         = array();
     private $special_actions = array();
 
+    private $chain_links     = array();
+
     public function register($act){
-        if (get_class($act) == 'Piste\Dispatch\Action\Simple' ||
+        if (get_class($act) == 'Piste\Dispatch\Action' ||
             get_class($act) == 'Piste\Dispatch\Action\Fallback') {
             array_push( $this->actions, $act );
+            \Logger::collect("Registered action path " . $act->action_path() . " to ". $act->object_class() ."\\" . $act->method_name() . "\()");
         }
         elseif (get_class($act) == 'Piste\Dispatch\Action\Special'){
             array_push( $this->special_actions, $act );
+            \Logger::collect("Registered special path " . $act->action_path() . " to ". $act->object_class() ."\\" . $act->method_name() . "\()");
+        }
+        elseif (get_class($act) == 'Piste\Dispatch\Action\ChainLink'){
+            array_push( $this->chain_links, $act );
+            \Logger::collect("Found chain link " . $act->action_path() . " in ". $act->object_class() ."\\" . $act->method_name() . "\()");
         }
         else {
             \Logger::fatal("unrecognised action subclass " . get_class($act) . ". Failed to register it");
         }
     }
 
+    public function link_chained(){
+        \Logger::debug('linking '.count($this->chain_links).' chained method(s)');
+        foreach ($this->chain_links as $act){
+            if ($act->is_end_of_chain()){
+                $act->attach($this->chain_links, $this->actions);
+            }
+        }
+        # TODO alert over unused pieces
+    }
 
     public function run($pc) {
         $uripath = $pc->req()->path();
@@ -65,7 +82,7 @@ Class Controllers {
                  ->call($pc);
             # set default template TODO - Controller probably isn't the right place to do this
             if (!$pc->stash('template')){
-                $template = $action->namespace_path() . $action->method();
+                $template = $action->namespace_path() . $action->method_name();
                 $pc->stash('template', preg_replace('/^\//', '', $template));
             }
         } else {
@@ -77,7 +94,8 @@ Class Controllers {
     private function best_match($actions, $uripath, $name = null){
         $action = null;
         foreach ($actions as $act){
-            if (!$name || $act->method() == $name){
+            \Logger::debug('Matching ' . $uripath . ' against ' . $act->pathre() . ' (' . ($name ? $name : 'noname') . ')' );
+            if (!$name || $act->method_name() == $name){
                 $action = $act->better_match($uripath, $action);
             }
         }
@@ -87,7 +105,7 @@ Class Controllers {
     private function all_matching($actions, $uripath, $name = null){
         $set = new ActionSet();
         foreach ($actions as $act){
-            if ((!$name || $act->method() == $name) &&
+            if ((!$name || $act->method_name() == $name) &&
                  $act->match($uripath)){
                 $set->add($act);
             }

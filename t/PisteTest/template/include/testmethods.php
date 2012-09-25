@@ -2,6 +2,7 @@
 
 $GLOBALS['timeout_pass'] = 50;
 $GLOBALS['timeout_fail'] = 500;
+$GLOBALS['exit_on_fail'] = true;
 
 function test(){
     global $testlist, $execution_stack, $template, $args;
@@ -9,7 +10,7 @@ function test(){
     $tn = $state['testno'];
 
     if ($tn > count($testlist)){
-    testoutput($tn, &$state, $pass, $failstr);
+    testoutput($tn, $state, $pass, $failstr);
         die("Trying to test beyond number of tests. Something's gone a bit wrong");
     }
 
@@ -37,7 +38,7 @@ function test(){
     }
 
  
-    testoutput($tn, &$state, $pass, $failstr);
+    testoutput($tn, $state, $pass, $failstr);
     $state['testno']++;
     storestate($state);
     if (isset($_GET['singletest'])){
@@ -46,7 +47,7 @@ function test(){
     redirect($tn+1, $pass);
 }
 
-function testoutput($tn, $state, $pass, $failstr){
+function testoutput($tn, &$state, $pass, $failstr){
     global $testlist, $pagetitle;
     $pagetitle = "Test $tn";
     if (!$pass){
@@ -58,7 +59,8 @@ function testoutput($tn, $state, $pass, $failstr){
 }
 
 function redirect($tn,$pass){
-    global $testlist, $timeout_pass, $timeout_fail;
+    global $testlist, $timeout_pass, $timeout_fail, $exit_on_fail;
+    if (!$pass && $exit_on_fail) {return;}
     $redirect = (isset($testlist[$tn])) ? $testlist[$tn][0] : '/results';
     $timeout = $pass ? $timeout_pass : $timeout_fail;
     echo "<script>setTimeout(function(){location.href = '$redirect'}, $timeout)</script>";
@@ -92,7 +94,7 @@ function getstate(){
     array(
         'testno' => 0,
         'pass' => 0,
-        'results' => '',
+        'results' => ' ',
     );
 }
 

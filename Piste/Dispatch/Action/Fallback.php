@@ -12,7 +12,14 @@ require_once('Piste/Dispatch/Action/Special.php');
 
 Class Fallback extends Special {
 
-    protected $capture_args = true;
+    public function pathre(){
+        if (!isset($this->pathre)){
+            $this->pathre_base()
+                 ->pathre_params()
+                 ->pathre_start();
+        }
+        return $this->pathre;
+    }
 
 }
 

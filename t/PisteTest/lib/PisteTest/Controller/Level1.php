@@ -74,13 +74,20 @@ Class Level1 extends \PisteTest\Controller {
         'args'      => 1,
     );
     public function chained1($pc){
-        $this->track_execution_stack($pc, __METHOD__, 'index');
+        $this->track_execution_stack($pc, __METHOD__);
     }
     public $chained2_def = array(
         'chained'   => 'chained1',
-        'args'      => 2,
     );
     public function chained2($pc){
+        $this->track_execution_stack($pc, __METHOD__);
+    }
+    public $chained3_def = array(
+        'chained'   => 'chained2',
+        'args'      => 2,
+        'endchain'  => true,
+    );
+    public function chained3($pc){
         $this->track_execution_stack($pc, __METHOD__);
     }
 

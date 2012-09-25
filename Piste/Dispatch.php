@@ -70,6 +70,11 @@ Class Dispatch {
                 $object->P_register();
             }
         }
+        # Everything registered.
+        # Try to make sense of chained controllers
+        $this->controllers->link_chained();
+        # Flush all controller dispatch output
+        \Logger::debug_collection();
     }
 }
 

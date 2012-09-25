@@ -12,15 +12,34 @@ require_once('Piste/Dispatch/Action.php');
 
 Class Special extends \Piste\Dispatch\Action {
 
-    protected $specifity_offset = 1;
-    protected $capture_args = false;
-
-    public function action_path($object, $namespace_path, $method, $def){
-        return $namespace_path;
+    public function action_path(){
+        if (!isset($this->action_path)){
+            $this->action_path = $this->namespace_path;
+        }
+        return $this->action_path;
     }
 
-    public function arg_def($object, $def){
-        return false;
+    public function pathre(){
+        if (!isset($this->pathre)){
+            $this->pathre_base()
+                 ->pathre_start();
+        }
+        return $this->pathre;
+    }
+
+    public function arg_def(){
+        if (!isset($this->arg_def)){
+            $this->arg_def = false;
+        }
+        return $this->arg_def;
+    }
+
+    public function specifity(){
+        if (!isset($this->specifity)){
+            # generic special classes always less specific than bespoke simple ones
+            $this->specifity = (1 + parent::specifity());
+        }
+        return $this->specifity;
     }
 
 }
