@@ -4,30 +4,15 @@
 
 
 * scripts for fcgi, modPHP, cgi etc
-* Chaining controller methods
 * Models
 * Redirects
 * cookies
 * scripts to create projects
 * fix all print_r, error_log, die for consistency
-Notice that Catalyst takes "extra slash-separated information" from the
-       URL and passes it as arguments in @_ (as long as the number of
-       arguments is not "fixed" using an attribute like :Args(0)).
 
 * grep all TODO (across all php_packages)
 * Documentation (across all php_packages)
 
-Controllers
------------
-* Private methods are not controller actions
-* "Local" is default and means namespace/method - Default so maybe not needed.
-* "Global" attribute means don't use namespace as root path - Don't think this is needed
-* "Path" is all powerful - by default it uses package namespace, but prefix with '/' for global
-* "Regex" & "LocalRegex" - useful
-* "Chained" needs 'PathPart' (just Path?) 'CaptureArgs'/'Args'
-
-There are five types of "special" built-in :Private actions: begin (before), end (after), default (fallback), index, and auto.
-http://dev.catalystframework.org/attachment/wiki/WikiStart/catalyst-flow.png
 
 Default template
 ----------------
