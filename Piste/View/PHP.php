@@ -9,6 +9,7 @@ PHP view is the basic view for php html output
 =head1 DEPENDENCIES
 File
 =cut*/
+require_once('Logger.php');
 require_once('File.php');
 require_once('Piste/View.php');
 
@@ -69,6 +70,12 @@ Default php
         # which will be used in the rendered wrapper.
         # This is useful
         ob_start();
+
+        # make sure we have a template set
+        if (!$pc->stash('template') && $pc->action()){
+            \Logger::debug('Setting default template to ' . $pc->action()->default_template());
+            $pc->stash('template', $pc->action()->default_template());
+        }
 
         # make stash available as vars in template
         # TODO this seems like ot might be dangerous. What vulnerabilities

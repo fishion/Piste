@@ -21,6 +21,7 @@ Class Context {
     private $env;
     private $request;
     private $response;
+    private $action;
    
     function __construct($app_name){
         $this->env = new Env($app_name);
@@ -33,6 +34,13 @@ Class Context {
     public function req(){return $this->request;}
     public function response(){return $this->response;}
     public function res(){return $this->response;}
+
+    public function action(\Piste\Dispatch\Action $action = null){
+        if (isset($action)){
+            $this->action = $action;
+        }
+        return $this->action;
+    }
 
     public function stash($v1 = null, $v2=null){
         return $this->response->stash($v1, $v2);

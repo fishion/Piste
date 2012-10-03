@@ -87,7 +87,7 @@ function storestate($state){
 function getstate(){
     $cookies = isset($_COOKIE["Pistetest"]) ? $_COOKIE["Pistetest"] : null;
     # if no referrer, delete cookie
-    if (!$_SERVER['HTTP_REFERER']){
+    if (!isset($_SERVER['HTTP_REFERER'])){
         $cookies = null;
     }
     return isset($cookies) ? $cookies : 
