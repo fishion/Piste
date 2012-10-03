@@ -4,7 +4,7 @@ namespace Piste;
 class ReflectionClass extends \ReflectionClass {
     
     public function getNonInheritedMethods($filter = null){
-        # TODO really? I can't pass null to this method?
+        # Anoyingly, can't pass null variable to this method to mean "no filter"?
         $methods = $filter ? $this->getMethods($filter) :
                              $this->getMethods();
         $not_inherited = array();

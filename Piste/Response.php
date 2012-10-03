@@ -45,7 +45,7 @@ Class Response {
     }
 
     public function redirect($url){
-        # untested
+        # TODO : test redirects
         # should return a REDIRECT 302 to browser
         header("Location: $url");
         exit;
@@ -55,8 +55,9 @@ Class Response {
         if (isset($set)){
             # TODO for regular apache 404
             # header("HTTP/1.0 404 Not Found");
-            # for fcgi 404
-            header("Status: 404 Not Found");
+            # Wheras for fcgi 404 you need to do 
+            # header("Status: 404 Not Found");
+            header("HTTP/1.0 404 Not Found");
             $this->return_404 = $set;
         }
         return $this->return_404;

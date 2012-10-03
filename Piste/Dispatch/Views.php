@@ -9,6 +9,8 @@ Singleton Object Coordinates Views
 =head1 DEPENDENCIES
 =cut*/
 
+require_once('Piste/ReflectionClass.php');
+
 Class Views {
     # This is a singleton object
     private static $singleton;
@@ -28,19 +30,24 @@ Class Views {
     private $views = array();
 
     public function register($class){
-        $path = preg_replace('/^.*?\\\\View\\\\/','',$class);
-        #TODO: ensure view class ISA Piste\View
+        #ensure view class ISA Piste\View
+        $reflection = new \Piste\ReflectionClass($class);
+        if (!$reflection->isSubclassOf('\Piste\View')){
+            throw new \Exception("$class is not a \Piste\View subclass");
+        }
         # Allow people to use fully qualified $class or strip
         # off <Appname>\View
+        $path = preg_replace('/^.*?\\\\View\\\\/','',$class);
         $this->views[$path] = $this->views[$class] = $class;
     }
 
 
     public function run($pc) {
         $view = $pc->response()->view();
-        if ($view && !isset($this->views[$view])){
-            throw new \Exception("View '$view' not installed");
-        } elseif ($view){
+        if ($view){
+            if (!isset($this->views[$view])){
+                throw new \Exception("View '$view' not installed");
+            }
             $view = new $this->views[$view]($pc);
             if ($pc->res()->return_404()){
                 $view->render_404($pc);

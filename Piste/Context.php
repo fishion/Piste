@@ -4,7 +4,8 @@ namespace Piste;
 Piste\Context
 
 =head1 DESCRIPTION
-Object (TODO singleton?) which provides interface for different parts
+Object (TODO singleton? Probably not - you might get leakage accross sessions)
+which provides interface for different parts
 of the PIste framework and environment to easily communicate and access 
 each other.
 
