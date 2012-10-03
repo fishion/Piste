@@ -17,11 +17,11 @@ Class Chained extends \Piste\Dispatch\Action {
 
     public function __construct($chain){
         $this->chain = $chain;
+        # some of the properties just use the characteristics
+        # of the last link in the chain
+        $this->namespace_path = end($chain)->namespace_path();
+        $this->method_name    = end($chain)->method_name();
         \Logger::collect("Registered path " . $this->action_path() . " to chained actions");
-    }
-
-    public function namespace_path(){
-        return end($this->chain)->namespace_path();
     }
 
     public function action_path(){
@@ -48,10 +48,6 @@ Class Chained extends \Piste\Dispatch\Action {
                  ->pathre_end();
         }
         return $this->pathre;
-    }
-
-    public function default_template(){
-        return end($this->chain)->default_template();
     }
 
     # override call method to match
