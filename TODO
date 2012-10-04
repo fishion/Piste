@@ -12,12 +12,9 @@
 
 * grep all TODO (across all php_packages)
 * Documentation (across all php_packages)
+* Sort out PEAR packaging and installation of all PHP packages
 
-
-Default template
-----------------
-Default template is always the 'local' name of the last part of the chain. Not sure about when you set 'Path'...
-
+* Might want to be able to detach & call other Controller methods. If so, will need to be able to define non-dispatch-endpoint methods. They'd probably be protected methods, accessed indirectly through the $pc object.
 
 Scripts to create projects
 --------------------------
