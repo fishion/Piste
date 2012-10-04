@@ -47,6 +47,12 @@ Your application base class should inherit from this class
         $this->pc = new Piste\Context(get_class($this));
         \Logger::debug("Initialising " . $this->pc->env()->app_name() . " application in " . $this->pc->env()->app_lib());
 
+        # TODO do something better with config
+        # - get it from regular PHP config files and
+        # put attributes into class to you don't have to keep checking
+        # isset() on everything. maybe $config->get('path/to/thing/0/whatever')
+        # as that allows arbitrary things to be stored and accessed without knowing type?
+
         # Register all installed application MVC classes
         $this->dispatch = new Piste\Dispatch(isset($this->config) ? $this->config : null);
         $this->dispatch->register_all($this->pc);
@@ -57,20 +63,6 @@ Runs dispatch methods and responds with the page output
 =cut*/
     function run(){
         $this->dispatch->dispatch($this->pc);
-    }
-
-/*=head2 get_response_format()
-Used by the render() method return a response format. Callable from templates for alternative behaviour if alternatove response formats are allowed.
-# TODO this should definitely not be in here.
-=cut*/
-    function get_response_format(){
-        if ( $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest' ) {
-# tODO: check HTTP ACCEPT to to distinguish AJAX from AJAJ
-#        if ( preg_match("/application\/json/", $_SERVER['HTTP_ACCEPT']) ||
-#             preg_match("/\.json(\?.*)?$/", $_SERVER["REQUEST_URI"]) ){
-            return 'json';
-        }
-        return 'html';
     }
 
 }

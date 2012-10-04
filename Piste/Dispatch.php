@@ -32,12 +32,20 @@ Class Dispatch {
     }
 
     public function dispatch($pc){
-        # set view to default view initially
-        # that way it can stil be overridden to nothing
         \Logger::debug('*****************');
         \Logger::debug('* Finding dispatch for ' .$pc->req()->path());
         \Logger::debug('*****************');
-        if (isset($this->config['default_view'])){
+        # set view to default view initially
+        # that way it can stil be overridden to nothing or something else
+        if (isset($this->config['response_type_switch'])){
+            foreach ($this->config['response_type_switch'] as $content_tyoe => $view) {
+                if ( preg_match(preg_quote($content_type), $_SERVER['HTTP_ACCEPT']) ){
+                    $pc->response()->view($view);
+                }
+            }
+        }
+        if ( !$pc->response()->view() &&
+             isset($this->config['default_view'])){
             $pc->response()->view($this->config['default_view']);
         }
         $this->controllers->run($pc);

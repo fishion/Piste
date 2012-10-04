@@ -1,11 +1,12 @@
+* Redirects
+* Simpletest and Compass_mechanize dependencies for testing
+    * test JSON response switching (should work)
 * Action_path and specifity for chained actions is probably not right.
     * Should be able to view all action paths with or without /* args, and these should not count towards specifity.
     * could calculate specifity as (explode(thing) - $number_of_/*_bits)
-
-
 * scripts for fcgi, modPHP, cgi etc
+    * Also, run own lightweight http server for development?
 * Models
-* Redirects
 * cookies
 * scripts to create projects
 * fix all print_r, error_log, die for consistency
