@@ -1,4 +1,3 @@
-* Redirects
 * Simpletest and Compass_mechanize dependencies for testing
     * test JSON response switching (should work)
 * Action_path and specifity for chained actions is probably not right.

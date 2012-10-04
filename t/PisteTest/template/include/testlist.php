@@ -331,6 +331,21 @@ $GLOBALS['testlist'] = array(
           ),
           'level1/chained3',
           'chained 3 controllers together with args'),
+
+
+    ################################################
+    # Redirecting
+    ################################################
+
+    array('/redirect/param1',
+          array( 
+                'Root::before',     array(),
+                'Root::auto',       array(),
+                'Root::redirected', array('param1'),
+                'Root::after',      array(),
+          ),
+          'index',
+          "Redirect from 'redirect' to 'redirected'. Retain parameter"),
 );
 
 

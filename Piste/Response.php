@@ -45,8 +45,7 @@ Class Response {
     }
 
     public function redirect($url){
-        # TODO : test redirects
-        # should return a REDIRECT 302 to browser
+        # This also returns a REDIRECT 302 to browser
         header("Location: $url");
         exit;
     }

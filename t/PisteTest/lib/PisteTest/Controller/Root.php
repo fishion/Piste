@@ -61,6 +61,20 @@ Class Root extends \PisteTest\Controller {
         $this->track_execution_stack($pc, __METHOD__, 'index');
     }
 
+    # redirection
+    public $redirect_def = array(
+        'args' => 1,
+    );
+    public function redirect($pc){
+        $this->track_execution_stack($pc, __METHOD__, 'index');
+        $pc->res()->redirect('/redirected/'.join('/', $pc->args()));
+    }
+    public $redirected_def = array(
+        'args' => 1,
+    );
+    public function redirected($pc){
+        $this->track_execution_stack($pc, __METHOD__, 'index');
+    }
 
 
     # show results
