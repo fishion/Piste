@@ -319,6 +319,8 @@ $GLOBALS['testlist'] = array(
     # Chaining controllers
     ################################################
 
+    # all in same namespace (with same name methods
+    # existing in same namespace
     array('/level1/chained1/param1/chained2/param2/param3/chained3/param4/param5',
           array( 
                 'Level1::before',   array(),
@@ -330,7 +332,40 @@ $GLOBALS['testlist'] = array(
                 'Level1::after',    array(),
           ),
           'level1/chained3',
-          'chained 3 controllers together with args'),
+          'chain 3 controllers in same namespace together with args'),
+
+    # chaining off method in parent namespace
+    array('/level1/chained1/param1/chained2/param2/chained2_3/param3',
+          array( 
+                'Level1\Level2::before',    array(),
+                'Root::auto',               array(),
+                'Level1::auto',             array(),
+                'Level1\Level2::auto',      array(),
+                'Level1::chained1',         array('param1'),
+                'Level1\Level2::chained2',  array('param2'),
+                'Level1\Level2::chained2_3',array('param3'),
+                'Level1\Level2::after',     array(),
+          ),
+          'level1/level2/chained2_3',
+          'chain off method in parent namespace'),
+
+    # chaining across arbitrary namespaced
+    array('/level1/chained1/param1/chained2/chained4',
+          array( 
+                'Level1::before',           array(),
+                'Root::auto',               array(),
+                'Level1::auto',             array(),
+                'Level1::chained1',         array('param1'),
+                'Level1\Level2::chained2',  array(),
+                'Level1::chained4',         array(),
+                'Level1::after',            array(),
+          ),
+          'level1/chained4',
+          'chain accross arbitrary namespaces'),
+
+    # TODO test chain with namespaced chained to Root
+
+    # TODO test chained methods with 'path' set
 
 
     ################################################

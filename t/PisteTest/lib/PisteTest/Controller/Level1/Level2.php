@@ -39,6 +39,26 @@ Class Level2 extends \PisteTest\Controller {
         $this->track_execution_stack($pc, __METHOD__);
     }
     
+    #####
+    # chained methods
+    #####
+
+    # This one deliberately named the same as one in Level1 to ensure
+    # hierarchy is respected.
+    public $chained2_def = array(
+        'chained'   => 'chained1',
+    );
+    public function chained2($pc){
+        $this->track_execution_stack($pc, __METHOD__);
+    }
+
+    public $chained2_3_def = array(
+        'chained'   => 'chained2',
+        'endchain'  => true,
+    );
+    public function chained2_3($pc){
+        $this->track_execution_stack($pc, __METHOD__);
+    }
 }
 
 ?>

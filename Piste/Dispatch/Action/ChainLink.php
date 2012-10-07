@@ -55,18 +55,28 @@ Class ChainLink extends \Piste\Dispatch\Action {
         if (!isset($this->specifity)){
             # the specifity of the chained action is determined
             # only by the length of the namespace
+            # TODO - is this true? even if very specific path attribute? not sure.
             $this->specifity = (1 / count(explode('/', $this->namespace_path)));
         }
         return $this->specifity;
     }
 
     # gets the 'chained' attribute as set in the method definition
-    public function chained(){
+    public function chainedto(){
         return $this->def['chained'];
+    }
+    public function chainscope(){
+        $bits = split('/', $this->chainedto());
+        array_pop($bits);
+        if (!count($bits)){ return false; }
+        return '/' . join('/', $bits) . '/';
+    }
+    public function chainmethod(){
+        return array_pop(split('/', $this->chainedto()));
     }
 
     public function is_start_of_chain(){
-        return ($this->chained() == '' || $this->chained() == '/');
+        return ($this->chainedto() == '' || $this->chainedto() == '/');
     }
 
     public function is_end_of_chain(){
@@ -90,16 +100,9 @@ Class ChainLink extends \Piste\Dispatch\Action {
             return $this->chain;
         }
         # find next link
+        $next_link = null;
         foreach ($links as $link) {
-            if ($this->chained() == $link->method_name() &&
-                # TODO - not sure we can just match method name accross all links
-                #      - they may be in completely the wrong namespace
-                #      - or even in a sub-namespace of the previous link
-                # match $self->chained() and $link->method_name
-                # may be more than one - find most specific
-                (!isset($next_link) || $link->specifity() < $next_link->specifity() )){
-                $next_link = $link;
-            }
+            $next_link = $this->better_parent($link, $next_link);
         }
 
         # Did we find one? Yay. Follow it back to the start
@@ -118,6 +121,25 @@ Class ChainLink extends \Piste\Dispatch\Action {
             $this->chain = false;
         }
         return $this->chain;
+    }
+
+    private function better_parent($new, $old = null){
+        if ($this->chainscope() &&
+            # is it a namespaced chain? If so, must match exactly
+            $this->chainscope() == $new->namespace_path() &&
+            $this->chainmethod() == $new->method_name()){
+            return $new;
+        } elseif (
+            # is this one better than what we already have?
+            !$this->chainscope() &&
+            (!$old || $new->specifity() < $old->specifity()) &&
+            # does namespace fit instide this one?
+            preg_match('/'.preg_quote($new->namespace_path(), '/').'/',
+                       $this->namespace_path()) &&
+            $this->chainmethod() == $new->method_name()){
+            return $new;
+        }
+        return $old;
     }
 }
 

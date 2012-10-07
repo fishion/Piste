@@ -68,7 +68,9 @@ Class Level1 extends \PisteTest\Controller {
         $this->track_execution_stack($pc, __METHOD__, 'index');
     }
 
+    ######
     # chained methods
+    ######
     public $chained1_def = array(
         'chained'   => '/',
         'args'      => 1,
@@ -88,6 +90,13 @@ Class Level1 extends \PisteTest\Controller {
         'endchain'  => true,
     );
     public function chained3($pc){
+        $this->track_execution_stack($pc, __METHOD__);
+    }
+    public $chained4_def = array(
+        'chained'   => 'level1/level2/chained2',
+        'endchain'  => true,
+    );
+    public function chained4($pc){
         $this->track_execution_stack($pc, __METHOD__);
     }
 
