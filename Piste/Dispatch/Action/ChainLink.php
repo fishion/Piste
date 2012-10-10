@@ -44,7 +44,7 @@ Class ChainLink extends \Piste\Dispatch\Action {
     }
 
     public function args_match($args){
-        $this->args = split('/',$args);
+        $this->args = $args ? split('/',$args) : array();
         return ($this->arg_def() === false ||
                 $this->arg_def() == count($this->args) );
     }
