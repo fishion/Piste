@@ -108,7 +108,7 @@ Class ChainLink extends \Piste\Dispatch\Action {
             # success - linked all the way to a chain start
             array_push($this->chain, $this);
             if ($this->is_end_of_chain()){
-                \Logger::debug("Found start of chain for " . $this->namespace_path() . $this->method_name());
+                \Logger::info("Found start of chain for " . $this->namespace_path() . $this->method_name());
                 # Add a chained action to actions ref
                 array_push($actions, new Chained($this->chain));
             }
@@ -130,13 +130,13 @@ Class ChainLink extends \Piste\Dispatch\Action {
             $this->chainscope() &&
             preg_match('/^\//', $this->chainedto()) &&
             $this->chainscope() == $new->namespace_path()){
-            \Logger::debug("Matching chain parent globally " . $this->chainscope() . " == " . $new->namespace_path());
+            \Logger::info("Matched chain parent globally " . $this->chainscope() . " == " . $new->namespace_path());
             return $new;
         } elseif (
             # If is it a locally namespaced chain, must match exactly
             $this->chainscope() &&
             $this->namespace_path() . $this->chainscope() == $new->namespace_path()){
-            \Logger::debug("Matching chain parent locally " . $this->namespace_path() . $this->chainscope() . " == " . $new->namespace_path());
+            \Logger::info("Matched chain parent locally " . $this->namespace_path() . $this->chainscope() . " == " . $new->namespace_path());
             return $new;
         } elseif (
             # is this one better than what we already have?

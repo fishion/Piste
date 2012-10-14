@@ -32,9 +32,7 @@ Class Dispatch {
     }
 
     public function dispatch($pc){
-        \Logger::debug('*****************');
-        \Logger::debug('* Finding dispatch for ' .$pc->req()->path());
-        \Logger::debug('*****************');
+        \Logger::debug('Finding dispatch for ' .$pc->req()->path());
         # set view to default view initially
         # that way it can stil be overridden to nothing or something else
         if (isset($this->config['response_type_switch'])){
@@ -62,7 +60,7 @@ Class Dispatch {
             if ($applib_ob->is_dir()){
                 $reg_files = $applib_ob->require_once_all_files('php');
                 foreach ($reg_files as $file){
-                    \Logger::debug(" * Found $file");
+                    \Logger::info(" * Found $file");
                 }
             }
         }
@@ -74,6 +72,7 @@ Class Dispatch {
                   preg_match("/^$app_name\\\\Controller\\\\/", $class)) ||
                  (is_subclass_of($class, 'Piste\View') &&
                   preg_match("/^$app_name\\\\View\\\\/", $class)) ){
+                \Logger::debug("Registering class $class");
                 $object = new $class($pc);
                 $object->P_register();
             }
@@ -82,7 +81,7 @@ Class Dispatch {
         # Try to make sense of chained controllers
         $this->controllers->link_chained();
         # Flush all controller dispatch output
-        \Logger::debug_collection();
+        \Logger::info_collection();
     }
 }
 

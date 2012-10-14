@@ -124,7 +124,7 @@ class Action {
             ( $this->arg_def() === false
               || $this->arg_def() == count($this->args) )
            ){
-            \Logger::debug('MATCHED!!!');
+            \Logger::info('MATCHED ' . $this->pathre());
             return true;
         }
         return false;

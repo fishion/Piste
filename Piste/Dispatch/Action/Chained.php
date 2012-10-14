@@ -59,7 +59,7 @@ Class Chained extends \Piste\Dispatch\Action {
             $match = $match && $link->args_match(array_shift($remain));
         }
         if ($match){
-            \Logger::debug('MATCHED!!!');
+            \Logger::info('MATCHED chained actions ' . $this->pathre());
             return true;
         }
         return false;
