@@ -66,10 +66,7 @@ Class ChainLink extends \Piste\Dispatch\Action {
         return $this->def['chained'];
     }
     public function chainscope(){
-        $bits = split('/', $this->chainedto());
-        array_pop($bits);
-        if (!count($bits)){ return false; }
-        return '/' . join('/', $bits) . '/';
+        return preg_replace('/[^\/]*$/', '', $this->chainedto());
     }
     public function chainmethod(){
         return array_pop(split('/', $this->chainedto()));
@@ -111,23 +108,35 @@ Class ChainLink extends \Piste\Dispatch\Action {
             # success - linked all the way to a chain start
             array_push($this->chain, $this);
             if ($this->is_end_of_chain()){
-                \Logger::debug("Found start of chain!");
+                \Logger::debug("Found start of chain for " . $this->namespace_path() . $this->method_name());
                 # Add a chained action to actions ref
                 array_push($actions, new Chained($this->chain));
             }
         } else {
             # failed - no next_link or chain broke somewhere
-            \Logger::warn("Failed to follow chain to start");
+            \Logger::warn("Failed to follow chain to start for " . $this->namespace_path() . $this->method_name());
             $this->chain = false;
         }
         return $this->chain;
     }
 
     private function better_parent($new, $old = null){
-        if ($this->chainscope() &&
-            # is it a namespaced chain? If so, must match exactly
-            $this->chainscope() == $new->namespace_path() &&
-            $this->chainmethod() == $new->method_name()){
+        if ($this->chainmethod() != $new->method_name()){
+            return $old; # method names always have to match
+        }
+
+        if (
+            # If is it a globally namespaced chain, must match exactly
+            $this->chainscope() &&
+            preg_match('/^\//', $this->chainedto()) &&
+            $this->chainscope() == $new->namespace_path()){
+            \Logger::debug("Matching chain parent globally " . $this->chainscope() . " == " . $new->namespace_path());
+            return $new;
+        } elseif (
+            # If is it a locally namespaced chain, must match exactly
+            $this->chainscope() &&
+            $this->namespace_path() . $this->chainscope() == $new->namespace_path()){
+            \Logger::debug("Matching chain parent locally " . $this->namespace_path() . $this->chainscope() . " == " . $new->namespace_path());
             return $new;
         } elseif (
             # is this one better than what we already have?
@@ -135,8 +144,7 @@ Class ChainLink extends \Piste\Dispatch\Action {
             (!$old || $new->specifity() < $old->specifity()) &&
             # does namespace fit instide this one?
             preg_match('/'.preg_quote($new->namespace_path(), '/').'/',
-                       $this->namespace_path()) &&
-            $this->chainmethod() == $new->method_name()){
+                       $this->namespace_path())){
             return $new;
         }
         return $old;

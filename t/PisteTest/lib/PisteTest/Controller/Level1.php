@@ -71,6 +71,8 @@ Class Level1 extends \PisteTest\Controller {
     ######
     # chained methods
     ######
+
+    # simple three link chain
     public $chained1_def = array(
         'chained'   => '/',
         'args'      => 1,
@@ -92,11 +94,33 @@ Class Level1 extends \PisteTest\Controller {
     public function chained3($pc){
         $this->track_execution_stack($pc, __METHOD__);
     }
+
+    # chained off globally referenced level2 namespace action
     public $chained4_def = array(
-        'chained'   => 'level1/level2/chained2',
+        'chained'   => '/level1/level2/chained2',
         'endchain'  => true,
     );
     public function chained4($pc){
+        $this->track_execution_stack($pc, __METHOD__);
+    }
+
+    # chained off relatively referenced level2 namespace action
+    public $chained5_def = array(
+        'chained'   => 'level2/chained2',
+        'endchain'  => true,
+    );
+    public function chained5($pc){
+        $this->track_execution_stack($pc, __METHOD__);
+    }
+
+
+    # chain of Root namespaced action (deliberately confusingly
+    # named the same as a chained action in this namespace)
+    public $chained6_def = array(
+        'chained'   => '/chained1',
+        'endchain'  => true,
+    );
+    public function chained6($pc){
         $this->track_execution_stack($pc, __METHOD__);
     }
 

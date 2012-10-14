@@ -38,8 +38,8 @@ Class Dispatch {
         # set view to default view initially
         # that way it can stil be overridden to nothing or something else
         if (isset($this->config['response_type_switch'])){
-            foreach ($this->config['response_type_switch'] as $content_tyoe => $view) {
-                if ( preg_match(preg_quote($content_type), $_SERVER['HTTP_ACCEPT']) ){
+            foreach ($this->config['response_type_switch'] as $content_type => $view) {
+                if ( preg_match('/' . preg_quote($content_type, '/') . '/', $_SERVER['HTTP_ACCEPT']) ){
                     $pc->response()->view($view);
                 }
             }

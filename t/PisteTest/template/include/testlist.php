@@ -349,7 +349,7 @@ $GLOBALS['testlist'] = array(
           'level1/level2/chained2_3',
           'chain off method in parent namespace'),
 
-    # chaining across arbitrary namespaced
+    # chaining across arbitrary global namespaces
     array('/level1/chained1/param1/chained2/chained4',
           array( 
                 'Level1::before',           array(),
@@ -361,9 +361,36 @@ $GLOBALS['testlist'] = array(
                 'Level1::after',            array(),
           ),
           'level1/chained4',
-          'chain accross arbitrary namespaces'),
+          'chain accross arbitrary global namespaces'),
 
-    # TODO test chain with namespaced chained to Root
+    # chaining across arbitrary relative namespaces
+    array('/level1/chained1/param1/chained2/chained5',
+          array( 
+                'Level1::before',           array(),
+                'Root::auto',               array(),
+                'Level1::auto',             array(),
+                'Level1::chained1',         array('param1'),
+                'Level1\Level2::chained2',  array(),
+                'Level1::chained5',         array(),
+                'Level1::after',            array(),
+          ),
+          'level1/chained5',
+          'chain accross arbitrary relative namespaces'),
+
+    # Chain to namespaced root action
+    array('/chained1/param1/chained6',
+          array( 
+                'Level1::before',           array(),
+                'Root::auto',               array(),
+                'Level1::auto',             array(),
+                'Root::chained1',           array('param1'),
+                'Level1::chained6',         array(),
+                'Level1::after',            array(),
+          ),
+          'level1/chained6',
+          'chain to namespaced root action'),
+
+    # TODO test relative namespaced 'chained' attributes
 
     # TODO test chained methods with 'path' set
 

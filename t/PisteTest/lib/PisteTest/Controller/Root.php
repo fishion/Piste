@@ -76,6 +76,15 @@ Class Root extends \PisteTest\Controller {
         $this->track_execution_stack($pc, __METHOD__, 'index');
     }
 
+    # a chained action
+    public $chained1_def = array(
+        'chained'   => '',
+        'args'      => 1,
+    );
+    public function chained1($pc){
+        $this->track_execution_stack($pc, __METHOD__);
+    }
+    
 
     # show results
     public function results($pc){
