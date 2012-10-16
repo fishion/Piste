@@ -6,6 +6,23 @@ Piste\Dispatch\Action\ChainLink
 =head1 DESCRIPTION
 A chained Controller action
 
+chained => '' or '/' means start of chain
+chained => '/foo' means chain from 'foo' controller in Root
+chained => '/foo/bar' means chain from 'bar' controller in 'Foo'
+                      controller package
+chained => 'foo' means chained from 'foo' controller in this package
+                  or most specific parent package
+chained => 'foo/bar' means chained from 'bar' controller in $thiscontroller::foo controller package. So relaive like
+
+path => '/foo' only has meaning for root chained action and means take
+               'foo' from start as action path. Global like.
+path => '/' means take no pathpart for this controller, even if it's
+            the root chained action
+path => 'foo' means take 'blah' as action path. Unless it's the root
+              chained action, in which case take $namespace_path/foo.
+path => '' means take no pathpart for this controller, or $namespace
+           if it's the root chained action
+
 =head1 DEPENDENCIES
 =cut*/
 require_once('Piste/Dispatch/Action.php');
@@ -20,17 +37,19 @@ Class ChainLink extends \Piste\Dispatch\Action {
             $ap = isset($this->def['path'])
                     ? $this->def['path']
                     : $this->method_name;
-            # Only start of chain actions can be local/global
             if ($this->is_start_of_chain() &&
                 !preg_match('/^\//', $ap)){
-                # local, Make it global
-                $ap = $this->namespace_path . $ap;
+                $this->action_path = $this->namespace_path . $ap;
             }
-            elseif (!$this->is_start_of_chain()) {
-                # don't want a leading /
-                $ap = preg_replace('/^\//','',$ap);
+            elseif ($ap == '/' || $ap == ''){
+                $this->action_path = '';
             }
-            $this->action_path = $ap;
+            elseif (!preg_match('/^\//', $ap)){
+                $this->action_path = '/' . $ap;
+            }
+            else {
+                $this->action_path = $ap;
+            }
         }
         return $this->action_path;
     }
@@ -44,6 +63,7 @@ Class ChainLink extends \Piste\Dispatch\Action {
     }
 
     public function args_match($args){
+        $args = preg_replace('/^\//', '', $args);
         $this->args = $args ? split('/',$args) : array();
         return ($this->arg_def() === false ||
                 $this->arg_def() == count($this->args) );

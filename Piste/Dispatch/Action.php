@@ -56,19 +56,23 @@ class Action {
         }
         return $this->action_path;
     }
-    public final function pathre_base(){
+    protected final function pathre_base(){
         $this->pathre = preg_quote($this->action_path(), '/');
         return $this;
     }
-    public final function pathre_params(){
-        $this->pathre .= '\/?(.+)?';
+    protected final function pathre_params(){
+        if ($this->arg_def() == false){
+            $this->pathre .= '(\/.+)?';
+        } elseif ($this->arg_def() != 0) {
+            $this->pathre .= '((?:\/[^\/]+){'.$this->arg_def().'})';
+        }
         return $this;
     }
-    public final function pathre_start(){
+    protected final function pathre_start(){
         $this->pathre = '^' . $this->pathre;
         return $this;
     }
-    public final function pathre_end(){
+    protected final function pathre_end(){
         $this->pathre .= '$';
         return $this;
     }
@@ -119,7 +123,11 @@ class Action {
         $match = preg_match('/'.$this->pathre().'/', $uripath, $remain);
         # remain[1] is not always set as we don't capture extra params
         # for special methods (before, after, auto)
-        $this->args = isset($remain[1]) ? split('/',$remain[1]) : array();
+        # or when zero args has been specified
+        $args = isset($remain[1]) ?
+            preg_replace('/^\//', '', $remain[1])
+            : '';
+        $this->args = $args != '' ? split('/',$args) : array();
         if ($match &&
             ( $this->arg_def() === false
               || $this->arg_def() == count($this->args) )

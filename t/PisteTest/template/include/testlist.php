@@ -390,9 +390,22 @@ $GLOBALS['testlist'] = array(
           'level1/chained6',
           'chain to namespaced root action'),
 
-    # TODO test relative namespaced 'chained' attributes
-
-    # TODO test chained methods with 'path' set
+    # test chained methods with 'path' set
+    array('/chained1/param1/bitofapath/param2/param3/param4/bitofapath/anotherbitofapath',
+          array( 
+                'Level1\Level2::before',        array(),
+                'Root::auto',                   array(),
+                'Level1::auto',                 array(),
+                'Level1\Level2::auto',          array(),
+                'Root::chained1',               array('param1'),
+                'Level1\Level2::chained_path1', array('param2'),
+                'Level1\Level2::chained_path2', array('param3', 'param4'),
+                'Level1\Level2::chained_path3', array(),
+                'Level1\Level2::chained_path4', array(),
+                'Level1\Level2::after',         array(),
+          ),
+          'level1/level2/chained_path4',
+          'test chained methods with \'path\' set'),
 
 
     ################################################

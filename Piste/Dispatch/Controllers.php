@@ -92,7 +92,7 @@ Class Controllers {
     private function best_match($actions, $uripath, $name = null){
         $action = null;
         foreach ($actions as $act){
-            \Logger::info('Matching ' . $uripath . ' against ' . $act->pathre() . ' (' . ($name ? $name : 'noname') . ')' );
+            \Logger::info(($name ? '(' . $name . ') ' : '') . 'Matching ' . $uripath . ' against ' . $act->pathre());
             if (!$name || $act->method_name() == $name){
                 $action = $act->better_match($uripath, $action);
             }

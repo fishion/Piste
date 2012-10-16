@@ -32,7 +32,7 @@ Class Chained extends \Piste\Dispatch\Action {
                 $ap_part .= ($link->arg_def() === false) ? '/*x*' : '/*';
                 array_push($ap_parts, $ap_part);
             };
-            $this->action_path = join('/', $ap_parts);
+            $this->action_path = join('', $ap_parts);
         }
         return $this->action_path;
     }
@@ -43,7 +43,7 @@ Class Chained extends \Piste\Dispatch\Action {
             foreach ($this->chain as $link){
                 array_push($re_parts, $link->pathre());
             }
-            $this->pathre = join('\/', $re_parts);
+            $this->pathre = join('', $re_parts);
             $this->pathre_start()
                  ->pathre_end();
         }
@@ -56,7 +56,9 @@ Class Chained extends \Piste\Dispatch\Action {
         $match = preg_match('/'.$this->pathre().'/', $uripath, $remain);
         array_shift($remain); # don't want first index
         foreach ($this->chain as $link){
-            $match = $match && $link->args_match(array_shift($remain));
+            if ($link->arg_def() !== 0){
+                $match = $match && $link->args_match(array_shift($remain));
+            }
         }
         if ($match){
             \Logger::info('MATCHED chained actions ' . $this->pathre());

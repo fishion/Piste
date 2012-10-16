@@ -15,10 +15,15 @@ Class Fallback extends Special {
     public function pathre(){
         if (!isset($this->pathre)){
             $this->pathre_base()
-                 ->pathre_params()
+                 ->pathre_fallback_params()
                  ->pathre_start();
         }
         return $this->pathre;
+    }
+
+    protected function pathre_fallback_params(){
+        $this->pathre .= '(.*)';
+        return $this;
     }
 
 }

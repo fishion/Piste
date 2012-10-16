@@ -51,7 +51,6 @@ Class Level2 extends \PisteTest\Controller {
     public function chained2($pc){
         $this->track_execution_stack($pc, __METHOD__);
     }
-
     public $chained2_3_def = array(
         'chained'   => 'chained2',
         'endchain'  => true,
@@ -59,6 +58,44 @@ Class Level2 extends \PisteTest\Controller {
     public function chained2_3($pc){
         $this->track_execution_stack($pc, __METHOD__);
     }
+
+    # This one sets the 'path' attribute to not use the method name
+    # directly in the matching regex
+    # TODO what happens if the 'path' is relative vs global?
+    public $chained_path1_def = array(
+        'chained'   => '/chained1',
+        'path'      => 'bitofapath',
+        'args'      => 1,
+    );
+    public function chained_path1($pc){
+        $this->track_execution_stack($pc, __METHOD__);
+    }
+    public $chained_path2_def = array(
+        'chained'   => 'chained_path1',
+        'path'      => '',
+        # this one gets args as no arge param defined
+    );
+    public function chained_path2($pc){
+        $this->track_execution_stack($pc, __METHOD__);
+    }
+    public $chained_path3_def = array(
+        'chained'   => 'chained_path2',
+        'path'      => '',
+        # this one gets no args, because it's chained off
+        # another method which will greedily take them all
+    );
+    public function chained_path3($pc){
+        $this->track_execution_stack($pc, __METHOD__);
+    }
+    public $chained_path4_def = array(
+        'chained'   => 'chained_path3',
+        'path'      => 'bitofapath/anotherbitofapath',
+        'endchain'  => 'true',
+    );
+    public function chained_path4($pc){
+        $this->track_execution_stack($pc, __METHOD__);
+    }
+    
 }
 
 ?>
