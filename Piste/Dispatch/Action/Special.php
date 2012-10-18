@@ -27,11 +27,8 @@ Class Special extends \Piste\Dispatch\Action {
         return $this->pathre;
     }
 
-    public function arg_def(){
-        if (!isset($this->arg_def)){
-            $this->arg_def = false;
-        }
-        return $this->arg_def;
+    protected function arg_def(){
+        return false;
     }
 
     public function specifity(){

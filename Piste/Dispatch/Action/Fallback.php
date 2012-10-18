@@ -21,7 +21,7 @@ Class Fallback extends Special {
         return $this->pathre;
     }
 
-    protected function pathre_fallback_params(){
+    private function pathre_fallback_params(){
         $this->pathre .= '(.*)';
         return $this;
     }

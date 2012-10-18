@@ -32,13 +32,13 @@ class Action {
     }
 
     # accessors
-    public function namespace_path(){
+    public final function namespace_path(){
         return $this->namespace_path;
     }
-    public function object_class(){
+    public final function object_class(){
         return get_class($this->object);
     }
-    public function method_name(){
+    public final function method_name(){
         return $this->method_name;
     }
     public function action_path(){
@@ -87,7 +87,7 @@ class Action {
         return $this->pathre;
     }
 
-    public function arg_def(){
+    protected function arg_def(){
         if (!isset($this->arg_def)){
             $this->arg_def = isset($this->def['args']) &&
                              is_int($this->def['args'])
@@ -99,12 +99,12 @@ class Action {
 
     public function specifity(){
         if (!isset($this->specifity)){
-            $this->specifity = (1 / count(explode('/', $this->action_path())));
+            $this->specifity = (1 / count(explode('/', $this->namespace_path())));
         }
         return $this->specifity;
     }
 
-    public function default_template(){
+    public final function default_template(){
         return preg_replace(
                 '/^\//', '',
                 $this->namespace_path() . $this->method_name()
@@ -112,7 +112,7 @@ class Action {
     }
 
     # methods
-    public function better_match($uripath, $that){
+    public final function better_match($uripath, $that){
         if ($that && $this->specifity() > $that->specifity()){
             return $that; # even if this matches, that is better
         }

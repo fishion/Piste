@@ -62,49 +62,34 @@ Class ChainLink extends \Piste\Dispatch\Action {
         return $this->pathre;
     }
 
-    public function args_match($args){
+    public final function args_match($args){
         $args = preg_replace('/^\//', '', $args);
         $this->args = $args ? split('/',$args) : array();
         return ($this->arg_def() === false ||
                 $this->arg_def() == count($this->args) );
     }
 
-    # We need specifity of chainline to determine the best
-    # next link to chain off when joining chains
-    public function specifity(){
-        if (!isset($this->specifity)){
-            # the specifity of the chained action is determined
-            # only by the length of the namespace
-            # TODO - is this true? even if very specific path attribute? not sure.
-            $this->specifity = (1 / count(explode('/', $this->namespace_path)));
-        }
-        return $this->specifity;
-    }
-
     # gets the 'chained' attribute as set in the method definition
-    public function chainedto(){
+    public final function chainedto(){
         return $this->def['chained'];
     }
-    public function chainscope(){
+    public final function chainscope(){
         return preg_replace('/[^\/]*$/', '', $this->chainedto());
     }
-    public function chainmethod(){
+    public final function chainmethod(){
         return array_pop(split('/', $this->chainedto()));
     }
-
-    public function is_start_of_chain(){
+    public final function is_start_of_chain(){
         return ($this->chainedto() == '' || $this->chainedto() == '/');
     }
-
-    public function is_end_of_chain(){
+    public final function is_end_of_chain(){
         return (isset($this->def['endchain']) && $this->def['endchain']);
     }
 
 
-
-/* Recursive function to try to find a route to 
-   the beginning of a chain */
-    public function attach(&$links, &$actions = null){
+    /* Recursive function to try to find a route to 
+    the beginning of a chain */
+    public final function attach(&$links, &$actions = null){
         # have we already checked this?
         if ($this->chain === false){
             return $this->chain;
@@ -140,7 +125,7 @@ Class ChainLink extends \Piste\Dispatch\Action {
         return $this->chain;
     }
 
-    private function better_parent($new, $old = null){
+    private final function better_parent($new, $old = null){
         if ($this->chainmethod() != $new->method_name()){
             return $old; # method names always have to match
         }
