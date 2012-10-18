@@ -1,4 +1,3 @@
-* Move Piste/Piste to Piste/lib/Piste (and same for all php packages)
 * Simpletest and Compass_mechanize dependencies for testing
     * test JSON response switching (should work)
 * scripts for fcgi, modPHP, cgi etc
