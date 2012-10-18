@@ -61,9 +61,9 @@ class Action {
         return $this;
     }
     protected final function pathre_params(){
-        if ($this->arg_def() == false){
+        if ($this->arg_def() === false){
             $this->pathre .= '(\/.+)?';
-        } elseif ($this->arg_def() != 0) {
+        } elseif (is_int($this->arg_def()) && $this->arg_def() > 0) {
             $this->pathre .= '((?:\/[^\/]+){'.$this->arg_def().'})';
         }
         return $this;
@@ -120,19 +120,15 @@ class Action {
     }
 
     public function match($uripath){
-        $match = preg_match('/'.$this->pathre().'/', $uripath, $remain);
-        # remain[1] is not always set as we don't capture extra params
-        # for special methods (before, after, auto)
-        # or when zero args has been specified
-        $args = isset($remain[1]) ?
-            preg_replace('/^\//', '', $remain[1])
-            : '';
-        $this->args = $args != '' ? split('/',$args) : array();
-        if ($match &&
-            ( $this->arg_def() === false
-              || $this->arg_def() == count($this->args) )
-           ){
+        if (preg_match('/'.$this->pathre().'/', $uripath, $remain)){
             \Logger::info('MATCHED ' . $this->pathre());
+            # remain[1] is not always set as we don't capture extra params
+            # for special methods (before, after, auto)
+            # or when zero args has been specified
+            $args = isset($remain[1]) ?
+                preg_replace('/^\//', '', $remain[1])
+                : '';
+            $this->args = $args != '' ? split('/',$args) : array();
             return true;
         }
         return false;

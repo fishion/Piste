@@ -56,8 +56,8 @@ Class Chained extends \Piste\Dispatch\Action {
         $match = preg_match('/'.$this->pathre().'/', $uripath, $remain);
         array_shift($remain); # don't want first index
         foreach ($this->chain as $link){
-            if ($link->arg_def() !== 0){
-                $match = $match && $link->args_match(array_shift($remain));
+            if ($match && $link->arg_def() !== 0){
+                $match = $link->args_match(array_shift($remain));
             }
         }
         if ($match){
