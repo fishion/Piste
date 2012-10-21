@@ -53,7 +53,7 @@ Class Dispatch {
 
 
     private function require_packages($pc){
-        foreach (array('Controller', 'C', 'View', 'V') as $dir){
+        foreach (array('Controller', 'C', 'View', 'V', 'Model', 'M') as $dir){
             $dirpath = $pc->env()->app_lib() . DIRECTORY_SEPARATOR . $pc->env()->app_name() . DIRECTORY_SEPARATOR . $dir;
             \Logger::debug("Requiring Piste Packages from $dirpath");
             $applib_ob = new \File($dirpath);
@@ -71,7 +71,9 @@ Class Dispatch {
             if ( (is_subclass_of($class, 'Piste\Controller') &&
                   preg_match("/^$app_name\\\\Controller\\\\/", $class)) ||
                  (is_subclass_of($class, 'Piste\View') &&
-                  preg_match("/^$app_name\\\\View\\\\/", $class)) ){
+                  preg_match("/^$app_name\\\\View\\\\/", $class)) || 
+                 (is_subclass_of($class, 'Piste\Model') &&
+                  preg_match("/^$app_name\\\\Model\\\\/", $class)) ){
                 \Logger::debug("Registering class $class");
                 $object = new $class($pc);
                 $object->P_register();

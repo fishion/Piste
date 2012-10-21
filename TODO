@@ -1,17 +1,15 @@
 * Simpletest and Compass_mechanize dependencies for testing
     * test JSON response switching (should work)
-* scripts for fcgi, modPHP, cgi etc
+* scripts for CGI, mod_PHP, php_fpm, fcgi, etc
     * Also, run own lightweight http server for development?
-* Models
 * cookies
 * scripts to create projects
-* fix all print_r, error_log, die for consistency
+* Might want to be able to detach & call other Controller methods. If so, will need to be able to define non-dispatch-endpoint methods. They'd probably be protected methods, accessed indirectly through the $pc object.
 
 * grep all TODO (across all php_packages)
 * Documentation (across all php_packages)
 * Sort out PEAR packaging and installation of all PHP packages
 
-* Might want to be able to detach & call other Controller methods. If so, will need to be able to define non-dispatch-endpoint methods. They'd probably be protected methods, accessed indirectly through the $pc object.
 
 Scripts to create projects
 --------------------------

@@ -15,6 +15,7 @@ File
 require_once('Piste/Env.php');
 require_once('Piste/Request.php');
 require_once('Piste/Response.php');
+require_once('Piste/Dispatch/Models.php');
 
 /*=head1 Synopsis
 */
@@ -23,12 +24,20 @@ Class Context {
     private $request;
     private $response;
     private $action;
+    private $models;
    
     function __construct($app_name){
-        $this->env = new Env($app_name);
-        $this->request = new Request();
+        $this->env      = new Env($app_name);
+        $this->request  = new Request();
         $this->response = new Response();
+        $this->models   = \Piste\Dispatch\Models::singleton();
     }
+
+    # access to models
+    function model($model){
+        return $this->models->get_model($model);
+    }
+
 
     public function env(){return $this->env;}
     public function request(){return $this->request;}
@@ -36,6 +45,7 @@ Class Context {
     public function response(){return $this->response;}
     public function res(){return $this->response;}
 
+    # set/get which action we decided was the main dispatch action
     public function action(\Piste\Dispatch\Action $action = null){
         if (isset($action)){
             $this->action = $action;
