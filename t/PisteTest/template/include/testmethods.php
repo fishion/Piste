@@ -1,6 +1,6 @@
 <?php
 
-$GLOBALS['timeout_pass'] = 50;
+$GLOBALS['timeout_pass'] = 1;
 $GLOBALS['timeout_fail'] = 500;
 $GLOBALS['exit_on_fail'] = true;
 
@@ -9,9 +9,10 @@ function test(){
     $state = getstate();
     $tn = $state['testno'];
 
-    if ($tn > count($testlist)){
-    testoutput($tn, $state, $pass, $failstr);
-        die("Trying to test beyond number of tests. Something's gone a bit wrong");
+    if ($tn >= count($testlist)){
+        # we're at the end of tests. show results.
+        results();
+        return;
     }
 
     list ($expected_controllers, $expected_args) = array_untangle($testlist[$tn][1]);

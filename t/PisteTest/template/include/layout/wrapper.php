@@ -15,9 +15,15 @@
 </head>
 <body>
 
+<?php require_once('testlist.php');
+      ob_start();
+      test();
+      $testoutput = ob_get_clean(); ?>
+
 <h1><?php global $pagetitle; echo (isset($pagetitle) ? $pagetitle : 'No title') ?></h1>
 
-<?php echo $Pcontent ?>
+<?php echo $Pcontent;
+      echo $testoutput; ?>
 
 <div id="footer">&copy; <?php echo date("Y"); ?> Alex Monney</div>
 
