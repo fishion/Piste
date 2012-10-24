@@ -18,9 +18,9 @@
 <h1><?php global $pagetitle; echo (isset($pagetitle) ? $pagetitle : 'Running Piste tests') ?></h1>
 
 <?php echo $Pcontent;
-      require_once('testmethods.php');
-      $t = new TestSimple();
-      require_once('testlist.php');
+      require_once('Test/Simple.php');
+      $t = new \Test\Simple();
+      require('tests.php');
       $t->run();
 ?>
 
