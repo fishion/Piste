@@ -15,15 +15,14 @@
 </head>
 <body>
 
-<?php require_once('testlist.php');
-      ob_start();
-      test();
-      $testoutput = ob_get_clean(); ?>
-
-<h1><?php global $pagetitle; echo (isset($pagetitle) ? $pagetitle : 'No title') ?></h1>
+<h1><?php global $pagetitle; echo (isset($pagetitle) ? $pagetitle : 'Running Piste tests') ?></h1>
 
 <?php echo $Pcontent;
-      echo $testoutput; ?>
+      require_once('testmethods.php');
+      $t = new TestSimple();
+      require_once('testlist.php');
+      $t->run();
+?>
 
 <div id="footer">&copy; <?php echo date("Y"); ?> Alex Monney</div>
 

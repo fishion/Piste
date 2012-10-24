@@ -1,114 +1,112 @@
 <?php
 
-$GLOBALS['timeout_pass'] = 1;
-$GLOBALS['timeout_fail'] = 500;
-$GLOBALS['exit_on_fail'] = true;
+class TestSimple {
+    private $exit_on_fail = true;
 
-function test(){
-    global $testlist, $execution_stack, $template, $args;
-    $state = getstate();
-    $tn = $state['testno'];
+    private $testlist = array();
+    private $redirects = 0;
+    private $passed = array();
+    private $failed = array();
+    private $tn = false;
 
-    if ($tn >= count($testlist)){
-        # we're at the end of tests. show results.
-        results();
-        return;
+    public final function is($subject, $control, $desc = null){
+        array_push($this->testlist,
+            array(
+                'type' => 'is',
+                'func' => function($args){
+                    return ($args[0] === $args[1]) ? true : false;
+                },
+                'args' => array($subject, $control),
+                'desc' => $desc ? $desc : "$subject == $control",
+            )
+        );
+    }
+    public final function redirect($url){
+        $this->redirects++;
+        array_push($this->testlist,
+            array('redirect' => $url,)
+        );
     }
 
-    list ($expected_controllers, $expected_args) = array_untangle($testlist[$tn][1]);
-    list ($received_controllers, $received_args) = array_untangle($execution_stack);
 
-    # test execution stack
-    $pass1 = ($expected_controllers == $received_controllers);
-    $failstr = $pass1 ? '' :
-        '<br> - Expected execution stack : ' . join(', ',$expected_controllers) .
-        '<br> - Actual execution stack ..: ' . join(', ',$received_controllers);
-    # test args
-    $pass2 = ($expected_args == $received_args);
-    $failstr .= $pass2 ? '' :
-        "<br> - Expected Args : " . '('.join(',',array_map(function($n){return '(' . join(',',$n) . ')';},$expected_args )) .')'.
-        "<br> - Actual Args ..: " . '('.join(',',array_map(function($n){return '(' . join(',',$n) . ')';},$received_args )). ')';
-    # test template
-    $pass3 = ($template == $testlist[$tn][2]);
-    $failstr .= $pass3 ? '' :
-        "<br> - Expected Template : " . $testlist[$tn][2] .
-        "<br> - Actual template ..: $template";
-    $pass = ($pass1 && $pass2 && $pass3);
-    if ($pass){
-        $state['pass']++;
+    public final function run(){
+        echo '<ol>';
+
+        # right. where are we
+        # fastforward to where we left off
+        $this->restorestate();
+        while ( $this->tn > 0 &&
+                list ($tn, $test) = each($this->testlist) ){
+            if (!isset($test['redirect'])){
+                # dump out results so far
+                $this->testoutput($test, in_array($tn, $this->passed));
+            }
+            if ($tn >= $this->tn){
+                break;
+            }
+        }
+
+        while (list ($tn, $test) = each($this->testlist) ){
+            $this->tn = $tn;
+            if (isset($test['redirect'])){
+                #echo "<script>location.href='$url';</script>";
+                echo sprintf("<script>setTimeout(function(){location.href = '%s'}, 10)</script>", $test['redirect']);
+                $this->storestate();
+                break;
+            }
+            try {
+                $passed = $test['func']($test['args']);
+                if ($passed){
+                    array_push($this->passed, $tn);
+                } else {
+                    array_push($this->failed, $tn);
+                }
+                $this->testoutput($test, $passed);
+            } catch(\Exception $err){
+                echo sprintf("Failed to run test $tn (%s) : %s", $test['desc'], $err);
+            }       
+        }
+        echo '</ol>';
+
+        # get to the end, show results
+        $this->results();
     }
 
- 
-    testoutput($tn, $state, $pass, $failstr);
-    $state['testno']++;
-    storestate($state);
-    if (isset($_GET['singletest'])){
-        return;
+    private final function testcount(){
+        return count($this->testlist) - $this->redirects;
     }
-    redirect($tn+1, $pass);
-}
-
-function testoutput($tn, &$state, $pass, $failstr){
-    global $testlist, $pagetitle;
-    $pagetitle = "Test $tn";
-    if (!$pass){
+    private final function testoutput($test, $pass){
         $passclass = $pass ? 'pass' : 'fail';
-        $state['results'] .= "<li class=\"$passclass\">" . strtoupper($passclass) . ' : ';
-        $state['results'] .= $testlist[$tn][0] . "', " . $testlist[$tn][3] . ". $failstr</li>";
+        echo "<li class=\"$passclass\">" . strtoupper($passclass) . ' : ';
+        echo $test['desc']. '</li>';
     }
-    echo '<ol>' . $state['results'] . '</ol>';
-}
-
-function redirect($tn,$pass){
-    global $testlist, $timeout_pass, $timeout_fail, $exit_on_fail;
-    if (!$pass && $exit_on_fail) {return;}
-    $redirect = (isset($testlist[$tn])) ? $testlist[$tn][0] : '/results';
-    $timeout = $pass ? $timeout_pass : $timeout_fail;
-    echo "<script>setTimeout(function(){location.href = '$redirect'}, $timeout)</script>";
-}
-
-function results(){
-    global $testlist, $pagetitle;
-    $state = getstate();
-    $allrun = ($state['testno'] == count($testlist)) ? 'pass' : 'fail';
-    $allpassed = ($state['pass'] == count($testlist)) ? 'pass' : 'fail';
-
-    $pagetitle = 'Test Results';
-    echo "<p class=\"$allrun\">" . $state['testno'] .' of '. count($testlist) .' tests run</p>';
-    echo "<p class=\"$allpassed\">" . $state['pass'] .' of '. count($testlist) .' tests passed</p>';
-    echo '<ol>' . $state['results'] . '</ol>';
-}
-
-
-function storestate($state){
-    setcookie("Pistetest[testno]", $state['testno'], time()+60, '/');
-    setcookie("Pistetest[results]", $state['results'], time()+60, '/');
-    setcookie("Pistetest[pass]", $state['pass'], time()+60, '/');
-}
-function getstate(){
-    $cookies = isset($_COOKIE["Pistetest"]) ? $_COOKIE["Pistetest"] : null;
-    # if no referrer, delete cookie
-    if (!isset($_SERVER['HTTP_REFERER'])){
-        $cookies = null;
+    private function results(){
+        $allpassed = (count($this->passed) == $this->testcount()) ? 'pass' : 'fail';
+        echo sprintf("<p class=\"$allpassed\">%s of %s tests passed, %s failed</p>", count($this->passed), $this->testcount(), count($this->failed));
     }
-    return isset($cookies) ? $cookies : 
-    array(
-        'testno' => 0,
-        'pass' => 0,
-        'results' => ' ',
-    );
-}
 
-function array_untangle($array){
-    $return = array(array(), array());
-    foreach ($array as $index => $val){
-        if ($index & 1){
-            array_push($return[1], $val);
-        } else {
-            array_push($return[0], $val);
+
+    private function storestate(){
+        setcookie("Pistetest[tn]", $this->tn, time()+60, '/');
+        setcookie("Pistetest[passed]", join(',',$this->passed), time()+60, '/');
+        setcookie("Pistetest[failed]", join(',',$this->failed), time()+60, '/');
+    }
+    private function restorestate(){
+        if (!isset($_SERVER['HTTP_REFERER'])){
+            # if no referrer, don't restore anything and delete cookie
+            $_COOKIE["Pistetest"] = null;
+        } elseif (isset($_COOKIE["Pistetest"])){
+            $this->tn = $_COOKIE["Pistetest"]['tn'];
+            $this->passed = isset($_COOKIE["Pistetest"]['passed']) ?
+                            split(',',$_COOKIE["Pistetest"]['passed'])
+                            : array();
+            $this->failed = isset($_COOKIE["Pistetest"]['failed']) ?
+                            split(',',$_COOKIE["Pistetest"]['failed'])
+                            : array();
         }
     }
-    return $return;
-}
+}   
+
+
 
 ?>
