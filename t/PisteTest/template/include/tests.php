@@ -1,10 +1,10 @@
 <?php
 
-#################################################
-# Basic COntroller and Special method behaviour #
-#################################################
+$t->heading('Testing dispatch', 2);
 
-# test root controller
+$t->heading('Basic Controller and Special method behaviour', 3);
+
+$t->heading('test root controller', 4);
 $t->is( $GLOBALS['execution_stack'],
         array(  'Root::before', array(),
                 'Root::auto',   array(),
@@ -51,7 +51,7 @@ $t->is( $GLOBALS['execution_stack'],
 $t->is( $GLOBALS['template'], 'relativepath',
                  "uses correct default template");
 
-# test level1 controller
+$t->heading('test level1 controller', 4);
 $t->redirect('/level1/');
 $t->is( $GLOBALS['execution_stack'],
           array(
@@ -104,7 +104,7 @@ $t->is( $GLOBALS['execution_stack'],
 $t->is( $GLOBALS['template'], 'level1/relativepath',
                  "uses correct default template");
 
-# test level2 controller
+$t->heading('test level2 controller', 4);
 $t->redirect('/level1/level2/');
 $t->is( $GLOBALS['execution_stack'],
           array(
@@ -161,7 +161,7 @@ $t->is( $GLOBALS['execution_stack'],
 $t->is( $GLOBALS['template'], 'level1/level2/relativepath',
                  "uses correct default template");
 
-# test fallback methods
+$t->heading('test fallback methods', 4);
 $t->redirect('/doesntexist');
 $t->is( $GLOBALS['execution_stack'],
           array(
@@ -246,9 +246,7 @@ $t->is( $GLOBALS['execution_stack'],
 $t->is( $GLOBALS['template'], 'fallback',
                  "uses correct default template");
 
-############################################
-# Test Passing of agruments to controllers #
-############################################
+$t->heading('Test Passing of agruments to controllers', 3);
 
 $t->redirect('/nofixedargs/param1/param2');
 $t->is( $GLOBALS['execution_stack'],
@@ -322,7 +320,7 @@ $t->is( $GLOBALS['execution_stack'],
 $t->is( $GLOBALS['template'], 'fallback',
                  "uses correct default template");
 
-# do some level1 tests too
+$t->heading('do some level1 tests too', 4);
 $t->redirect('/level1/nofixedargs/param1/param2');
 $t->is( $GLOBALS['execution_stack'],
           array(
@@ -374,9 +372,8 @@ $t->is( $GLOBALS['execution_stack'],
 $t->is( $GLOBALS['template'], 'index',
                  "uses correct default template");
 
-################################################
-# Test specifity is respected
-################################################
+$t->heading('Test specifity is respected', 3);
+
 $t->redirect('/level1/specifity/morespecifity/param1');
 $t->is( $GLOBALS['execution_stack'],
           array(
@@ -390,9 +387,7 @@ $t->is( $GLOBALS['execution_stack'],
 $t->is( $GLOBALS['template'], 'index',
                  "uses correct default template");
 
-################################################
-# Chaining controllers
-################################################
+$t->heading('Chaining controllers', 3);
 
 # all in same namespace (with same name methods
 # existing in same namespace
@@ -411,7 +406,6 @@ $t->is( $GLOBALS['execution_stack'],
 $t->is( $GLOBALS['template'], 'level1/chained3',
                  "uses correct default template");
 
-# chaining off method in parent namespace
 $t->redirect('/level1/chained1/param1/chained2/param2/chained2_3/param3');
 $t->is( $GLOBALS['execution_stack'],
           array(
@@ -428,7 +422,6 @@ $t->is( $GLOBALS['execution_stack'],
 $t->is( $GLOBALS['template'], 'level1/level2/chained2_3',
                  "uses correct default template");
 
-# chaining across arbitrary global namespaces
 $t->redirect('/level1/chained1/param1/chained2/chained4');
 $t->is( $GLOBALS['execution_stack'],
           array(
@@ -444,7 +437,6 @@ $t->is( $GLOBALS['execution_stack'],
 $t->is( $GLOBALS['template'], 'level1/chained4',
                  "uses correct default template");
 
-# chaining across arbitrary relative namespaces
 $t->redirect('/level1/chained1/param1/chained2/chained5');
 $t->is( $GLOBALS['execution_stack'],
           array(
@@ -460,7 +452,6 @@ $t->is( $GLOBALS['execution_stack'],
 $t->is( $GLOBALS['template'], 'level1/chained5',
                  "uses correct default template");
 
-# Chain to namespaced root action
 $t->redirect('/chained1/param1/chained6');
 $t->is( $GLOBALS['execution_stack'],
           array(
@@ -475,7 +466,6 @@ $t->is( $GLOBALS['execution_stack'],
 $t->is( $GLOBALS['template'], 'level1/chained6',
                  "uses correct default template");
 
-# test chained methods with 'path' set
 $t->redirect('/chained1/param1/bitofapath/param2/param3/param4/bitofapath/anotherbitofapath');
 $t->is( $GLOBALS['execution_stack'],
           array(
@@ -494,9 +484,8 @@ $t->is( $GLOBALS['execution_stack'],
 $t->is( $GLOBALS['template'], 'level1/level2/chained_path4',
                  "uses correct default template");
 
-################################################
-# Redirecting
-################################################
+$t->heading('Redirecting', 2);
+
 $t->redirect('/redirect/param1');
 $t->is( $GLOBALS['execution_stack'],
           array(
@@ -508,5 +497,13 @@ $t->is( $GLOBALS['execution_stack'],
           "Redirect from 'redirect' to 'redirected'. Retain parameter");
 $t->is( $GLOBALS['template'], 'index',
                  "uses correct default template");
-          
+
+
+
+$t->heading('Test Model Access', 2);
+
+$t->heading('Test Switching Views', 2);
+
+$t->heading('Test Cookies', 2);
+ 
 ?>

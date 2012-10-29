@@ -1,5 +1,7 @@
-* Simpletest and Compass_mechanize dependencies for testing
-    * test JSON response switching (should work)
+* test JSON response switching (should work)
+* Properly capture all dependencies of Piste
+    * PEARify all the dependencies and use the PEAR installed ones in apache
+    Logger, Testsimple, probably most of them.
 * scripts for CGI, mod_PHP, php_fpm, fcgi, etc
     * Also, run own lightweight http server for development?
 * cookies
