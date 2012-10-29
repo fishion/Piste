@@ -499,8 +499,10 @@ $t->is( $GLOBALS['template'], 'index',
                  "uses correct default template");
 
 
-
 $t->heading('Test Model Access', 2);
+
+$t->redirect('/model/');
+$t->is($GLOBALS['testdata'], 'TestData', 'Managed to get test data out of model');
 
 $t->heading('Test Switching Views', 2);
 
