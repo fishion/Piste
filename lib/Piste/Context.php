@@ -27,6 +27,9 @@ Class Context {
     private $cookies;
     private $action;
     private $models;
+
+    # capture execution stack for easier deugging
+    public $execution_stack = array();
    
     function __construct($app_name){
         $this->env      = new Env($app_name);

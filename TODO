@@ -1,4 +1,3 @@
-* DO we need ot track execution stack in test? Can we do that anyway in Piste?
 * Params as well as args
 * test JSON response switching (should work)
 * Properly capture all dependencies of Piste

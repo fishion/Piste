@@ -135,6 +135,10 @@ class Action {
     }
 
     public function call($pc){
+        # track execution_stack
+        array_push($pc->execution_stack, preg_replace('/^.*\\\Controller\\\/','',$this->method->class . '::' . $this->method_name));
+        array_push($pc->execution_stack, $this->args);
+        # make the call
         $this->object->P_call_action($this->method_name, $this->args, $pc);
     }
 

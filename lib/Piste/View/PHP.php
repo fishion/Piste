@@ -77,17 +77,17 @@ Default php
             $pc->stash('template', $pc->action()->default_template());
         }
 
-        # make stash available as vars in template
-        # TODO this seems like ot might be dangerous. What vulnerabilities
-        # exist? Are we being to trusting of what's in the stash?
+        # make stash available as global vars in template
         foreach ($pc->response()->stash() as $key => $val){
             $GLOBALS[$key] = $val;
         }
+        # make Piste Context object available too. WHy not.
+        $GLOBALS['pc'] = $pc;
 
         try {
             require $this->get_template($pc);
         } catch(\Exception $e){
-            echo "File Error: $e<br>";
+            throw new Exception("File Error - couldn't find template: $e<br>");
         }
         if ($this->config['DEBUG_SERVER']) {
             echo '<pre>';
