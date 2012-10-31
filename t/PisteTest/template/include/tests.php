@@ -485,7 +485,6 @@ $t->is( $GLOBALS['template'], 'level1/level2/chained_path4',
                  "uses correct default template");
 
 $t->heading('Redirecting', 2);
-
 $t->redirect('/redirect/param1');
 $t->is( $GLOBALS['execution_stack'],
           array(
@@ -500,12 +499,21 @@ $t->is( $GLOBALS['template'], 'index',
 
 
 $t->heading('Test Model Access', 2);
-
 $t->redirect('/model/');
-$t->is($GLOBALS['testdata'], 'TestData', 'Managed to get test data out of model');
+$t->is(isset($GLOBALS['testdata']) ? $GLOBALS['testdata'] : '', 'TestData', 'Managed to get test data out of model');
+
+
+$t->heading('Test Cookies', 2);
+$t->redirect('/cookie/set/' . time());
+$time = $GLOBALS['timetomatch'] ? $GLOBALS['timetomatch'] : 'notimefound';
+$t->redirect('/cookie/get/' . $time ); # pass time param
+$t->is(isset($GLOBALS['mytime']) ? $GLOBALS['mytime'] : '', (string) $time, "got right value from cookie");
+$t->redirect('/cookie/delete');
+$t->redirect('/cookie/get');
+$t->is(isset($GLOBALS['mytime']) ? $GLOBALS['mytime'] : '', '', "time value no longer in cookie");
+
 
 $t->heading('Test Switching Views', 2);
 
-$t->heading('Test Cookies', 2);
  
 ?>

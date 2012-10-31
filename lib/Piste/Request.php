@@ -11,6 +11,7 @@ require_once('Piste/Path/URI.php');
 
 Class Request {
     private $path;
+    private $args;
 
     function __construct(){
         $this->path = new Path\URI();
@@ -29,7 +30,10 @@ Class Request {
         $this->args = $args;
         return $this->args;
     }
-    public function args(){
+    public function args($index = null){
+        if ($index !== null){
+            return $this->args[$index];
+        }
         return $this->args;
     }
 
