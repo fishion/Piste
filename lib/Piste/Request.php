@@ -21,10 +21,27 @@ Class Request {
         return $this->path;
     }
 
+    # http param functions. All designed not to complain if paramss not defined
+    public function params(){
+        return array_merge($_GET, $_POST);
+    }
+    public function param($param){
+        $all = $this->params();
+        return isset($all[$param]) ? $all[$param] : null;
+    }
+    public function get_params(){
+        return $_GET;
+    }
     public function get_param($param){
-        # won't bitch if param not defined
         return isset($_GET[$param]) ? $_GET[$param] : null;
     }
+    public function post_params(){
+        return $_POST;
+    }
+    public function post_param($param){
+        return isset($_POST[$param]) ? $_POST[$param] : null;
+    }
+
 
     public function set_args($args = null){
         $this->args = $args;

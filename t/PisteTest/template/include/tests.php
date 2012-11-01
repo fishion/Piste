@@ -256,7 +256,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
                 'Root::nofixedargs',array('param1', 'param2'),
                 'Root::after',      array(),
           ),
-          '2 Params passed to nofixedargs method. Resolves fine');
+          '2 Args passed to nofixedargs method. Resolves fine');
 $t->is( $GLOBALS['pc']->template(), 'index',
                  "uses correct default template");
 
@@ -268,7 +268,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
                 'Root::fixedargs0', array(),
                 'Root::after',      array(),
           ),
-          'No Params passed to Args(0) method.');
+          'No Args passed to Args(0) method.');
 $t->is( $GLOBALS['pc']->template(), 'index',
                  "uses correct default template");
 
@@ -280,7 +280,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
                 'Root::fallback',   array('fixedargs0','param1'),
                 'Root::after',      array(),
           ),
-          '1 Params passed to Args(0) method. Doesn\'t resolve - fallback used');
+          '1 Args passed to Args(0) method. Doesn\'t resolve - fallback used');
 $t->is( $GLOBALS['pc']->template(), 'fallback',
                  "uses correct default template");
 
@@ -292,7 +292,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
                 'Root::fallback',   array('fixedargs1'),
                 'Root::after',      array(),
           ),
-          '0 Params passed to Args(1) method. Doesn\'t resolve - fallback used');
+          '0 Args passed to Args(1) method. Doesn\'t resolve - fallback used');
 $t->is( $GLOBALS['pc']->template(), 'fallback',
                  "uses correct default template");
 
@@ -304,7 +304,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
                 'Root::fixedargs1', array('param1'),
                 'Root::after',      array(),
           ),
-          '1 Param passed to Args(1) method. All happy');
+          '1 Arg passed to Args(1) method. All happy');
 $t->is( $GLOBALS['pc']->template(), 'index',
                  "uses correct default template");
 
@@ -316,7 +316,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
                 'Root::fallback',   array('fixedargs1','param1','param2'),
                 'Root::after',      array(),
           ),
-          '2 Params passed to Args(1) method. Doesn\'t resolve - fallback used');
+          '2 Args passed to Args(1) method. Doesn\'t resolve - fallback used');
 $t->is( $GLOBALS['pc']->template(), 'fallback',
                  "uses correct default template");
 
@@ -330,7 +330,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
                 'Level1::nofixedargs',  array('param1', 'param2'),
                 'Level1::after',        array(),
           ),
-          '2 Params passed to level1/nofixedargs method. Resolves fine');
+          '2 Args passed to level1/nofixedargs method. Resolves fine');
 $t->is( $GLOBALS['pc']->template(), 'index',
                  "uses correct default template");
 
@@ -343,7 +343,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
                 'Level1::fixedargs0',   array(),
                 'Level1::after',        array(),
           ),
-          'No Params passed to Args(0) method. Resolves OK');
+          'No Args passed to Args(0) method. Resolves OK');
 $t->is( $GLOBALS['pc']->template(), 'index',
                  "uses correct default template");
 
@@ -355,7 +355,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
                 'Root::fallback',   array('level1','fixedargs0','param1'),
                 'Root::after',      array(),
           ),
-          '1 Params passed to Args(0) method. Doesn\'t resolve - fallback used');
+          '1 Args passed to Args(0) method. Doesn\'t resolve - fallback used');
 $t->is( $GLOBALS['pc']->template(), 'fallback',
                  "uses correct default template");
 
@@ -368,9 +368,29 @@ $t->is( $GLOBALS['pc']->execution_stack,
                 'Level1::fixedargs1',   array('param1'),
                 'Level1::after',        array(),
           ),
-          '1 Param passed to Args(1) method. All happy');
+          '1 Arg passed to Args(1) method. All happy');
 $t->is( $GLOBALS['pc']->template(), 'index',
                  "uses correct default template");
+
+
+$t->heading('Test Passing of query params to controllers', 3);
+
+$t->redirect('/indexi?foo=bar&baz=boom');
+$get_params = $GLOBALS['pc']->req()->get_params();
+$foo = isset($get_params['foo']) ? $get_params['foo'] : '';
+$baz = isset($get_params['baz']) ? $get_params['baz'] : '';
+$t->is($GLOBALS['pc']->req()->get_param('foo'), 'bar', 'foo set correctly from get_param');
+$t->is($GLOBALS['pc']->req()->get_param('baz'), 'boom', 'baz set correctly from get_param');
+$t->is($foo, 'bar', 'foo set correctly from get_params');
+$t->is($baz, 'boom', 'baz set correctly from get_params');
+$params = $GLOBALS['pc']->req()->params();
+$foo = isset($params['foo']) ? $params['foo'] : '';
+$baz = isset($params['baz']) ? $params['baz'] : '';
+$t->is($GLOBALS['pc']->req()->param('foo'), 'bar', 'foo set correctly from param');
+$t->is($GLOBALS['pc']->req()->param('baz'), 'boom', 'baz set correctly from param');
+$t->is($foo, 'bar', 'foo set correctly from params');
+$t->is($baz, 'boom', 'baz set correctly from params');
+
 
 $t->heading('Test specifity is respected', 3);
 
