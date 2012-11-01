@@ -8,11 +8,15 @@ Piste\Cookies
 */
 Class Cookies {
 
-    public function set($name, $value = '', $expire = 0, $path = '/', $domain = null, $secure = false, $httponly = false){
-        if ($domain === null){
-            $domain = $_SERVER['HTTP_HOST']; #SERVER_NAME?
+    public function set(){
+        $args = func_get_args();
+        if (!isset($args[0])){
+            throw new \Exception("Gonna need to give that cookie a name.");
         }
-        setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
+        $args[1] = isset($args[1]) ? $args[1] : false;
+        $args[2] = isset($args[2]) ? $args[2] : 0;
+        $args[3] = isset($args[3]) ? $args[3] : '/';
+        call_user_func_array('setcookie', $args);
     }
 
     public function get($name){
@@ -22,11 +26,12 @@ Class Cookies {
         return null;
     }
 
-    public function delete($name, $expire = 0, $path = '/', $domain = null, $secure = false, $httponly = false){
-        if ($domain === null){
-            $domain = $_SERVER['HTTP_HOST']; #SERVER_NAME?
-        }
-        setcookie($name, false, $expire, $path, $domain, $secure, $httponly);
+    public function delete(){
+        $args = func_get_args();
+        array_splice($args, 1, 0, false);
+        $args[2] = isset($args[2]) ? $args[2] : 0;
+        $args[3] = isset($args[3]) ? $args[3] : '/';
+        call_user_func_array('setcookie', $args);
     }
 }
 

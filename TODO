@@ -1,5 +1,3 @@
-* Redo Cookie functions to use func_get_arg() methods rather than fixed number of params
-* investigate trigger_error()
 * Params as well as args
 * test JSON response switching (should work)
 * Properly capture all dependencies of Piste
@@ -10,6 +8,7 @@
 * cookies
 * scripts to create projects
 * Might want to be able to detach & call other Controller methods. If so, will need to be able to define non-dispatch-endpoint methods. They'd probably be protected methods, accessed indirectly through the $pc object.
+* investigate trigger_error()
 
 * grep all TODO (across all php_packages)
 * Documentation (across all php_packages)
