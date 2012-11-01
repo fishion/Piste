@@ -27,6 +27,7 @@ Class Context {
     private $cookies;
     private $action;
     private $models;
+    private $template;
 
     # capture execution stack for easier deugging
     public $execution_stack = array();
@@ -59,7 +60,15 @@ Class Context {
         }
         return $this->action;
     }
+    # get/set a template for rendering output
+    public final function template($template = null){
+        if (isset($template)){
+            $this->template = $template;
+        }
+        return $this->template;
+    }
 
+    # proxy methods into other objects
     public function stash($v1 = null, $v2=null){
         return $this->response->stash($v1, $v2);
     }

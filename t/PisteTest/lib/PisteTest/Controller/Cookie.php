@@ -14,18 +14,18 @@ Class Cookie extends \Piste\Controller {
         $time = $pc->args(0);
         $pc->stash('timetomatch', $time);
         $pc->cookies()->set('mytime', $time);
-        $pc->stash('template', 'index');
+        $pc->template('index');
     }
 
     public function get($pc){
         $pc->stash('timetomatch', $pc->args(0));
         $pc->stash('mytime', $pc->cookies()->get('mytime'));
-        $pc->stash('template', 'index');
+        $pc->template('index');
     }
 
     public function delete($pc){
         $pc->cookies()->delete('mytime');
-        $pc->stash('template', 'index');
+        $pc->template('index');
     }
 }
 

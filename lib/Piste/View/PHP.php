@@ -72,9 +72,9 @@ Default php
         ob_start();
 
         # make sure we have a template set
-        if (!$pc->stash('template') && $pc->action()){
+        if (!$pc->template() && $pc->action()){
             \Logger::debug('Setting default template to ' . $pc->action()->default_template());
-            $pc->stash('template', $pc->action()->default_template());
+            $pc->template($pc->action()->default_template());
         }
 
         # make stash available as global vars in template
@@ -87,7 +87,7 @@ Default php
         try {
             require $this->get_template($pc);
         } catch(\Exception $e){
-            throw new Exception("File Error - couldn't find template: $e<br>");
+            throw new \Exception("File Error - couldn't find template: $e<br>");
         }
         if ($this->config['DEBUG_SERVER']) {
             echo '<pre>';
@@ -106,7 +106,7 @@ Default php
 
     public function render_404($pc){
         if (isset($this->config['404'])){
-            $pc->stash('template', $this->config['404']);
+            $pc->template($this->config['404']);
             $this->render($pc);
         } else {
             parent::render_404($pc);
@@ -118,7 +118,7 @@ Default php
     private function get_template($pc){
         $page = $pc->env()->app_base()
               . $this->config['template_base']
-              . $pc->stash('template')
+              . $pc->template()
               . $this->config['template_suffix'];
 
         $template = new \File($page);

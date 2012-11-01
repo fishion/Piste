@@ -39,19 +39,19 @@ Class Root extends \Piste\Controller {
 
     # url param testing
     public function nofixedargs($pc){
-        $pc->stash('template', 'index');
+        $pc->template('index');
     }
     public $fixedargs0_def = array(
         'args' => 0,
     );
     public function fixedargs0($pc){
-        $pc->stash('template', 'index');
+        $pc->template('index');
     }
     public $fixedargs1_def = array(
         'args' => 1,
     );
     public function fixedargs1($pc){
-        $pc->stash('template', 'index');
+        $pc->template('index');
     }
 
     # redirection
@@ -65,7 +65,7 @@ Class Root extends \Piste\Controller {
         'args' => 1,
     );
     public function redirected($pc){
-        $pc->stash('template', 'index');
+        $pc->template('index');
     }
 
     # a chained action

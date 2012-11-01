@@ -10,7 +10,7 @@ Class Model extends \Piste\Controller {
     public function index($pc){
         $ds = $pc->model('TestDataSource');
         $pc->stash('testdata', $ds->data());
-        $pc->stash('template', 'index');
+        $pc->template('index');
     }
 
 }

@@ -1,3 +1,5 @@
+* Redo Cookie functions to use func_get_arg() methods rather than fixed number of params
+* investigate trigger_error()
 * Params as well as args
 * test JSON response switching (should work)
 * Properly capture all dependencies of Piste

@@ -35,31 +35,31 @@ Class Level1 extends \Piste\Controller {
     
     # url param testing
     public function nofixedargs($pc){
-        $pc->stash('template', 'index');
+        $pc->template('index');
     }
     public $fixedargs0_def = array(
         'args' => 0,
     );
     public function fixedargs0($pc){
-        $pc->stash('template', 'index');
+        $pc->template('index');
     }
     public $fixedargs1_def = array(
         'args' => 1,
     );
     public function fixedargs1($pc){
-        $pc->stash('template', 'index');
+        $pc->template('index');
     }
 
     # Test specifity
     public function specifity($pc){
-        $pc->stash('template', 'index');
+        $pc->template('index');
     }
     public $morespecifity_def = array(
         'path' => 'specifity/morespecifity',
         'args' => 1,
     );
     public function morespecifity($pc){
-        $pc->stash('template', 'index');
+        $pc->template('index');
     }
 
     ######
