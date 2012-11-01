@@ -32,7 +32,7 @@ Class Request {
     }
     public function args($index = null){
         if ($index !== null){
-            return $this->args[$index];
+            return (isset($this->args[$index])) ? $this->args[$index] : null;
         }
         return $this->args;
     }

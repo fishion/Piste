@@ -505,7 +505,7 @@ $t->is(isset($GLOBALS['testdata']) ? $GLOBALS['testdata'] : '', 'TestData', 'Man
 
 $t->heading('Test Cookies', 2);
 $t->redirect('/cookie/set/' . time());
-$time = $GLOBALS['timetomatch'] ? $GLOBALS['timetomatch'] : 'notimefound';
+$time = isset($GLOBALS['timetomatch']) ? $GLOBALS['timetomatch'] : 'notimefound';
 $t->redirect('/cookie/get/' . $time ); # pass time param
 $t->is(isset($GLOBALS['mytime']) ? $GLOBALS['mytime'] : '', (string) $time, "got right value from cookie");
 $t->redirect('/cookie/delete');
