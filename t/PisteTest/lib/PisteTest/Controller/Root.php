@@ -21,63 +21,70 @@ Class Root extends \Piste\Controller {
     public function index($pc) {
     }
 
-    # test explicitly defined absolute path
-    public $absolutepath_def = array(
-        'path' => '/absolute/path/in/root'
-    );
+    /**
+     * test explicitly defined absolute path
+     *
+     * { "path": "/absolute/path/in/root" }
+     */
     public function absolutepath($pc){
     }
 
-    # test explicitly defined relative path
-    # which is really same as absolute in Root controller
-    public $relativepath_def = array(
-        'path' => 'relative/path/in/root'
-    );
+    /**
+     * test explicitly defined relative path
+     * which is really same as absolute in Root controller
+     *
+     * { "path": "relative/path/in/root" }
+     */
     public function relativepath($pc){
     }
 
 
-    # url param testing
+    /**
+     * url param testing
+     */
     public function nofixedargs($pc){
         $pc->template('index');
     }
-    public $fixedargs0_def = array(
-        'args' => 0,
-    );
+    /**
+     * { "args" : 0 }
+     */
     public function fixedargs0($pc){
         $pc->template('index');
     }
-    public $fixedargs1_def = array(
-        'args' => 1,
-    );
+    /**
+     * { "args" : 1 }
+     */
     public function fixedargs1($pc){
         $pc->template('index');
     }
 
-    # redirection
-    public $redirect_def = array(
-        'args' => 1,
-    );
+    /**
+     * redirection
+     * { "args" : 1 }
+     */
     public function redirect($pc){
         $pc->res()->redirect('/redirected/'.join('/', $pc->args()));
     }
-    public $redirected_def = array(
-        'args' => 1,
-    );
+    /**
+     * { "args" : 1 }
+     */
     public function redirected($pc){
         $pc->template('index');
     }
 
-    # a chained action
-    public $chained1_def = array(
-        'chained'   => '',
-        'args'      => 1,
-    );
+    /**
+     * a chained action root
+     * {
+     *  "chained" : "",
+     *  "args" : 1
+     * }
+     */
     public function chained1($pc){
     }
     
-
+    ##############
     # show results
+    ##############
     public function results($pc){
     }
 }

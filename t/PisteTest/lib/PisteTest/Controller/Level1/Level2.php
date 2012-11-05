@@ -19,17 +19,19 @@ Class Level2 extends \Piste\Controller {
     public function index($pc) {
     }
 
-    # test explicitly defined absolute path
-    public $absolutepath_def = array(
-        'path' => '/absolute/path/in/level2'
-    );
+    /**
+     * test explicitly defined absolute path
+     *
+     * { "path": "/absolute/path/in/level2" }
+     */
     public function absolutepath($pc){
     }
 
-    # test explicitly defined relative path
-    public $relativepath_def = array(
-        'path' => 'relative/path/in/level2'
-    );
+    /**
+     * test explicitly defined relative path
+     *
+     * { "path": "relative/path/in/level2" }
+     */
     public function relativepath($pc){
     }
     
@@ -37,50 +39,60 @@ Class Level2 extends \Piste\Controller {
     # chained methods
     #####
 
-    # This one deliberately named the same as one in Level1 to ensure
-    # hierarchy is respected.
-    public $chained2_def = array(
-        'chained'   => 'chained1',
-    );
+    /**
+     * This one deliberately named the same as one in Level1 to ensure
+     * hierarchy is respected.
+     * { "chained" : "chained1" }
+     */
     public function chained2($pc){
     }
-    public $chained2_3_def = array(
-        'chained'   => 'chained2',
-        'endchain'  => true,
-    );
+    /**
+     * {
+     *  "chained" : "chained2",
+     *  "endchain" : true
+     * }
+     */
     public function chained2_3($pc){
     }
 
-    # This one sets the 'path' attribute to not use the method name
-    # directly in the matching regex
-    # TODO what happens if the 'path' is relative vs global?
-    public $chained_path1_def = array(
-        'chained'   => '/chained1',
-        'path'      => 'bitofapath',
-        'args'      => 1,
-    );
+    /**
+     * This one sets the 'path' attribute in order to not use the
+     * method name directly in the matching regex.
+     * TODO what happens if the 'path' is relative vs global?
+     * {
+     *  "chained" : "/chained1",
+     *  "path"  : "bitofapath",
+     *  "args" : 1
+     * }
+     */
     public function chained_path1($pc){
     }
-    public $chained_path2_def = array(
-        'chained'   => 'chained_path1',
-        'path'      => '',
-        # this one gets args as no arge param defined
-    );
+    /**
+     * this one gets args as no arge param defined
+     * {
+     *  "chained" : "chained_path1",
+     *  "path"  : ""
+     * }
+     */
     public function chained_path2($pc){
     }
-    public $chained_path3_def = array(
-        'chained'   => 'chained_path2',
-        'path'      => '',
-        # this one gets no args, because it's chained off
-        # another method which will greedily take them all
-    );
+    /**
+     * this one gets no args, because it's chained off
+     * another method which will greedily take them all
+     * {
+     *  "chained" : "chained_path2",
+     *  "path"  : ""
+     * }
+     */
     public function chained_path3($pc){
     }
-    public $chained_path4_def = array(
-        'chained'   => 'chained_path3',
-        'path'      => 'bitofapath/anotherbitofapath',
-        'endchain'  => 'true',
-    );
+    /**
+     * {
+     *  "chained" : "chained_path3",
+     *  "path"  : "bitofapath/anotherbitofapath",
+     *  "endchain" : true
+     * }
+     */
     public function chained_path4($pc){
     }
     

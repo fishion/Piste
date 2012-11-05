@@ -1,5 +1,7 @@
 <?php
 
+$t->stop_on_fail = true;
+
 $t->heading('Testing dispatch', 2);
 
 $t->heading('Basic Controller and Special method behaviour', 3);
