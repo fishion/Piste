@@ -26,18 +26,7 @@ abstract Class Controller {
         $methods        = $reflection->getNonInheritedMethods();
         $controllers    = \Piste\Dispatch\Controllers::singleton();
         foreach ($methods as $method){
-            $def_comment = $method->getDocComment();
-            $def = $def_comment
-                    ? json_decode(
-                        preg_replace('/.*({.*}).*/', '$1',
-                            preg_replace('/\n\s*\*?\s*/', " ",
-                                $def_comment
-                            )
-                        )
-                        , true
-                      )
-                    : null;
-            $def = $def ? $def : array();
+            $def = $method->getMetaData();
 
             if ($method->isPublic() && isset($def['chained'])){
                 $action_class = 'Piste\Dispatch\Action\Chainlink';

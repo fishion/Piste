@@ -1,3 +1,5 @@
+* remove results page from tests
+* use arg passing techinique in reflectionclass
 * allow restricting controllers to just GET or POST (or PUT, DELETE) methods
 * test JSON response switching (should work)
 * Properly capture all dependencies of Piste
