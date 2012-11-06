@@ -82,11 +82,6 @@ Class Root extends \Piste\Controller {
     public function chained1($pc){
     }
     
-    ##############
-    # show results
-    ##############
-    public function results($pc){
-    }
 }
 
 ?>
