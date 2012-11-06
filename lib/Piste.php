@@ -61,7 +61,7 @@ Your application base class should inherit from this class
 /*=head2 run()
 Runs dispatch methods and responds with the page output
 =cut*/
-    function run(){
+    public function run(){
         $this->dispatch->dispatch($this->pc);
     }
 

@@ -13,10 +13,11 @@ require_once('Piste/ReflectionMethod.php');
 
 class ReflectionClass extends \ReflectionClass {
     
-    public function getNonInheritedMethods($filter = null){
-        # TODO, use call_user_func_array and func_get_args
-        $methods = $filter ? $this->getMethods($filter) :
-                             $this->getMethods();
+    public function getNonInheritedMethods(){
+        $methods = call_user_func_array(
+                    array($this,'getMethods'),
+                    func_get_args()
+                   );
         $not_inherited = array();
         foreach ($methods as $meth){
             if ($meth->getDeclaringClass()->name == $this->name){
