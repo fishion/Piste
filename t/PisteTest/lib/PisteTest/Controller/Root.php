@@ -38,6 +38,27 @@ Class Root extends \Piste\Controller {
     public function relativepath($pc){
     }
 
+    /**
+     * Test specifying controller by get/post/etc action
+     * {
+     *  "path"        : "/getpost",
+     *  "http_method" : "GET"
+     * }
+     */
+    public function testaget($pc){
+        $pc->template('index');
+    }
+    /**
+     * Test specifying controller by get/post/etc action
+     * {
+     *  "path"        : "/getpost",
+     *  "http_method" : "post"
+     * }
+     */
+    public function testapost($pc){
+        $pc->template('index');
+    }
+
 
     /**
      * url param testing
@@ -81,7 +102,73 @@ Class Root extends \Piste\Controller {
      */
     public function chained1($pc){
     }
+
+    /**
+     * {
+     *  "chained" : "chained1",
+     *  "path" : "getpost",
+     *  "http_method" : "GET",
+     *  "endchain" : true
+     * }
+     */
+    public function chainedget($pc){
+    }
+
+    /**
+     * {
+     *  "chained" : "chained1",
+     *  "path" : "getpost",
+     *  "http_method" : "POST",
+     *  "endchain" : true
+     * }
+     */
+    public function chainedpost($pc){
+    }
+
+
+    /**
+     * Set HTTP method on chain root this time
+     * {
+     *  "chained" : "",
+     *  "path" : "getpost",
+     *  "args" : 1,
+     *  "http_method" : "GET"
+     * }
+     */
+    public function rootchainedget($pc){
+    }
+
+    /**
+     * Set HTTP method on chain root this time
+     * {
+     *  "chained" : "",
+     *  "path" : "getpost",
+     *  "args" : 1,
+     *  "http_method" : "post"
+     * }
+     */
+    public function rootchainedpost($pc){
+    }
+
+    /**
+     * {
+     *  "chained" : "rootchainedget",
+     *  "path" : "chainedgetpost",
+     *  "endchain" : true
+     * }
+     */
+    public function rootchainedget2($pc){
+    }
     
+    /**
+     * {
+     *  "chained" : "rootchainedpost",
+     *  "path" : "chainedgetpost",
+     *  "endchain" : true
+     * }
+     */
+    public function rootchainedpost2($pc){
+    }
 }
 
 ?>

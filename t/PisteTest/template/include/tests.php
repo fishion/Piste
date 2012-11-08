@@ -29,7 +29,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'index',
                  "'/' uses index default template");
 
-$t->redirect('/index');
+$t->get('/index');
 $t->is( $GLOBALS['pc']->execution_stack,
         array(  'Root::before', array(),
                 'Root::auto',   array(),
@@ -40,7 +40,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'index',
                  "uses correct default template");
 
-$t->redirect('/absolute/path/in/root');
+$t->get('/absolute/path/in/root');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Root::before',         array(),
@@ -52,8 +52,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'absolutepath',
                  "uses correct default template");
 
-
-$t->redirect('/relative/path/in/root');
+$t->get('/relative/path/in/root');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Root::before',         array(),
@@ -66,7 +65,7 @@ $t->is( $GLOBALS['pc']->template(), 'relativepath',
                  "uses correct default template");
 
 $t->heading('test level1 controller', 4);
-$t->redirect('/level1/');
+$t->get('/level1/');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Level1::before',   array(),
@@ -79,7 +78,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'level1/index',
                  "uses correct default template");
 
-$t->redirect('/level1/index');
+$t->get('/level1/index');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Level1::before',   array(),
@@ -92,7 +91,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'level1/index',
                  "uses correct default template");
 
-$t->redirect('/absolute/path/in/level1');
+$t->get('/absolute/path/in/level1');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Level1::before',       array(),
@@ -105,7 +104,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'level1/absolutepath',
                  "uses correct default template");
 
-$t->redirect('/level1/relative/path/in/level1');
+$t->get('/level1/relative/path/in/level1');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Level1::before',       array(),
@@ -119,7 +118,7 @@ $t->is( $GLOBALS['pc']->template(), 'level1/relativepath',
                  "uses correct default template");
 
 $t->heading('test level2 controller', 4);
-$t->redirect('/level1/level2/');
+$t->get('/level1/level2/');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Level1\Level2::before', array(),
@@ -133,7 +132,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'level1/level2/index',
                  "uses correct default template");
 
-$t->redirect('/level1/level2/index');
+$t->get('/level1/level2/index');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Level1\Level2::before', array(),
@@ -147,7 +146,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'level1/level2/index',
                  "uses correct default template");
 
-$t->redirect('/absolute/path/in/level2');
+$t->get('/absolute/path/in/level2');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Level1\Level2::before',        array(),
@@ -161,7 +160,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'level1/level2/absolutepath',
                  "uses correct default template");
 
-$t->redirect('/level1/level2/relative/path/in/level2');
+$t->get('/level1/level2/relative/path/in/level2');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Level1\Level2::before',        array(),
@@ -176,7 +175,7 @@ $t->is( $GLOBALS['pc']->template(), 'level1/level2/relativepath',
                  "uses correct default template");
 
 $t->heading('test fallback methods', 4);
-$t->redirect('/doesntexist');
+$t->get('/doesntexist');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Root::before',     array(),
@@ -188,7 +187,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'fallback',
                  "uses correct default template");
 
-$t->redirect('/level1/doesntexist');
+$t->get('/level1/doesntexist');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Root::before',     array(),
@@ -200,7 +199,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'fallback',
                  "uses correct default template");
 
-$t->redirect('/level1/nested/much/deeper/doesntexist');
+$t->get('/level1/nested/much/deeper/doesntexist');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Root::before',     array(),
@@ -212,7 +211,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'fallback',
                  "uses correct default template");
 
-$t->redirect('/level1withfallback/doesntexist');
+$t->get('/level1withfallback/doesntexist');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Root::before',                 array(),
@@ -224,7 +223,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'level1withfallback/fallback',
                  "uses correct default template");
 
-$t->redirect('/level1withfallback/nested/much/deeper/doesntexist');
+$t->get('/level1withfallback/nested/much/deeper/doesntexist');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Root::before',                 array(),
@@ -236,7 +235,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'level1withfallback/fallback',
                  "uses correct default template");
 
-$t->redirect('/level1/level2/doesntexist');
+$t->get('/level1/level2/doesntexist');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Root::before',     array(),
@@ -248,7 +247,7 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'fallback',
                  "uses correct default template");
 
-$t->redirect('/level1/level2/nested/much/deeper/doesntexist');
+$t->get('/level1/level2/nested/much/deeper/doesntexist');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Root::before',     array(),
@@ -260,21 +259,43 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'fallback',
                  "uses correct default template");
 
-$t->heading('Test Passing of agruments to controllers', 3);
+$t->heading('Test dispatch by HTTP method', 3);
 
-$t->redirect('/nofixedargs/param1/param2');
+$t->get('/getpost/arg1');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Root::before',     array(),
                 'Root::auto',       array(),
-                'Root::nofixedargs',array('param1', 'param2'),
+                'Root::testaget',   array('arg1'),
+                'Root::after',      array(),
+          ),
+          'GET a method');
+$t->post('/getpost/arg1');
+$t->is( $GLOBALS['pc']->execution_stack,
+          array(
+                'Root::before',     array(),
+                'Root::auto',       array(),
+                'Root::testapost',  array('arg1'),
+                'Root::after',      array(),
+          ),
+          'POST a method');
+
+
+$t->heading('Test Passing of agruments to controllers', 3);
+
+$t->get('/nofixedargs/arg1/arg2');
+$t->is( $GLOBALS['pc']->execution_stack,
+          array(
+                'Root::before',     array(),
+                'Root::auto',       array(),
+                'Root::nofixedargs',array('arg1', 'arg2'),
                 'Root::after',      array(),
           ),
           '2 Args passed to nofixedargs method. Resolves fine');
 $t->is( $GLOBALS['pc']->template(), 'index',
                  "uses correct default template");
 
-$t->redirect('/fixedargs0');
+$t->get('/fixedargs0');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Root::before',     array(),
@@ -286,19 +307,19 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'index',
                  "uses correct default template");
 
-$t->redirect('/fixedargs0/param1');
+$t->get('/fixedargs0/arg1');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Root::before',     array(),
                 'Root::auto',       array(),
-                'Root::fallback',   array('fixedargs0','param1'),
+                'Root::fallback',   array('fixedargs0','arg1'),
                 'Root::after',      array(),
           ),
           '1 Args passed to Args(0) method. Doesn\'t resolve - fallback used');
 $t->is( $GLOBALS['pc']->template(), 'fallback',
                  "uses correct default template");
 
-$t->redirect('/fixedargs1');
+$t->get('/fixedargs1');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Root::before',     array(),
@@ -310,24 +331,24 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'fallback',
                  "uses correct default template");
 
-$t->redirect('/fixedargs1/param1');
+$t->get('/fixedargs1/arg1');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Root::before',     array(),
                 'Root::auto',       array(),
-                'Root::fixedargs1', array('param1'),
+                'Root::fixedargs1', array('arg1'),
                 'Root::after',      array(),
           ),
           '1 Arg passed to Args(1) method. All happy');
 $t->is( $GLOBALS['pc']->template(), 'index',
                  "uses correct default template");
 
-$t->redirect('/fixedargs1/param1/param2');
+$t->get('/fixedargs1/arg1/arg2');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Root::before',     array(),
                 'Root::auto',       array(),
-                'Root::fallback',   array('fixedargs1','param1','param2'),
+                'Root::fallback',   array('fixedargs1','arg1','arg2'),
                 'Root::after',      array(),
           ),
           '2 Args passed to Args(1) method. Doesn\'t resolve - fallback used');
@@ -335,20 +356,20 @@ $t->is( $GLOBALS['pc']->template(), 'fallback',
                  "uses correct default template");
 
 $t->heading('do some level1 tests too', 4);
-$t->redirect('/level1/nofixedargs/param1/param2');
+$t->get('/level1/nofixedargs/arg1/arg2');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Level1::before',       array(),
                 'Root::auto',           array(),
                 'Level1::auto',         array(),
-                'Level1::nofixedargs',  array('param1', 'param2'),
+                'Level1::nofixedargs',  array('arg1', 'arg2'),
                 'Level1::after',        array(),
           ),
           '2 Args passed to level1/nofixedargs method. Resolves fine');
 $t->is( $GLOBALS['pc']->template(), 'index',
                  "uses correct default template");
 
-$t->redirect('/level1/fixedargs0');
+$t->get('/level1/fixedargs0');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Level1::before',       array(),
@@ -361,25 +382,25 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'index',
                  "uses correct default template");
 
-$t->redirect('/level1/fixedargs0/param1');
+$t->get('/level1/fixedargs0/arg1');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Root::before',     array(),
                 'Root::auto',       array(),
-                'Root::fallback',   array('level1','fixedargs0','param1'),
+                'Root::fallback',   array('level1','fixedargs0','arg1'),
                 'Root::after',      array(),
           ),
           '1 Args passed to Args(0) method. Doesn\'t resolve - fallback used');
 $t->is( $GLOBALS['pc']->template(), 'fallback',
                  "uses correct default template");
 
-$t->redirect('/level1/fixedargs1/param1');
+$t->get('/level1/fixedargs1/arg1');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Level1::before',       array(),
                 'Root::auto',           array(),
                 'Level1::auto',         array(),
-                'Level1::fixedargs1',   array('param1'),
+                'Level1::fixedargs1',   array('arg1'),
                 'Level1::after',        array(),
           ),
           '1 Arg passed to Args(1) method. All happy');
@@ -389,32 +410,45 @@ $t->is( $GLOBALS['pc']->template(), 'index',
 
 $t->heading('Test Passing of query params to controllers', 3);
 
-$t->redirect('/indexi?foo=bar&baz=boom');
-$get_params = $GLOBALS['pc']->req()->get_params();
-$foo = isset($get_params['foo']) ? $get_params['foo'] : '';
-$baz = isset($get_params['baz']) ? $get_params['baz'] : '';
-$t->is($GLOBALS['pc']->req()->get_param('foo'), 'bar', 'foo set correctly from get_param');
-$t->is($GLOBALS['pc']->req()->get_param('baz'), 'boom', 'baz set correctly from get_param');
-$t->is($foo, 'bar', 'foo set correctly from get_params');
-$t->is($baz, 'boom', 'baz set correctly from get_params');
-$params = $GLOBALS['pc']->req()->params();
-$foo = isset($params['foo']) ? $params['foo'] : '';
-$baz = isset($params['baz']) ? $params['baz'] : '';
-$t->is($GLOBALS['pc']->req()->param('foo'), 'bar', 'foo set correctly from param');
-$t->is($GLOBALS['pc']->req()->param('baz'), 'boom', 'baz set correctly from param');
-$t->is($foo, 'bar', 'foo set correctly from params');
-$t->is($baz, 'boom', 'baz set correctly from params');
+function req() { return $GLOBALS['pc']->req(); } 
+
+$t->post('/indexi?foo=vfoo&bar=vbar',
+         array('bar' => 'pbar', 'baz' => 'pbaz'));
+$get_params = req()->get_params();
+$foo        = isset($get_params['foo']) ? $get_params['foo'] : '';
+$bar        = isset($get_params['bar']) ? $get_params['bar'] : '';
+$t->is(req()->get_param('foo'), 'vfoo', 'foo correct from get_param');
+$t->is(req()->get_param('bar'), 'vbar', 'baz correct from get_param');
+$t->is($foo, 'vfoo', 'foo set correctly from get_params');
+$t->is($bar, 'vbar', 'baz set correctly from get_params');
+$post_params= req()->post_params();
+$bar        = isset($post_params['bar']) ? $post_params['bar'] : '';
+$baz        = isset($post_params['baz']) ? $post_params['baz'] : '';
+$t->is(req()->post_param('bar'), 'pbar', 'bar correct, post_param');
+$t->is(req()->post_param('baz'), 'pbaz', 'baz correct, post_param');
+$t->is($bar, 'pbar', 'bar set correctly from post_params');
+$t->is($baz, 'pbaz', 'baz set correctly from post_params');
+$params = req()->params();
+$foo        = isset($params['foo']) ? $params['foo'] : '';
+$bar        = isset($params['bar']) ? $params['bar'] : '';
+$baz        = isset($params['baz']) ? $params['baz'] : '';
+$t->is(req()->param('foo'), 'vfoo', 'foo set correctly from param');
+$t->is(req()->param('bar'), 'pbar', 'bar set correctly from param');
+$t->is(req()->param('baz'), 'pbaz', 'baz set correctly from param');
+$t->is($foo, 'vfoo', 'foo set correctly from params');
+$t->is($bar, 'pbar', 'bar set correctly from params');
+$t->is($baz, 'pbaz', 'baz set correctly from params');
 
 
 $t->heading('Test specifity is respected', 3);
 
-$t->redirect('/level1/specifity/morespecifity/param1');
+$t->get('/level1/specifity/morespecifity/arg1');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Level1::before',       array(),
                 'Root::auto',           array(),
                 'Level1::auto',         array(),
-                'Level1::morespecifity',array('param1'),
+                'Level1::morespecifity',array('arg1'),
                 'Level1::after',        array(),
           ),
           'Check that most specific controller is used');
@@ -423,46 +457,98 @@ $t->is( $GLOBALS['pc']->template(), 'index',
 
 $t->heading('Chaining controllers', 3);
 
+$t->get('/chained1/arg1/getpost/arg2');
+$t->is( $GLOBALS['pc']->execution_stack,
+          array(
+                'Root::before',     array(),
+                'Root::auto',       array(),
+                'Root::chained1',   array('arg1'),
+                'Root::chainedget', array('arg2'),
+                'Root::after',      array(),
+          ),
+          'chained GET action');
+$t->is( $GLOBALS['pc']->template(), 'chainedget',
+                 "uses correct default template");
+$t->post('/chained1/arg1/getpost/arg2');
+$t->is( $GLOBALS['pc']->execution_stack,
+          array(
+                'Root::before',     array(),
+                'Root::auto',       array(),
+                'Root::chained1',   array('arg1'),
+                'Root::chainedpost',array('arg2'),
+                'Root::after',      array(),
+          ),
+          'chained POST action');
+$t->is( $GLOBALS['pc']->template(), 'chainedpost',
+                 "uses correct default template");
+
+
+$t->get('/getpost/arg1/chainedgetpost/arg2');
+$t->is( $GLOBALS['pc']->execution_stack,
+          array(
+                'Root::before',     array(),
+                'Root::auto',       array(),
+                'Root::rootchainedget', array('arg1'),
+                'Root::rootchainedget2', array('arg2'),
+                'Root::after',      array(),
+          ),
+          'chained GET action');
+$t->is( $GLOBALS['pc']->template(), 'rootchainedget2',
+                 "uses correct default template");
+$t->post('/getpost/arg1/chainedgetpost/arg2');
+$t->is( $GLOBALS['pc']->execution_stack,
+          array(
+                'Root::before',     array(),
+                'Root::auto',       array(),
+                'Root::rootchainedpost', array('arg1'),
+                'Root::rootchainedpost2', array('arg2'),
+                'Root::after',      array(),
+          ),
+          'chained POST action');
+$t->is( $GLOBALS['pc']->template(), 'rootchainedpost2',
+                 "uses correct default template");
+
+
 # all in same namespace (with same name methods
 # existing in same namespace
-$t->redirect('/level1/chained1/param1/chained2/param2/param3/chained3/param4/param5');
+$t->get('/level1/chained1/arg1/chained2/arg2/arg3/chained3/arg4/arg5');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Level1::before',   array(),
                 'Root::auto',       array(),
                 'Level1::auto',     array(),
-                'Level1::chained1', array('param1'),
-                'Level1::chained2', array('param2', 'param3'),
-                'Level1::chained3', array('param4', 'param5'),
+                'Level1::chained1', array('arg1'),
+                'Level1::chained2', array('arg2', 'arg3'),
+                'Level1::chained3', array('arg4', 'arg5'),
                 'Level1::after',    array(),
           ),
           'chain 3 controllers in same namespace together with args');
 $t->is( $GLOBALS['pc']->template(), 'level1/chained3',
                  "uses correct default template");
 
-$t->redirect('/level1/chained1/param1/chained2/param2/chained2_3/param3');
+$t->get('/level1/chained1/arg1/chained2/arg2/chained2_3/arg3');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Level1\Level2::before',    array(),
                 'Root::auto',               array(),
                 'Level1::auto',             array(),
                 'Level1\Level2::auto',      array(),
-                'Level1::chained1',         array('param1'),
-                'Level1\Level2::chained2',  array('param2'),
-                'Level1\Level2::chained2_3',array('param3'),
+                'Level1::chained1',         array('arg1'),
+                'Level1\Level2::chained2',  array('arg2'),
+                'Level1\Level2::chained2_3',array('arg3'),
                 'Level1\Level2::after',     array(),
           ),
           'chain off method in parent namespace');
 $t->is( $GLOBALS['pc']->template(), 'level1/level2/chained2_3',
                  "uses correct default template");
 
-$t->redirect('/level1/chained1/param1/chained2/chained4');
+$t->get('/level1/chained1/arg1/chained2/chained4');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Level1::before',           array(),
                 'Root::auto',               array(),
                 'Level1::auto',             array(),
-                'Level1::chained1',         array('param1'),
+                'Level1::chained1',         array('arg1'),
                 'Level1\Level2::chained2',  array(),
                 'Level1::chained4',         array(),
                 'Level1::after',            array(),
@@ -471,13 +557,13 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'level1/chained4',
                  "uses correct default template");
 
-$t->redirect('/level1/chained1/param1/chained2/chained5');
+$t->get('/level1/chained1/arg1/chained2/chained5');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Level1::before',           array(),
                 'Root::auto',               array(),
                 'Level1::auto',             array(),
-                'Level1::chained1',         array('param1'),
+                'Level1::chained1',         array('arg1'),
                 'Level1\Level2::chained2',  array(),
                 'Level1::chained5',         array(),
                 'Level1::after',            array(),
@@ -486,13 +572,13 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'level1/chained5',
                  "uses correct default template");
 
-$t->redirect('/chained1/param1/chained6');
+$t->get('/chained1/arg1/chained6');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Level1::before',           array(),
                 'Root::auto',               array(),
                 'Level1::auto',             array(),
-                'Root::chained1',           array('param1'),
+                'Root::chained1',           array('arg1'),
                 'Level1::chained6',         array(),
                 'Level1::after',            array(),
           ),
@@ -500,16 +586,16 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'level1/chained6',
                  "uses correct default template");
 
-$t->redirect('/chained1/param1/bitofapath/param2/param3/param4/bitofapath/anotherbitofapath');
+$t->get('/chained1/arg1/bitofapath/arg2/arg3/arg4/bitofapath/anotherbitofapath');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Level1\Level2::before',        array(),
                 'Root::auto',                   array(),
                 'Level1::auto',                 array(),
                 'Level1\Level2::auto',          array(),
-                'Root::chained1',               array('param1'),
-                'Level1\Level2::chained_path1', array('param2'),
-                'Level1\Level2::chained_path2', array('param3', 'param4'),
+                'Root::chained1',               array('arg1'),
+                'Level1\Level2::chained_path1', array('arg2'),
+                'Level1\Level2::chained_path2', array('arg3', 'arg4'),
                 'Level1\Level2::chained_path3', array(),
                 'Level1\Level2::chained_path4', array(),
                 'Level1\Level2::after',         array(),
@@ -519,12 +605,12 @@ $t->is( $GLOBALS['pc']->template(), 'level1/level2/chained_path4',
                  "uses correct default template");
 
 $t->heading('Redirecting', 2);
-$t->redirect('/redirect/param1');
+$t->get('/redirect/arg1');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(
                 'Root::before',     array(),
                 'Root::auto',       array(),
-                'Root::redirected', array('param1'),
+                'Root::redirected', array('arg1'),
                 'Root::after',      array(),
           ),
           "Redirect from 'redirect' to 'redirected'. Retain parameter");
@@ -533,17 +619,17 @@ $t->is( $GLOBALS['pc']->template(), 'index',
 
 
 $t->heading('Test Model Access', 2);
-$t->redirect('/model/');
+$t->get('/model/');
 $t->is(isset($GLOBALS['testdata']) ? $GLOBALS['testdata'] : '', 'TestData', 'Managed to get test data out of model');
 
 
 $t->heading('Test Cookies', 2);
-$t->redirect('/cookie/set/' . time());
+$t->get('/cookie/set/' . time());
 $time = isset($GLOBALS['timetomatch']) ? $GLOBALS['timetomatch'] : 'notimefound';
-$t->redirect('/cookie/get/' . $time ); # pass time param
+$t->get('/cookie/get/' . $time ); # pass time param
 $t->is(isset($GLOBALS['mytime']) ? $GLOBALS['mytime'] : '', (string) $time, "got right value from cookie");
-$t->redirect('/cookie/delete');
-$t->redirect('/cookie/get');
+$t->get('/cookie/delete');
+$t->get('/cookie/get');
 $t->is(isset($GLOBALS['mytime']) ? $GLOBALS['mytime'] : '', '', "time value no longer in cookie");
 
 

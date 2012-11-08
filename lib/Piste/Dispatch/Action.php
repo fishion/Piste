@@ -120,7 +120,8 @@ class Action {
     }
 
     public function match($uripath){
-        if (preg_match('/'.$this->pathre().'/', $uripath, $remain)){
+        if ($this->match_http_method() &&
+            preg_match('/'.$this->pathre().'/', $uripath, $remain)){
             \Logger::info('MATCHED ' . $this->pathre());
             # remain[1] is not always set as we don't capture extra params
             # for special methods (before, after, auto)
@@ -132,6 +133,14 @@ class Action {
             return true;
         }
         return false;
+    }
+
+    public function match_http_method(){
+        if (isset($this->def['http_method']) &&
+            strtoupper($this->def['http_method']) != strtoupper($_SERVER['REQUEST_METHOD']) ){
+            return false;
+        }
+        return true;
     }
 
     public function call($pc){
