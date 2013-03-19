@@ -1,10 +1,8 @@
-* test JSON response switching (should work)
 * Properly capture all dependencies of Piste
     * PEARify all the dependencies and use the PEAR installed ones in apache
     Logger, Testsimple, probably most of them.
 * scripts for CGI, mod_PHP, php_fpm, fcgi, etc
     * Also, run own lightweight http server for development?
-* cookies
 * scripts to create projects
 * Might want to be able to detach & call other Controller methods. If so, will need to be able to define non-dispatch-endpoint methods. They'd probably be protected methods, accessed indirectly through the $pc object.
 * investigate trigger_error()

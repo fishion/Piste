@@ -14,7 +14,9 @@ require_once('Piste/Dispatch/Views.php');
 
 abstract class View {
 /*=head1 Constructor
-    Sorts out config for you. You can add $base_config into view class which this constructor will overwrite parameterd from a user defined inherited class
+    Sorts out config for you.
+    You can add $base_config into view class which this constructor will overwrite
+    with parameters from a user defined $config variable in application view class
 =over
 =cut*/
     function __construct($pc){
