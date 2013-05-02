@@ -21,7 +21,8 @@ require_once('Piste/Dispatch/Action/Special.php');
 abstract Class Controller {
 
     public final function P_register(){
-        $namespace_path = new \Piste\Path(mb_strtolower(preg_replace('/^.*?\\\\Controller\\\\(Root)?/i','',get_class($this) . '/')));
+        $namespace_path = new \Piste\Path(mb_strtolower(preg_replace('/^.*?\\\\Controller\\\\(Root)?/i','',get_class($this))));
+        $namespace_path->is_dir(); # make sure we know it should have trailing slash usually
         $reflection     = new \Piste\ReflectionClass($this);
         $methods        = $reflection->getNonInheritedMethods();
         $controllers    = \Piste\Dispatch\Controllers::singleton();

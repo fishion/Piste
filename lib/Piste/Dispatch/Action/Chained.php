@@ -29,7 +29,13 @@ Class Chained extends \Piste\Dispatch\Action {
             $ap_parts = array();
             foreach ($this->chain as $link){
                 $ap_part = $link->action_path();
-                $ap_part .= ($link->arg_def() === false) ? '/*x*' : '/*';
+                if ($link->arg_def() === false){
+                    $ap_part .= '/*x*';
+                } elseif ($link->arg_def > 0) {
+                    foreach (range(1, $link->arg_def()) as $no) {
+                        $ap_part .= '/*';
+                    }
+                }
                 array_push($ap_parts, $ap_part);
             };
             $this->action_path = join('', $ap_parts);

@@ -38,18 +38,27 @@ Class ChainLink extends \Piste\Dispatch\Action {
                     ? $this->def['path']
                     : $this->method_name;
             if ($this->is_start_of_chain() &&
+                $ap == ''){
+                # starting out an just using namespace path
+                $this->action_path = $this->namespace_path()->no_trailing_slash();
+            } elseif ($this->is_start_of_chain() &&
                 !preg_match('/^\//', $ap)){
-                $this->action_path = $this->namespace_path . $ap;
+                # starting out and adding $ap
+                $this->action_path = $this->namespace_path()->extend($ap);
             }
             elseif ($ap == '/' || $ap == ''){
+                # add nothing
                 $this->action_path = '';
             }
             elseif (!preg_match('/^\//', $ap)){
+                # adding some path - must start with path separator
                 $this->action_path = '/' . $ap;
             }
             else {
+                # adding some path or starting one with a '/'
                 $this->action_path = $ap;
             }
+            \Logger::info("Action path for chain link " . $this->namespace_path() .":" . $this->method_name() . " is " .$this->action_path );
         }
         return $this->action_path;
     }
@@ -113,13 +122,13 @@ Class ChainLink extends \Piste\Dispatch\Action {
             # success - linked all the way to a chain start
             array_push($this->chain, $this);
             if ($this->is_end_of_chain()){
-                \Logger::info("Found start of chain for " . $this->namespace_path() . $this->method_name());
+                \Logger::info("Found start of chain for " . $this->namespace_path()->extend($this->method_name()));
                 # Add a chained action to actions ref
                 array_push($actions, new Chained($this->chain));
             }
         } else {
             # failed - no next_link or chain broke somewhere
-            \Logger::warn("Failed to follow chain to start for " . $this->namespace_path() . $this->method_name());
+            \Logger::warn("Failed to follow chain to start for " . $this->namespace_path()->extend($this->method_name()));
             $this->chain = false;
         }
         return $this->chain;
@@ -140,8 +149,8 @@ Class ChainLink extends \Piste\Dispatch\Action {
         } elseif (
             # If is it a locally namespaced chain, must match exactly
             $this->chainscope() &&
-            $this->namespace_path() . $this->chainscope() == $new->namespace_path()){
-            \Logger::info("Matched chain parent locally " . $this->namespace_path() . $this->chainscope() . " == " . $new->namespace_path());
+            $this->namespace_path()->extend($this->chainscope()) == $new->namespace_path()){
+            \Logger::info("Matched chain parent locally " . $this->namespace_path()->extend($this->chainscope()) . " == " . $new->namespace_path());
             return $new;
         } elseif (
             # is this one better than what we already have?

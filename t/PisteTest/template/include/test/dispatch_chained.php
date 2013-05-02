@@ -16,6 +16,20 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'level1/chained3',
                  "uses correct default template");
 
+$t->get('/chains/arg1/arg2/arg3');
+$t->is( $GLOBALS['pc']->execution_stack,
+          array(
+                'Chains::before',   array(),
+                'Root::auto',       array(),
+                'Chains::auto',     array(),
+                'Chains::chainednopath1', array('arg1'),
+                'Chains::chainednopath2', array('arg2','arg3'),
+                'Chains::after',   array(),
+          ),
+          'chain 2 with no paths');
+$t->is( $GLOBALS['pc']->template(), 'chains/chainednopath2',
+                 "uses correct default template");
+
 $t->get('/level1/chained1/arg1/chained2/arg2/chained2_3/arg3');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(

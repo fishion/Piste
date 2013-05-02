@@ -50,7 +50,7 @@ class Action {
             # is that global or local?
             if (!preg_match('/^\//', $ap)){
                 # local, Make it global
-                $ap = $this->namespace_path . $ap;
+                $ap = $this->namespace_path->extend($ap);
             }
             $this->action_path = $ap;
         }
@@ -107,7 +107,7 @@ class Action {
     public final function default_template(){
         return preg_replace(
                 '/^\//', '',
-                $this->namespace_path() . $this->method_name()
+                $this->namespace_path()->extend($this->method_name())
                );
     }
 

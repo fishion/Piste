@@ -10,11 +10,12 @@ Provides methods you might want to perform on a path string
 Class Path {
     private $pathparts = array();
     private $dir = '';
+    private $is_dir = false;
 
     function __construct($path){
         if (preg_match('/\/$/', $path)){
+            $this->is_dir();
             $path = preg_replace('/\/$/', '', $path);
-            $this->dir = '/';
         }
         if (!$path || $path == ''){
             return;
@@ -22,12 +23,31 @@ Class Path {
         $this->pathparts = split('[\/|//]', $path);
     }
 
-    public function __toString(){
+    public function no_trailing_slash(){
         if (count($this->pathparts)>0){
-            return '/' . join('/', $this->pathparts) . $this->dir;
+            return '/' . join('/', $this->pathparts);
         }
-        return $this->dir;
+        return '';
     }
+
+    public function __toString(){
+        return $this->no_trailing_slash() . $this->dir;
+    }
+
+    public function is_dir(){
+        $this->is_dir = true;
+        $this->dir = '/';
+    }
+
+    public function extend($new){
+        if ($new && $this->is_dir){
+            return $this->__tostring() . $new;
+        } elseif ($new) {
+            return $this->__tostring() . '/' . $new;
+        }
+        return $this->__tostring();
+    }
+
 }
 
 ?>
