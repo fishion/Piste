@@ -27,7 +27,7 @@ Class designed to be used as the dispatch layer in an environment where the web 
 
 It allows for the urls to omit the '.php' suffix (usually considered good practice) and will resolve url directory paths to index
 
-Additionally it gives you customised 404 handling, the ability to add standard wrappers to your templates (useful for standard page furnature, menus etc) and can capture requested respone formats (though more work is planned in this area).
+Additionally it gives you customised 404 handling, the ability to add standard wrappers to your templates and can capture requested respone formats.
 
 =cut*/
 

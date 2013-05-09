@@ -67,6 +67,7 @@ Class Context {
     public function stash($v1 = null, $v2=null){
         return $this->response->stash($v1, $v2);
     }
+    # TODO set_args as a public method on contect object or request object seems wrong.
     public function set_args($args = null){
         return $this->request->set_args($args);
     }

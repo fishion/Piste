@@ -14,6 +14,7 @@ Class Response {
     private $body = '';
     private $return_404 = false;
 
+    # the string representation of the view class chosen
     public function view($view = null){
         if ($view){ $this->view = $view; }
         return $this->view;
