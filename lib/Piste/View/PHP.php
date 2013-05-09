@@ -64,6 +64,25 @@ Default php
     );
 
     public function render($pc){
+        if ($pc->response()->body()){
+            # response content as been set directly.
+            # Nothing to render
+            return;
+        }
+        
+        # make sure we can get a template
+        $template = $this->get_template($pc);
+        if (!isset($template)){
+            \Logger::debug("Can't find");
+            return $this->render_404($pc);
+        }
+
+        # make stash available as global vars in template
+        foreach ($pc->response()->stash() as $key => $val){
+            \Logger::debug("Making stash item $key available in global scope");
+            $GLOBALS[$key] = $val;
+        }
+
         # require page content & store in output buffer
         # By rendering the page innards before the 
         # wrapper, you can set variables in the page
@@ -71,21 +90,11 @@ Default php
         # This is useful
         ob_start();
 
-        # make sure we have a template set
-        if (!$pc->template() && $pc->action()){
-            \Logger::debug('Setting default template to ' . $pc->action()->default_template());
-            $pc->template($pc->action()->default_template());
-        }
-
-        # make stash available as global vars in template
-        foreach ($pc->response()->stash() as $key => $val){
-            $GLOBALS[$key] = $val;
-        }
         # make Piste Context object available too. WHy not.
         $GLOBALS['pc'] = $pc;
 
         try {
-            require $this->get_template($pc);
+            require $template;
         } catch(\Exception $e){
             throw new \Exception("File Error - couldn't find template: $e<br>");
         }
@@ -95,6 +104,7 @@ Default php
             echo '</pre>';
         }
         if ($this->config['wrapper']){
+            # TODO : not sure I like Pcontent as a fixed variable name
             $Pcontent = ob_get_clean();
             ob_start();
             require($this->config['wrapper']);
@@ -106,26 +116,36 @@ Default php
 
     public function render_404($pc){
         if (isset($this->config['404'])){
-            $pc->template($this->config['404']);
+            $pc->response()->template($this->config['404']);
             $this->render($pc);
         } else {
             parent::render_404($pc);
         }
     }
 
+/*=head2 full_template_path()
+=cut*/
+    private function full_template_path($pc){
+        return  $pc->env()->app_base()
+              . $this->config['template_base']
+              . $pc->response()->template()
+              . $this->config['template_suffix'];
+    }
+
 /*=head2 get_template()
 =cut*/
     private function get_template($pc){
-        $page = $pc->env()->app_base()
-              . $this->config['template_base']
-              . $pc->template()
-              . $this->config['template_suffix'];
-
-        $template = new \File($page);
-        if ($template->is_file()){
-            return $page;
+        # make sure we have a template set
+        if (!$pc->response()->template() && $pc->action()){
+            \Logger::debug('Setting default template to ' . $pc->action()->default_template());
+            $pc->response()->template($pc->action()->default_template());
         }
-        throw new \Exception("Can't find $page");
+
+        $template = new \File($this->full_template_path($pc));
+        if ($template->is_file()){
+            return $template;
+        }
+        return null;
     }
 }
 
