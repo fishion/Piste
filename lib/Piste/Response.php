@@ -10,7 +10,8 @@ Class Response {
     private $view;
     private $stash = array();
     private $args = array();
-    private $body = 'No content set';
+    private $template;
+    private $body = '';
     private $return_404 = false;
 
     public function view($view = null){
@@ -39,8 +40,16 @@ Class Response {
         $this->stash = array();
     }
 
+    # get/set a template for rendering output
+    public final function template($template = null){
+        if (isset($template)){
+            $this->template = $template;
+        }
+        return $this->template;
+    }
+
     public function body($body = null){
-        if ($body){ $this->body = $body; }
+        if (isset($body)){ $this->body = $body; }
         return $this->body;
     }
 
