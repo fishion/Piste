@@ -5,14 +5,24 @@ Piste\Response
 
 =head1 DESCRIPTION
 
+
+=head1 DEPENDENCIES
+=cut*/
+require_once('Piste/Response/Headers.php');
+
+/*=head1 Synopsis
+
 */
 Class Response {
     private $view;
     private $stash = array();
-    private $args = array();
     private $template;
+    private $headers;
     private $body = '';
-    private $return_404 = false;
+
+    function __construct(){
+        $this->headers = new Response\Headers();
+    }
 
     # the string representation of the view class chosen
     public function view($view = null){
@@ -54,26 +64,20 @@ Class Response {
         return $this->body;
     }
 
-    public function redirect($url){
-        # This also returns a REDIRECT 302 to browser
-        header("Location: $url");
-        exit;
-    }
-
-    public function return_404($set = null){
-        if (isset($set)){
-            # TODO for regular apache 404
-            # header("HTTP/1.0 404 Not Found");
-            # Wheras for fcgi 404 you need to do 
-            # header("Status: 404 Not Found");
-            header("HTTP/1.0 404 Not Found");
-            $this->return_404 = $set;
-        }
-        return $this->return_404;
-    }
-
     public function respond(){
+        $this->headers->respond();
         echo $this->body;
+    }
+
+    # pass it on
+    public function redirect($url){
+        $this->headers->redirect($url);
+    }
+    public function status($status){
+        $this->headers->status($status);
+    }
+    public function content_type($ct){
+        $this->headers->content_type($ct);
     }
 
 }

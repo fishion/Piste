@@ -63,25 +63,82 @@ Default php
         'template_suffix'   => '.php'
     );
 
+/*=head2 render()
+=cut*/
     public function render($pc){
         if ($pc->response()->body()){
-            # response content as been set directly.
+            # response content has already been set directly.
             # Nothing to render
             return;
         }
         
-        # make sure we can get a template
-        $template = $this->get_template($pc);
+        # make sure we have a template
+        $template = $this->find_template($pc);
         if (!isset($template)){
-            \Logger::debug("Can't find");
             return $this->render_404($pc);
         }
 
+        $pc->response()->body(
+            $this->render_template($pc, $template)
+        );
+    }    
+
+/*=head2 get_404_body()
+=cut*/
+    public function get_404_body($pc){
+        $template = $this->template_exists($pc, $this->config['404']);
+        if (!isset($template)){
+            # no valid 404 teplate set. Use default.
+            return parent::get_404_body($pc);
+        }
+        return $this->render_template($pc, $template);
+    }
+
+
+/*=head2 find_template()
+=cut*/
+    private function find_template($pc){
+        # make sure we have a template path set
+        if (!$pc->response()->template() && $pc->action()){
+            \Logger::debug('Setting default template to ' . $pc->action()->default_template());
+            $pc->response()->template($pc->action()->default_template());
+        } elseif (!$pc->response()->template() && !$pc->action()){
+            # no template, no action.
+            return;
+        }
+        return $this->template_exists($pc, $pc->response()->template());
+    }
+/*=head2 template_exists()
+=cut*/
+    private function template_exists($pc, $template){
+        $t_file = new \File($this->full_template_path($pc, $template));
+        if (isset($t_file) && $t_file->is_file()){
+            return $t_file;
+        }
+
+        \Logger::debug("Can't find $template");
+        return null;
+    }
+/*=head2 full_template_path()
+=cut*/
+    private function full_template_path($pc, $template){
+        return  $pc->env()->app_base()
+              . $this->config['template_base']
+              . $template
+              . $this->config['template_suffix'];
+    }
+
+/*=head2 render_template()
+=cut*/
+    private function render_template($pc, $template){
         # make stash available as global vars in template
         foreach ($pc->response()->stash() as $key => $val){
             \Logger::debug("Making stash item $key available in global scope");
             $GLOBALS[$key] = $val;
         }
+
+        # make Piste Context object available too. WHy not.
+        $GLOBALS['pc'] = $pc;
 
         # require page content & store in output buffer
         # By rendering the page innards before the 
@@ -90,14 +147,9 @@ Default php
         # This is useful
         ob_start();
 
-        # make Piste Context object available too. WHy not.
-        $GLOBALS['pc'] = $pc;
+        # render page template
+        require $template;
 
-        try {
-            require $template;
-        } catch(\Exception $e){
-            throw new \Exception("File Error - couldn't find template: $e<br>");
-        }
         if ($this->config['DEBUG_SERVER']) {
             echo '<pre>';
             print_r($_SERVER);
@@ -108,44 +160,8 @@ Default php
             $Pcontent = ob_get_clean();
             ob_start();
             require($this->config['wrapper']);
-            $pc->res()->body(ob_get_clean());
-        } else {
-            $pc->res()->body(ob_get_clean());
         }
-    }    
-
-    public function render_404($pc){
-        if (isset($this->config['404'])){
-            $pc->response()->template($this->config['404']);
-            $this->render($pc);
-        } else {
-            parent::render_404($pc);
-        }
-    }
-
-/*=head2 full_template_path()
-=cut*/
-    private function full_template_path($pc){
-        return  $pc->env()->app_base()
-              . $this->config['template_base']
-              . $pc->response()->template()
-              . $this->config['template_suffix'];
-    }
-
-/*=head2 get_template()
-=cut*/
-    private function get_template($pc){
-        # make sure we have a template set
-        if (!$pc->response()->template() && $pc->action()){
-            \Logger::debug('Setting default template to ' . $pc->action()->default_template());
-            $pc->response()->template($pc->action()->default_template());
-        }
-
-        $template = new \File($this->full_template_path($pc));
-        if ($template->is_file()){
-            return $template;
-        }
-        return null;
+        return ob_get_clean();
     }
 }
 

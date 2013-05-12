@@ -35,16 +35,15 @@ Class Dispatch {
         \Logger::debug('Finding dispatch for ' .$pc->req()->path());
         # set view to default view initially
         # that way it can stil be overridden to nothing or something else
+        if ( isset($this->config['default_view']) ){
+            $pc->response()->view($this->config['default_view']);
+        }
         if (isset($this->config['response_type_switch'])){
             foreach ($this->config['response_type_switch'] as $content_type => $view) {
                 if ( preg_match('/' . preg_quote($content_type, '/') . '/', $_SERVER['HTTP_ACCEPT']) ){
                     $pc->response()->view($view);
                 }
             }
-        }
-        if ( !$pc->response()->view() &&
-             isset($this->config['default_view'])){
-            $pc->response()->view($this->config['default_view']);
         }
         $this->controllers->run($pc);
         $this->views->run($pc);

@@ -49,11 +49,9 @@ Class Views {
                 throw new \Exception("View '$view' not installed");
             }
             $view = new $this->views[$view]($pc);
-            if ($pc->res()->return_404()){
-                $view->render_404($pc);
-            } else {
-                $view->render($pc);
-            }
+            $view->render($pc);
+        } else {
+            throw new \Exception("No view defined. Consider setting a default in your application.");
         }
         $pc->response()->respond();
     }

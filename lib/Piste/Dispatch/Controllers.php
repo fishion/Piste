@@ -84,7 +84,7 @@ Class Controllers {
             # set which action was run in the contect
             $pc->action($action);
         } else {
-            $pc->res()->return_404(true);
+            # well, no action found so do nothing View should figure it out.
         }
     }
 

@@ -39,15 +39,19 @@ abstract class View {
     }
 
 
-    # Public, overridable, methods
+    # Overridable methods
 
+    # 'render' method responsible for rendering whatever 
+    # template has been set and
+    # storing rendered content in response()->body() 
     abstract public function render($pc);
 
     public function render_404($pc){
-        $pc->res()->body($this->html_404());
+        $pc->response()->status(404);
+        $pc->response()->body($this->get_404_body($pc));
     }
 
-    public function html_404(){
+    protected function get_404_body($pc){
         # TODO make better default 404
         return <<<________EOHTML
             <html>

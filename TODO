@@ -1,3 +1,5 @@
+* Provide way that controllers can say "I'm only for certain content type responses"
+    * so that you can set a global html fallback action which won't be run for json responses
 * Properly capture all dependencies of Piste
     * PEARify all the dependencies and use the PEAR installed ones in apache
     Logger, Testsimple, probably most of them.
@@ -18,10 +20,10 @@ Scripts to create projects
 must create
 
 * public/index.php
-* lib/AppName.php
+* lib/AppName.php with sensible initial config including default PHP view
 * lib/AppName/Controller
 * lib/AppName/Model
-* lib/AppName/View
+* lib/AppName/View with defaul PHP view
 * scripts for use with modPHP, FastCGI etc.
 * scripts to start/stop application?
 
