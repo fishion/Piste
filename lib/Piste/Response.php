@@ -69,7 +69,7 @@ Class Response {
         echo $this->body;
     }
 
-    # pass it on
+    # pass on header methods
     public function redirect($url){
         $this->headers->redirect($url);
     }
