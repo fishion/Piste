@@ -23,6 +23,8 @@ Class Request {
 
     # http param functions. All designed not to complain if paramss not defined
     # POST wins over get if param names clash
+    # TODO: consider not having param, get_param, post_param methods and just
+    #       passing argument to params, get_params, post_params
     public function params(){
         return array_merge($_GET, $_POST);
     }
