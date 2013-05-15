@@ -36,6 +36,17 @@ $t->is( $GLOBALS['pc']->execution_stack,
 $t->is( $GLOBALS['pc']->template(), 'index',
                  "uses correct default template");
 
+$t->get('/detatch/doone/dotwo?breakdetatchauto=1');
+$t->is( $GLOBALS['pc']->execution_stack,
+          array(
+                'Detatch::before',  array(),
+                'Root::auto',       array(),
+                'Detatch::auto',    array(),
+          ),
+          'detatch in "root auto" method. Dont run any more actions');
+$t->is( $GLOBALS['pc']->template(), 'index',
+                 "uses correct default template");
+
 $t->get('/detatch/doone/dotwo?breakrootauto=1');
 $t->is( $GLOBALS['pc']->execution_stack,
           array(

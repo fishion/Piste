@@ -15,7 +15,7 @@ Class Detatch extends \Piste\Controller {
         }
     }
     protected function auto($pc){
-        if ($pc->req()->param('breakrootauto')){
+        if ($pc->req()->param('breakdetatchauto')){
             $pc->controller()->detatch();
         }
     }

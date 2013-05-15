@@ -13,6 +13,9 @@ Class Root extends \Piste\Controller {
     protected function before($pc){
     }
     protected function auto($pc){
+        if ($pc->req()->param('breakrootauto')){
+            $pc->controller()->detatch();
+        }
     }
     protected function after($pc){
     }

@@ -33,7 +33,7 @@ class ActionSet {
         # put in order of specifity, then run.
         usort($this->set, array(__CLASS__, 'specifity_sort'));
         foreach ($this->set as $act){
-            $act->call($pc);
+            $pc->controller()->attatched() && $act->call($pc);
         }
     }
 

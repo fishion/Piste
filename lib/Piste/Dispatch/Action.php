@@ -144,6 +144,9 @@ class Action {
     }
 
     public function call($pc){
+        if (!$pc->controller()->attatched()){
+            return; # we're detatched
+        }
         # track execution_stack
         array_push($pc->execution_stack, preg_replace('/^.*\\\Controller\\\/','',$this->method->class . '::' . $this->method_name));
         array_push($pc->execution_stack, $this->args);

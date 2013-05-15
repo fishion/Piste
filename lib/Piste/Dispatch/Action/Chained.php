@@ -77,7 +77,7 @@ Class Chained extends \Piste\Dispatch\Action {
     # override call method to call all actions in set
     public function call($pc){
         foreach ($this->chain as $link){
-            $link->call($pc);
+            $pc->controller()->attatched() && $link->call($pc);
         }
     }
 

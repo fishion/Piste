@@ -70,18 +70,14 @@ Class Controllers {
 
         if ($action){
             # run 'before'-method
-            $pc->controller()->attatched() &&
             $this->best_match($this->special_actions, $action->namespace_path(), 'before')
                  ->call($pc);
             # run 'auto' methods
-            $pc->controller()->attatched() &&
             $this->all_matching($this->special_actions, $action->namespace_path(), 'auto')
                  ->call($pc);
             # run main controllers
-            $pc->controller()->attatched() &&
             $action->call($pc);
             # run 'after'-method
-            $pc->controller()->attatched() &&
             $this->best_match($this->special_actions, $action->namespace_path(), 'after')
                  ->call($pc);
 
