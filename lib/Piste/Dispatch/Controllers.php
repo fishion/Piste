@@ -15,7 +15,7 @@ Class Controllers {
     # This is a singleton object
     private static $singleton;
     private function __construct(){
-        # private onstructor on singleton
+        # private constructor on singleton
     }
     # use this method to get singleton object instance
     public static function singleton(){
