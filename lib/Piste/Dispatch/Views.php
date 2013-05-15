@@ -9,7 +9,7 @@ Singleton Object Coordinates Views
 =head1 DEPENDENCIES
 =cut*/
 
-require_once('Piste/ReflectionClass.php');
+require_once('Piste/Util/ReflectionClass.php');
 
 Class Views {
     # This is a singleton object
@@ -31,7 +31,7 @@ Class Views {
 
     public function register($class){
         #ensure view class ISA Piste\View
-        $reflection = new \Piste\ReflectionClass($class);
+        $reflection = new \Piste\Util\ReflectionClass($class);
         if (!$reflection->isSubclassOf('\Piste\View')){
             throw new \Exception("$class is not a \Piste\View subclass");
         }

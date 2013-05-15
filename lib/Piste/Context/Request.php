@@ -1,20 +1,20 @@
 <?php
-namespace Piste;
+namespace Piste\Context;
 /*=head1 Name
-Piste\Request
+Piste\Context\Request
 
 =head1 DESCRIPTION
 
 =head1 DEPENDENCIES
 =cut*/
-require_once('Piste/Path/URI.php');
+require_once('Piste/Util/Path/URI.php');
 
 Class Request {
     private $path;
     private $args;
 
     function __construct(){
-        $this->path = new Path\URI();
+        $this->path = new \Piste\Util\Path\URI();
     }
 
     public function path() {

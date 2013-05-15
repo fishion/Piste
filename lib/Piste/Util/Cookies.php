@@ -1,7 +1,7 @@
 <?php
-namespace Piste;
+namespace Piste\Util;
 /*=head1 Name
-Piste\Cookies
+Piste\Util\Cookies
 
 =head1 DESCRIPTION
 

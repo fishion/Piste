@@ -1,7 +1,7 @@
 <?php
-namespace Piste;
+namespace Piste\Util;
 /*=head1 Name
-Piste\Path
+Piste\Util\Path
 
 =head1 DESCRIPTION
 Provides methods you might want to perform on a path string

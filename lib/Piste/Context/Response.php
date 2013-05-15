@@ -1,14 +1,14 @@
 <?php
-namespace Piste;
+namespace Piste\Context;
 /*=head1 Name
-Piste\Response
+Piste\Context\Response
 
 =head1 DESCRIPTION
 
 
 =head1 DEPENDENCIES
 =cut*/
-require_once('Piste/Response/Headers.php');
+require_once('Piste/Context/Response/Headers.php');
 
 /*=head1 Synopsis
 
@@ -25,6 +25,7 @@ Class Response {
     }
 
     # the string representation of the view class chosen
+    # TODO: move this to $pc->view($viewname)
     public function view($view = null){
         if ($view){ $this->view = $view; }
         return $this->view;
@@ -52,6 +53,7 @@ Class Response {
     }
 
     # get/set a template for rendering output
+    # TODO: this should probably be in the $pc->view->interface object too huh?
     public final function template($template = null){
         if (isset($template)){
             $this->template = $template;

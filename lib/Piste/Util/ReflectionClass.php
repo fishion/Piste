@@ -1,7 +1,7 @@
 <?php
-namespace Piste;
+namespace Piste\Util;
 /*=head1 Name
-Piste\ReflectionClass
+Piste\Util\ReflectionClass
 
 =head1 DESCRIPTION
 Subclass the standard PHP ReflectionClass Class for extra methods
@@ -9,7 +9,7 @@ Subclass the standard PHP ReflectionClass Class for extra methods
 =head1 DEPENDENCIES
 
 =cut*/
-require_once('Piste/ReflectionMethod.php');
+require_once('Piste/Util/ReflectionMethod.php');
 
 class ReflectionClass extends \ReflectionClass {
     

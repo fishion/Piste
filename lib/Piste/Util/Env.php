@@ -1,7 +1,7 @@
 <?php
-namespace Piste;
+namespace Piste\Util;
 /*=head1 Name
-Piste\Env
+Piste\Util\Env
 
 =head1 DESCRIPTION
 Encapsulates the running environment

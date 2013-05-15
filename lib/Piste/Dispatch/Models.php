@@ -9,7 +9,7 @@ Singleton Object Coordinates Models
 =head1 DEPENDENCIES
 =cut*/
 
-require_once('Piste/ReflectionClass.php');
+require_once('Piste/Util/ReflectionClass.php');
 
 Class Models {
     # This is a singleton object
@@ -30,7 +30,7 @@ Class Models {
 
     public function register($class){
         #ensure Model class ISA Piste\Model
-        $reflection = new \Piste\ReflectionClass($class);
+        $reflection = new \Piste\Util\ReflectionClass($class);
         if (!$reflection->isSubclassOf('\Piste\Model')){
             throw new \Exception("$class is not a \Piste\Model subclass");
         }

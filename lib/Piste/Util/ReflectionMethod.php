@@ -1,7 +1,7 @@
 <?php
-namespace Piste;
+namespace Piste\Util;
 /*=head1 Name
-Piste\ReflectionMethod
+Piste\Util\ReflectionMethod
 
 =head1 DESCRIPTION
 Subclass the standard PHP ReflectionMethod Class for extra methods

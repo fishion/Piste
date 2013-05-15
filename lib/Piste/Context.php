@@ -12,10 +12,10 @@ each other.
 =head1 DEPENDENCIES
 File
 =cut*/
-require_once('Piste/Env.php');
-require_once('Piste/Request.php');
-require_once('Piste/Response.php');
-require_once('Piste/Cookies.php');
+require_once('Piste/Context/Request.php');
+require_once('Piste/Context/Response.php');
+require_once('Piste/Util/Env.php');
+require_once('Piste/Util/Cookies.php');
 require_once('Piste/Dispatch/Models.php');
 
 /*=head1 Synopsis
@@ -32,17 +32,20 @@ Class Context {
     public $execution_stack = array();
    
     function __construct($app_name){
-        $this->env      = new Env($app_name);
-        $this->request  = new Request();
-        $this->response = new Response();
-        $this->cookies  = new Cookies();
+        $this->env      = new Util\Env($app_name);
+        $this->request  = new Context\Request();
+        $this->response = new Context\Response();
+        $this->cookies  = new Util\Cookies();
         $this->models   = \Piste\Dispatch\Models::singleton();
     }
 
-    # access to models
-    function model($model){
+    # access to models. Need genuine access to model. I think.
+    # As long as it's not going to hold state information in the
+    # object, I think that's OK
+    public function model($model){
         return $this->models->get_model($model);
     }
+
 
     # accessors to other objects
     public function env(){return $this->env;}

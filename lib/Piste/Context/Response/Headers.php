@@ -1,7 +1,7 @@
 <?php
-namespace Piste\Response;
+namespace Piste\Context\Response;
 /*=head1 Name
-Piste\Response\Headers
+Piste\Context\Response\Headers
 
 =head1 DESCRIPTION
 

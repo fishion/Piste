@@ -1,15 +1,15 @@
 <?php
-namespace Piste\Path;
+namespace Piste\Util\Path;
 /*=head1 Name
-Piste\Path\URI
+Piste\Path\Util\URI
 
 =head1 DESCRIPTION
 Provides some extra cleansing to Path object
 =head1 DEPENDENCIES
 =cut*/
-require_once('Piste/Path.php');
+require_once('Piste/Util/Path.php');
 
-Class URI extends \Piste\Path {
+Class URI extends \Piste\Util\Path {
     function __construct($path = null){
         if ($path === null){
             $path = $_SERVER["REQUEST_URI"];

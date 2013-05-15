@@ -10,8 +10,8 @@ Acts as a base class for all Piste Controllers.
 
 =cut*/
 require_once('Logger.php');
-require_once('Piste/Path.php');
-require_once('Piste/ReflectionClass.php');
+require_once('Piste/Util/Path.php');
+require_once('Piste/Util/ReflectionClass.php');
 require_once('Piste/Dispatch/Controllers.php');
 require_once('Piste/Dispatch/Action.php');
 require_once('Piste/Dispatch/Action/ChainLink.php');
@@ -21,9 +21,9 @@ require_once('Piste/Dispatch/Action/Special.php');
 abstract Class Controller {
 
     public final function P_register(){
-        $namespace_path = new \Piste\Path(mb_strtolower(preg_replace('/^.*?\\\\Controller\\\\(Root)?/i','',get_class($this))));
+        $namespace_path = new \Piste\Util\Path(mb_strtolower(preg_replace('/^.*?\\\\Controller\\\\(Root)?/i','',get_class($this))));
         $namespace_path->is_dir(); # make sure we know it should have trailing slash usually
-        $reflection     = new \Piste\ReflectionClass($this);
+        $reflection     = new \Piste\Util\ReflectionClass($this);
         $methods        = $reflection->getNonInheritedMethods();
         $controllers    = \Piste\Dispatch\Controllers::singleton();
         foreach ($methods as $method){
