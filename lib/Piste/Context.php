@@ -17,6 +17,8 @@ require_once('Piste/Context/Response.php');
 require_once('Piste/Util/Env.php');
 require_once('Piste/Util/Cookies.php');
 require_once('Piste/Dispatch/Models.php');
+require_once('Piste/Context/View.php');
+require_once('Piste/Context/Controller.php');
 
 /*=head1 Synopsis
 */
@@ -27,6 +29,8 @@ Class Context {
     private $cookies;
     private $action;
     private $models;
+    private $view;
+    private $controller;
 
     # capture execution stack for easier deugging
     public $execution_stack = array();
@@ -35,15 +39,6 @@ Class Context {
         $this->env      = new Util\Env($app_name);
         $this->request  = new Context\Request();
         $this->response = new Context\Response();
-        $this->cookies  = new Util\Cookies();
-        $this->models   = \Piste\Dispatch\Models::singleton();
-    }
-
-    # access to models. Need genuine access to model. I think.
-    # As long as it's not going to hold state information in the
-    # object, I think that's OK
-    public function model($model){
-        return $this->models->get_model($model);
     }
 
 
@@ -53,9 +48,39 @@ Class Context {
     public function req(){return $this->request;}
     public function response(){return $this->response;}
     public function res(){return $this->response;}
-    public function cookies(){return $this->cookies;}
+    public function cookies(){
+        if (!isset($this->cookies)){
+            $this->cookies  = new Util\Cookies();
+        }
+        return $this->cookies;
+    }
+    # access to models. Need genuine access to model. I think.
+    # As long as it's not going to hold state information in the
+    # object, I think that's OK
+    public function model($model){
+        if(!isset($this->models)){
+            $this->models = \Piste\Dispatch\Models::singleton();
+        }
+        return $this->models->get_model($model);
+    }
+    # Contolled access to View via Context-namespaced proxy object
+    function view(){
+        if(!isset($this->view)){
+            $this->view = new \Piste\Context\View();
+        }
+        return $this->view;
+    }
+
+    # Contolled access to controller via Context-namespaced proxy object
+    function controller(){
+        if(!isset($this->controller)){
+            $this->controller = new \Piste\Context\Controller();
+        }
+        return $this->controller;
+    }
 
     # set/get which action we decided was the main dispatch action
+    # TODO: why is this a public method on context object?
     public function action(\Piste\Dispatch\Action $action = null){
         if (isset($action)){
             $this->action = $action;
