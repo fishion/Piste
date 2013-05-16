@@ -14,21 +14,12 @@ require_once('Piste/Context/Response/Headers.php');
 
 */
 Class Response {
-    private $view;
     private $stash = array();
-    private $template;
     private $headers;
     private $body = '';
 
     function __construct(){
         $this->headers = new Response\Headers();
-    }
-
-    # the string representation of the view class chosen
-    # TODO: move this to $pc->view($viewname)
-    public function view($view = null){
-        if ($view){ $this->view = $view; }
-        return $this->view;
     }
 
     public function stash($params = null, $value = null){
@@ -50,15 +41,6 @@ Class Response {
 
     public function clear_stash(){
         $this->stash = array();
-    }
-
-    # get/set a template for rendering output
-    # TODO: this should probably be in the $pc->view->interface object too huh?
-    public final function template($template = null){
-        if (isset($template)){
-            $this->template = $template;
-        }
-        return $this->template;
     }
 
     public function body($body = null){

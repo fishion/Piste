@@ -36,12 +36,12 @@ Class Dispatch {
         # set view to default view initially
         # that way it can stil be overridden to nothing or something else
         if ( isset($this->config['default_view']) ){
-            $pc->response()->view($this->config['default_view']);
+            $pc->view()->classname($this->config['default_view']);
         }
         if (isset($this->config['response_type_switch'])){
             foreach ($this->config['response_type_switch'] as $content_type => $view) {
                 if ( preg_match('/' . preg_quote($content_type, '/') . '/', $_SERVER['HTTP_ACCEPT']) ){
-                    $pc->response()->view($view);
+                    $pc->view()->classname($view);
                 }
             }
         }

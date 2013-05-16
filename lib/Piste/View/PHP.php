@@ -99,14 +99,14 @@ Default php
 =cut*/
     private function find_template($pc){
         # make sure we have a template path set
-        if (!$pc->response()->template() && $pc->action()){
+        if (!$pc->view()->template() && $pc->action()){
             \Logger::debug('Setting default template to ' . $pc->action()->default_template());
-            $pc->response()->template($pc->action()->default_template());
-        } elseif (!$pc->response()->template() && !$pc->action()){
+            $pc->view()->template($pc->action()->default_template());
+        } elseif (!$pc->view()->template() && !$pc->action()){
             # no template, no action.
             return;
         }
-        return $this->template_exists($pc, $pc->response()->template());
+        return $this->template_exists($pc, $pc->view()->template());
     }
 /*=head2 template_exists()
 =cut*/

@@ -64,9 +64,13 @@ Class Context {
         return $this->models->get_model($model);
     }
     # Contolled access to View via Context-namespaced proxy object
-    function view(){
+    function view($viewname = null){
         if(!isset($this->view)){
             $this->view = new \Piste\Context\View();
+        }
+        if (isset($viewname)){
+            # allow setting of viewname by $pc->view($name)
+            $this->view->classname($viewname);
         }
         return $this->view;
     }
@@ -90,7 +94,7 @@ Class Context {
 
     # proxy methods into other objects
     public final function template($template = null){
-        return $this->response->template($template);
+        return $this->view()->template($template);
     }
     public function stash($v1 = null, $v2=null){
         return $this->response->stash($v1, $v2);

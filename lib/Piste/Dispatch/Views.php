@@ -43,7 +43,7 @@ Class Views {
 
 
     public function run($pc) {
-        $view = $pc->response()->view();
+        $view = $pc->view()->classname();
         if ($view){
             if (!isset($this->views[$view])){
                 throw new \Exception("View '$view' not installed");

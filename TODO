@@ -1,4 +1,3 @@
-* Move view related functions from Context to Context/View
 * Examine TODOs in COntext class
 * Provide way that controllers can say "I'm only for certain content type responses"
     * so that you can set a global html fallback action which won't be run for json responses
