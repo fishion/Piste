@@ -68,7 +68,7 @@ Class Level2 extends \Piste\Controller {
     public function chained_path1($pc){
     }
     /**
-     * this one gets args as no arge param defined
+     * this one gets args as no 'args' key defined
      * {
      *  "chained" : "chained_path1",
      *  "path"  : ""

@@ -69,6 +69,10 @@ Class Controllers {
         $action = $this->best_match($this->actions, $uripath)->first();
 
         if ($action){
+            # set which action was run in the context object.
+            # set it early so it can be overwritten in a controller if you really want to lie to the view.
+            $pc->action($action);
+
             # run 'before'-method
             $this->best_match($this->special_actions, $action->namespace_path(), 'before')
                  ->call($pc);
@@ -81,8 +85,6 @@ Class Controllers {
             $this->best_match($this->special_actions, $action->namespace_path(), 'after')
                  ->call($pc);
 
-            # set which action was run in the contect
-            $pc->action($action);
         } else {
             # well, no action found so do nothing View should figure it out.
         }

@@ -10,12 +10,12 @@ Class Detatch extends \Piste\Controller {
     # special methods
     protected function before($pc){
         $pc->template('index');
-        if ($pc->req()->param('breakbefore')){
+        if ($pc->req()->params('breakbefore')){
             $pc->controller()->detatch();
         }
     }
     protected function auto($pc){
-        if ($pc->req()->param('breakdetatchauto')){
+        if ($pc->req()->params('breakdetatchauto')){
             $pc->controller()->detatch();
         }
     }

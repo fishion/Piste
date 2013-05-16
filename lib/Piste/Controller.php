@@ -59,9 +59,9 @@ abstract Class Controller {
     }
 
     public final function P_call_action($method, $args, $pc){
-        $pc->set_args($args);
+        $pc->request()->set_args($args);
         $this->$method($pc);
-        $pc->set_args();
+        $pc->request()->set_args();
     }
 
 /*

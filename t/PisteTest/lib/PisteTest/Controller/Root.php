@@ -13,7 +13,7 @@ Class Root extends \Piste\Controller {
     protected function before($pc){
     }
     protected function auto($pc){
-        if ($pc->req()->param('breakrootauto')){
+        if ($pc->req()->params('breakrootauto')){
             $pc->controller()->detatch();
         }
     }
@@ -64,7 +64,7 @@ Class Root extends \Piste\Controller {
 
 
     /**
-     * url param testing
+     * url arg testing
      */
     public function nofixedargs($pc){
         $pc->template('index');

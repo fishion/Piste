@@ -21,31 +21,32 @@ Class Request {
         return $this->path;
     }
 
-    # http param functions. All designed not to complain if paramss not defined
-    # POST wins over get if param names clash
-    # TODO: consider not having param, get_param, post_param methods and just
-    #       passing argument to params, get_params, post_params
-    public function params(){
-        return array_merge($_GET, $_POST);
+    # http param functions. All designed not to complain if params not defined
+    # POST wins over GET if param names clash
+    public function params($param = null){
+        $all = array_merge($_GET, $_POST);
+        if ($param){
+            return isset($all[$param]) ? $all[$param] : null;
+        }
+        return $all;
     }
-    public function param($param){
-        $all = $this->params();
-        return isset($all[$param]) ? $all[$param] : null;
-    }
-    public function get_params(){
+    public function get_params($param = null){
+        if ($param){
+            return isset($_GET[$param]) ? $_GET[$param] : null;
+        }
         return $_GET;
     }
-    public function get_param($param){
-        return isset($_GET[$param]) ? $_GET[$param] : null;
-    }
-    public function post_params(){
+    public function post_params($param = null){
+        if ($param){
+            return isset($_POST[$param]) ? $_POST[$param] : null;
+        }
         return $_POST;
     }
-    public function post_param($param){
-        return isset($_POST[$param]) ? $_POST[$param] : null;
-    }
 
 
+    # The args available to the action are set by Piste just before
+    # action call. Can't think why you'd want to overwrite them yourself
+    # but nothing stopping you if you really want to.
     public function set_args($args = null){
         $this->args = $args;
         return $this->args;

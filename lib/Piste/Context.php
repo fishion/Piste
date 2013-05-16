@@ -84,7 +84,10 @@ Class Context {
     }
 
     # set/get which action we decided was the main dispatch action
-    # TODO: why is this a public method on context object?
+    # This is set before controller actions and is used in views to
+    # decide, for example, whether a page was found. If you want to
+    # overwrite it in your controller and lie to the View methods, then
+    # Piste won't stop you, though it's probably not recommended.
     public function action(\Piste\Dispatch\Action $action = null){
         if (isset($action)){
             $this->action = $action;
@@ -98,10 +101,6 @@ Class Context {
     }
     public function stash($v1 = null, $v2=null){
         return $this->response->stash($v1, $v2);
-    }
-    # TODO set_args as a public method on contect object or request object seems wrong.
-    public function set_args($args = null){
-        return $this->request->set_args($args);
     }
     public function args($index = null){
         return $this->request->args($index);

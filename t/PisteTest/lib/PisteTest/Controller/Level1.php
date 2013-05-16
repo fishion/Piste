@@ -33,7 +33,7 @@ Class Level1 extends \Piste\Controller {
     public function relativepath($pc){
     }
     
-    # url param testing
+    # url arg testing
     public function nofixedargs($pc){
         $pc->template('index');
     }
