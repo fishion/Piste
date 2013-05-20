@@ -134,7 +134,7 @@ Class ChainLink extends \Piste\Dispatch\Action {
         return $this->chain;
     }
 
-    private final function better_parent($new, $old = null){
+    private final function better_parent(ChainLink $new, ChainLink $old = null){
         if ($this->chainmethod() != $new->method_name()){
             return $old; # method names always have to match
         }

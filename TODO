@@ -1,6 +1,6 @@
 * Provide way that controllers can say "I'm only for certain content type responses"
     * so that you can set a global html fallback action which won't be run for json responses
-* check method signitures to see if they want tighter variable type definitions
+    * Just used when deciding main action, not for 'before', 'auto' etc
 * Properly capture all dependencies of Piste
     * PEARify all the dependencies and use the PEAR installed ones in apache
     Logger, Testsimple, probably most of them.

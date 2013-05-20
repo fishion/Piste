@@ -25,13 +25,13 @@ Class Dispatch {
         $this->views = Dispatch\Views::singleton();
     }
 
-    public function register_all($pc){
+    public function register_all(Context $pc){
         $installed = get_declared_classes();
         $this->require_packages($pc);
         $this->register_packages($pc, array_diff(get_declared_classes(), $installed));
     }
 
-    public function dispatch($pc){
+    public function dispatch(Context $pc){
         \Logger::debug('Finding dispatch for ' .$pc->req()->path());
         # set view to default view initially
         # that way it can stil be overridden to nothing or something else
@@ -51,7 +51,7 @@ Class Dispatch {
 
 
 
-    private function require_packages($pc){
+    private function require_packages(Context $pc){
         foreach (array('Controller', 'C', 'View', 'V', 'Model', 'M') as $dir){
             $dirpath = $pc->env()->app_lib() . DIRECTORY_SEPARATOR . $pc->env()->app_name() . DIRECTORY_SEPARATOR . $dir;
             \Logger::debug("Requiring Piste Packages from $dirpath");
@@ -64,7 +64,7 @@ Class Dispatch {
             }
         }
     }
-    private function register_packages($pc, $packages){
+    private function register_packages(Context $pc, array $packages){
         $app_name = $pc->env()->app_name();
         foreach ($packages as $class){
             if ( (is_subclass_of($class, 'Piste\Controller') &&

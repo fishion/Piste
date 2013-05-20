@@ -32,7 +32,7 @@ Class Controllers {
 
     private $chain_links     = array();
 
-    public function register($act){
+    public function register(Action $act){
         if (get_class($act) == 'Piste\Dispatch\Action' ||
             get_class($act) == 'Piste\Dispatch\Action\Fallback') {
             array_push( $this->actions, $act );
@@ -61,7 +61,7 @@ Class Controllers {
         # TODO alert over unused pieces
     }
 
-    public function run($pc) {
+    public function run(\Piste\Context $pc) {
         $uripath = $pc->req()->path();
         $action = null;
 
@@ -91,7 +91,7 @@ Class Controllers {
     }
 
 
-    private function best_match($actions, $uripath, $name = null){
+    private function best_match(array $actions, $uripath, $name = null){
         $action = null;
         foreach ($actions as $act){
             \Logger::info(($name ? '(' . $name . ') ' : '') . 'Matching ' . $uripath . ' against ' . $act->pathre());
@@ -102,7 +102,7 @@ Class Controllers {
         return new ActionSet($action);
     }
 
-    private function all_matching($actions, $uripath, $name = null){
+    private function all_matching(array $actions, $uripath, $name = null){
         $set = new ActionSet();
         foreach ($actions as $act){
             if ((!$name || $act->method_name() == $name) &&

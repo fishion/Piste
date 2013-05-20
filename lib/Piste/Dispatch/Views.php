@@ -29,20 +29,16 @@ Class Views {
 
     private $views = array();
 
-    public function register($class){
-        #ensure view class ISA Piste\View
-        $reflection = new \Piste\Util\ReflectionClass($class);
-        if (!$reflection->isSubclassOf('\Piste\View')){
-            throw new \Exception("$class is not a \Piste\View subclass");
-        }
+    public function register(\Piste\View $view){
         # Allow people to use fully qualified $class or strip
         # off <Appname>\View
+        $class = get_class($view);
         $path = preg_replace('/^.*?\\\\View\\\\/','',$class);
-        $this->views[$path] = $this->views[$class] = $class;
+        $this->views[$path] = $this->views[$class] = $view;
     }
 
 
-    public function run($pc) {
+    public function run(\Piste\Context $pc) {
         $view = $pc->view()->classname();
         if ($view){
             if (!isset($this->views[$view])){

@@ -28,24 +28,20 @@ Class Models {
 
     private $models = array();
 
-    public function register($class){
-        #ensure Model class ISA Piste\Model
-        $reflection = new \Piste\Util\ReflectionClass($class);
-        if (!$reflection->isSubclassOf('\Piste\Model')){
-            throw new \Exception("$class is not a \Piste\Model subclass");
-        }
+    public function register(\Piste\Model $model){
         # Allow people to use fully qualified $class or strip
         # off <Appname>\Mosel
+        $class = get_class($model);
         $path = preg_replace('/^.*?\\\\Model\\\\/','',$class);
-        $this->models[$path] = $this->models[$class] = $class;
+        $this->models[$path] = $this->models[$class] = $model;
     }
 
 
-    public function get_model($model) {
-        if (!isset($this->models[$model])){
-            throw new \Exception("Model '$model' not installed");
+    public function get_model($class) {
+        if (!isset($this->models[$class])){
+            throw new \Exception("Model '$class' not installed");
         }
-        return new $this->models[$model]();
+        return $this->models[$class];
     }
 
 }

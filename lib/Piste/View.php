@@ -19,7 +19,7 @@ abstract class View {
     with parameters from a user defined $config variable in application view class
 =over
 =cut*/
-    function __construct($pc){
+    function __construct(Context $pc){
         # sort out config
         if (!isset($this->base_config)) {$this->base_config = array();}
         if ($this->base_config && !is_array($this->base_config)){
@@ -35,7 +35,7 @@ abstract class View {
 
     public final function P_register(){
         $views = \Piste\Dispatch\Views::singleton();
-        $views->register(get_class($this));
+        $views->register($this);
     }
 
 
@@ -44,14 +44,14 @@ abstract class View {
     # 'render' method responsible for rendering whatever 
     # template has been set and
     # storing rendered content in response()->body() 
-    abstract public function render($pc);
+    abstract public function render(Context $pc);
 
-    public function render_404($pc){
+    public function render_404(Context $pc){
         $pc->response()->status(404);
         $pc->response()->body($this->get_404_body($pc));
     }
 
-    protected function get_404_body($pc){
+    protected function get_404_body(Context $pc){
         # TODO make better default 404
         return <<<________EOHTML
             <html>

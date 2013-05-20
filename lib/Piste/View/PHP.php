@@ -15,7 +15,7 @@ require_once('Piste/View.php');
 
 abstract Class PHP extends \Piste\View {
 
-    function __construct($pc){
+    function __construct(\Piste\Context $pc){
         parent::__construct($pc);
         # include the include path
         if ($this->config['template_include']){
@@ -63,9 +63,9 @@ Default php
         'template_suffix'   => '.php'
     );
 
-/*=head2 render()
+/*=head2 render(\Piste\Context $pc)
 =cut*/
-    public function render($pc){
+    public function render(\Piste\Context $pc){
         if ($pc->response()->body()){
             # response content has already been set directly.
             # Nothing to render
@@ -83,9 +83,9 @@ Default php
         );
     }    
 
-/*=head2 get_404_body()
+/*=head2 get_404_body(\Piste\Context $pc)
 =cut*/
-    public function get_404_body($pc){
+    public function get_404_body(\Piste\Context $pc){
         $template = $this->template_exists($pc, $this->config['404']);
         if (!isset($template)){
             # no valid 404 teplate set. Use default.
@@ -95,9 +95,9 @@ Default php
     }
 
 
-/*=head2 find_template()
+/*=head2 find_template(\Piste\Context $pc)
 =cut*/
-    private function find_template($pc){
+    private function find_template(\Piste\Context $pc){
         # make sure we have a template path set
         if (!$pc->view()->template() && $pc->action()){
             \Logger::debug('Setting default template to ' . $pc->action()->default_template());
@@ -108,7 +108,7 @@ Default php
         }
         return $this->template_exists($pc, $pc->view()->template());
     }
-/*=head2 template_exists()
+/*=head2 template_exists(\Piste\Context $pc, $template)
 =cut*/
     private function template_exists($pc, $template){
         $t_file = new \File($this->full_template_path($pc, $template));
@@ -119,18 +119,18 @@ Default php
         \Logger::debug("Can't find $template");
         return null;
     }
-/*=head2 full_template_path()
+/*=head2 full_template_path(\Piste\Context $pc, $template)
 =cut*/
-    private function full_template_path($pc, $template){
+    private function full_template_path(\Piste\Context $pc, $template){
         return  $pc->env()->app_base()
               . $this->config['template_base']
               . $template
               . $this->config['template_suffix'];
     }
 
-/*=head2 render_template()
+/*=head2 render_template(\Piste\Context $pc, $template)
 =cut*/
-    private function render_template($pc, $template){
+    private function render_template(\Piste\Context $pc, $template){
         # make stash available as global vars in template
         foreach ($pc->response()->stash() as $key => $val){
             \Logger::debug("Making stash item $key available in global scope");

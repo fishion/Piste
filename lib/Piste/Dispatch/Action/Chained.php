@@ -15,7 +15,7 @@ Class Chained extends \Piste\Dispatch\Action {
 
     private $chain = array();
 
-    public function __construct($chain){
+    public function __construct(array $chain){
         $this->chain = $chain;
         # some of the properties just use the characteristics
         # of the last link in the chain
@@ -75,7 +75,7 @@ Class Chained extends \Piste\Dispatch\Action {
     }
 
     # override call method to call all actions in set
-    public function call($pc){
+    public function call(\Piste\Context $pc){
         foreach ($this->chain as $link){
             $pc->controller()->attatched() && $link->call($pc);
         }

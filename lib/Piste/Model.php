@@ -15,7 +15,7 @@ abstract class Model {
 
     public final function P_register(){
         $models = \Piste\Dispatch\Models::singleton();
-        $models->register(get_class($this));
+        $models->register($this);
     }
 
 }

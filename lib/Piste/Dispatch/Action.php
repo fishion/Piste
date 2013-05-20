@@ -23,7 +23,7 @@ class Action {
     protected $pathre;
     protected $args;
 
-    public function __construct($object, $namespace_path, $method, $def){
+    public function __construct(\Piste\Controller $object, $namespace_path, $method, array $def){
         $this->object         = $object;
         $this->namespace_path = $namespace_path;
         $this->method         = $method;
@@ -112,7 +112,7 @@ class Action {
     }
 
     # methods
-    public final function better_match($uripath, $that){
+    public final function better_match($uripath, Action $that = null){
         if ($that && $this->specifity() > $that->specifity()){
             return $that; # even if this matches, that is better
         }
@@ -143,7 +143,7 @@ class Action {
         return true;
     }
 
-    public function call($pc){
+    public function call(\Piste\Context $pc){
         if (!$pc->controller()->attatched()){
             return; # we're detatched
         }

@@ -29,7 +29,7 @@ class ActionSet {
         return count($this->set) ? $this->set[0] : null;
     }
 
-    public function call($pc){
+    public function call(\Piste\Context $pc){
         # put in order of specifity, then run.
         usort($this->set, array(__CLASS__, 'specifity_sort'));
         foreach ($this->set as $act){
@@ -37,7 +37,7 @@ class ActionSet {
         }
     }
 
-    static function specifity_sort($a, $b){
+    static function specifity_sort(Action $a, Action $b){
         $a1 = $a->specifity();
         $b1 = $b->specifity();
         if ($a1 == $b1) {
