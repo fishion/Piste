@@ -156,8 +156,7 @@ Default php
             echo '</pre>';
         }
         if ($this->config['wrapper']){
-            # TODO : not sure I like Pcontent as a fixed variable name
-            $Pcontent = ob_get_clean();
+            $wrapped_content = ob_get_clean();
             ob_start();
             require($this->config['wrapper']);
         }
