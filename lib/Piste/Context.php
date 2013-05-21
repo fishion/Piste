@@ -16,6 +16,7 @@ File
 require_once('Piste/Context/Request.php');
 require_once('Piste/Context/Response.php');
 require_once('Piste/Context/Stash.php');
+require_once('Piste/Context/Content.php');
 require_once('Piste/Util/Env.php');
 require_once('Piste/Util/Cookies.php');
 require_once('Piste/Dispatch/Models.php');
@@ -29,6 +30,7 @@ Class Context {
     private $request;
     private $response;
     private $stash;
+    private $Content;
     private $cookies;
     private $action;
     private $models;
@@ -46,11 +48,11 @@ Class Context {
 
 
     # accessors to other objects
-    public function env(){return $this->env;}
-    public function request(){return $this->request;}
-    public function req(){return $this->request;}
-    public function response(){return $this->response;}
-    public function res(){return $this->response;}
+    public function env(){      return $this->env;}
+    public function request(){  return $this->request;}
+    public function req(){      return $this->request;}
+    public function response(){ return $this->response;}
+    public function res(){      return $this->response;}
     public function cookies(){
         if (!isset($this->cookies)){
             $this->cookies  = new Util\Cookies();
@@ -59,7 +61,7 @@ Class Context {
     }
     # access to models. Need genuine access to model. I think.
     # As long as it's not going to hold state information in the
-    # object, I think that's OK
+    # object, that's acceptable
     public function model($model){
         if(!isset($this->models)){
             $this->models = \Piste\Dispatch\Models::singleton();
@@ -102,14 +104,22 @@ Class Context {
     public final function template($template = null){
         return $this->view()->template($template);
     }
+    public function args($index = null){
+        return $this->request->args($index);
+    }
+
+    # stash and content object proxies
     public function stash($v1 = null, $v2=null){
         if (!isset($this->stash)){
             $this->stash = new Context\Stash();
         }
         return $this->stash->getset($v1, $v2);
     }
-    public function args($index = null){
-        return $this->request->args($index);
+    public function content($v1 = null, $v2=null){
+        if (!isset($this->content)){
+            $this->content = new Context\Content();
+        }
+        return $this->content->getset($v1, $v2);
     }
 }
 
