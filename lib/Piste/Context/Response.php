@@ -14,33 +14,11 @@ require_once('Piste/Context/Response/Headers.php');
 
 */
 Class Response {
-    private $stash = array();
     private $headers;
     private $body = '';
 
     function __construct(){
         $this->headers = new Response\Headers();
-    }
-
-    public function stash($params = null, $value = null){
-        if ($value !== null & !is_string($params)){
-            throw new Exception("Bad parameters to Piste\\Response::stash() method. Using 2 parameter form, the first value must be a string key");
-        }
-        if ($value !== null){
-            # setting in 2 param form
-            $this->stash[$params] = $value;
-        } elseif (is_string($params)) {
-            # getting a stash param
-            return isset($this->stash[$params]) ? $this->stash[$params] : null;
-        } elseif ($params){
-            # setting in one param form
-            $this->stash = array_merge($this->stash, $params);
-        }
-        return $this->stash;
-    }
-
-    public function clear_stash(){
-        $this->stash = array();
     }
 
     public function body($body = null){

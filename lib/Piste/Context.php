@@ -6,14 +6,16 @@ Piste\Context
 =head1 DESCRIPTION
 Object (TODO singleton? Probably not - you might get leakage accross sessions)
 which provides interface for different parts
-of the PIste framework and environment to easily communicate and access 
+of the Piste framework and environment to easily communicate and access
 each other.
+Doesn't have a lot of methods of it's own, it mostly proxies to other objects
 
 =head1 DEPENDENCIES
 File
 =cut*/
 require_once('Piste/Context/Request.php');
 require_once('Piste/Context/Response.php');
+require_once('Piste/Context/Stash.php');
 require_once('Piste/Util/Env.php');
 require_once('Piste/Util/Cookies.php');
 require_once('Piste/Dispatch/Models.php');
@@ -26,6 +28,7 @@ Class Context {
     private $env;
     private $request;
     private $response;
+    private $stash;
     private $cookies;
     private $action;
     private $models;
@@ -100,7 +103,10 @@ Class Context {
         return $this->view()->template($template);
     }
     public function stash($v1 = null, $v2=null){
-        return $this->response->stash($v1, $v2);
+        if (!isset($this->stash)){
+            $this->stash = new Context\Stash();
+        }
+        return $this->stash->getset($v1, $v2);
     }
     public function args($index = null){
         return $this->request->args($index);

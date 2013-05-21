@@ -132,12 +132,11 @@ Default php
 =cut*/
     private function render_template(\Piste\Context $pc, $template){
         # make stash available as global vars in template
-        foreach ($pc->response()->stash() as $key => $val){
+        foreach ($pc->stash() as $key => $val){
             \Logger::debug("Making stash item $key available in global scope");
             $GLOBALS[$key] = $val;
         }
-
-        # make Piste Context object available too. WHy not.
+        # make Piste Context object available too.
         $GLOBALS['pc'] = $pc;
 
         # require page content & store in output buffer

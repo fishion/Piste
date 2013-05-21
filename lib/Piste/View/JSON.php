@@ -19,7 +19,7 @@ abstract Class JSON extends \Piste\View {
         }
         $pc->response()->content_type('Content-type: application/json');
         $pc->response()->body(
-                json_encode($pc->response()->stash())
+                json_encode($pc->stash())
         );  
     }
 
