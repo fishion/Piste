@@ -39,7 +39,7 @@ Default 0
 Directory relative to application root where you expect to find templates.
 Default 'template/base/'.
 =cut*/
-        'template_base'     => 'template/base/',
+        'template_base'     => 'template/page/',
 /*=item template_include
 Directory relative to application root where you want to put included templates.
 Default 'template/base/'.
