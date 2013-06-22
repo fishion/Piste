@@ -22,6 +22,11 @@ Class URI extends \Piste\Util\Path {
         }
         parent::__construct($path);
     }
+
+    function matches($uri){
+        $comp = new self($uri);
+        return ($this == $comp);
+    }
 }
 
 ?>
